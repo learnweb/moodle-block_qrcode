@@ -1,7 +1,6 @@
 <?php
 require_once 'phpqrcode/qrlib.php';
 require_once 'phpqrcode/qrconfig.php';
-require_once 'block_qrcode_form.php';
 //include 'download.php';
 
 /**
@@ -51,18 +50,15 @@ class block_qrcode extends block_base
             ob_end_clean();
 
             $cache->set($COURSE->id, $image);
-            $this->content->text .= '<img src="data:image/png;base64,' . base64_encode($image) . '"/>';
-
         } else {
             $image = $cache->get($COURSE->id);
-            $this->content->text .= '<img src="data:image/png;base64,' . base64_encode($image) . '"/';
         }
 
-        $layout = new block_qrcode_form();
-        $this->content->text .= $layout->render();
-        
-
-        //$this->download_image($image);
+        $renderer = $PAGE->get_renderer('block_qrcode');
+        $this->content->text .= $renderer->display_image($image);
+        $this->content->text .= '<br>';
+        $this->content->text .= $renderer->display_download_link(base64_encode($image), $COURSE->id);
+   
         return $this->content;
 
 
@@ -88,24 +84,5 @@ class block_qrcode extends block_base
         if ($cache->get($event->courseid)) {
             $cache->delete($event->courseid);
         }
-    }
-
-    private function download_image($image)
-    {
-
-        if (is_https()) { // HTTPS sites - watch out for IE! KB812935 and KB316431.
-            header('Cache-Control: max-age=10');
-            header('Pragma: ');
-        } else { //normal http - prevent caching at all cost
-            header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
-            header('Pragma: no-cache');
-        }
-        header('Expires: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT');
-        header("Content-Type: image/png");
-        header("Content-Disposition: attachment; filename=Kurs-1.png");
-
-        $png = imagecreatefromstring(base64_decode(base64_encode($image)));
-        imagepng($png);
-        exit();
     }
 }
