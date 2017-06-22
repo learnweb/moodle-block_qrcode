@@ -87,9 +87,12 @@ class block_qrcode extends block_base
         // displays the block
         $renderer = $PAGE->get_renderer('block_qrcode');
         $this->content->text .= $renderer->display_image($image);
-        $this->content->text .= '<br>';
-        $this->content->text .= $renderer->display_download_link(base64_encode($image), $COURSE->id);
 
+        //Students can't see the download button
+        if(has_capability('block/qrcode:seebutton', $this->context)) {
+            $this->content->text .= '<br>';
+            $this->content->text .= $renderer->display_download_link(base64_encode($image), $COURSE->id);
+        }
         return $this->content;
 
 

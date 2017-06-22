@@ -28,6 +28,25 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2017 T Gunkel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block_qrcode_testcase extends advanced_testcase {
+class block_qrcode_testcase extends advanced_testcase
+{
 
+    protected function set_up()
+    {
+        global $CFG;
+        $generator2 = $this->getDataGenerator()->get_plugin_generator('block_qrcode');
+        $data = $generator2->test_create_preparation();
+        $this->resetAfterTest(true);
+        return $data;
+    }
+
+    public function test_qrcode()
+    {
+        global $CFG;
+        $data = $this->set_up();
+        $user = $this->getDataGenerator()->createUser();
+        $this->setUser($user);
+    }
+
+    //auf Cache zurgreifen und checken if null
 }
