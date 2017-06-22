@@ -17,6 +17,7 @@
  * The class contains a test script for the moodle block qrcode
  *
  * @package    block_qrcode
+ * @category test
  * @copyright  2017 T Gunkel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,27 +26,30 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Class block_qrcode_testcase
  * @package block_qrcode
+ * @category test
  * @copyright 2017 T Gunkel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_qrcode_testcase extends advanced_testcase
 {
 
-    protected function set_up()
-    {
-        global $CFG;
-        $generator2 = $this->getDataGenerator()->get_plugin_generator('block_qrcode');
-        $data = $generator2->test_create_preparation();
-        $this->resetAfterTest(true);
-        return $data;
-    }
-
     public function test_qrcode()
     {
         global $CFG;
-        $data = $this->set_up();
-        $user = $this->getDataGenerator()->createUser();
-        $this->setUser($user);
+        $generator = $this->getDataGenerator()->get_plugin_generator('block_qrcode');
+        $data = $generator->test_create_preparation();
+        $this->resetAfterTest(true);
+
+        $generator->create_instance();
+
+        // Gets the cache object
+        $cache = cache::make('block_qrcode', 'qrcodes');
+
+        // gibt false zurück??
+        $img = $cache->get($data['course1']->id);
+
+        $this->assertGreaterThanOrEqual(50, $img);
+
     }
 
     //auf Cache zurgreifen und checken if null
