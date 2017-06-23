@@ -49,7 +49,9 @@ class block_qrcode_renderer extends plugin_renderer_base {
      * @return string button
      */
     public function display_download_link($image, $id) {
-        $button = new single_button(new moodle_url('/blocks/qrcode/download.php', array('image' => $image, 'courseid' => $id)), get_string('button', 'block_qrcode'));
+        $button = new single_button(new moodle_url('/blocks/qrcode/download.php',
+            array('image' => $image, 'courseid' => $id)),
+            get_string('button', 'block_qrcode'));
         return $this->render($button);
     }
 }

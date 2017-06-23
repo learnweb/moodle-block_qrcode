@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
  * PHPUnit data generator tests
  * @package block_qrcode
@@ -21,8 +20,10 @@
  * @copyright 2017 T Gunkel
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__ . '/../../moodleblock.class.php');
+require_once(__DIR__ . '/../block_qrcode.php');
+
 
 /**
  * PHPUnit data generator testcase
@@ -33,16 +34,25 @@ defined('MOODLE_INTERNAL') || die();
  */
 class block_qrcode_generator_testcase extends advanced_testcase {
     public function test_generator() {
-        global $DB;
+        global $DB, $COURSE;
         $this->resetAfterTest(true);
 
-        $beforeblocks = $DB->count_records('block_instances');
 
+        $beforeblocks = $DB->count_records('block_instances');
         $generator = $this->getDataGenerator()->get_plugin_generator('block_qrcode');
+        $data = $generator->test_create_preparation();
         $this->assertInstanceOf('block_qrcode_generator', $generator);
         $this->assertEquals('qrcode', $generator->get_blockname());
+        $instance = $generator->create_instance();
+        $this->assertEquals($beforeblocks + 1, $DB->count_records('block_instances'));
 
-        $generator->create_instance();
-        $this->assertEquals($beforeblocks+1, $DB->count_records('block_instances'));
+        $cache = cache::make('block_qrcode', 'qrcodes');
+        $block = new block_qrcode();
+        $block->context = context_block::instance($instance->id);
+        $block->get_content();
+        $this->assertInternalType('string', $cache->get($COURSE->id));
+        // image wird nicht erzeugt...
+  //      print('/'.$cache->get($COURSE->id));
+        $this->assertTrue($cache->delete($COURSE->id));
     }
 }

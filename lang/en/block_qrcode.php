@@ -22,7 +22,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] ='QR code';
+$string['pluginname'] = 'QR code';
 $string['qrcode:addinstance'] = 'Add a new QR code block';
 $string['qrcode:seebutton'] = 'Show Download button';
 $string['filename'] = 'course';
