@@ -34,7 +34,6 @@
                     $frameLine[$i] = (ord($frameLine[$i])&1)?'1':'0';
                 }
             }
-            
             return $frame;
         }
         

@@ -468,7 +468,7 @@
             }
             
             QRtools::markTime('after_encode');
-            
+
             if ($outfile!== false) {
                 file_put_contents($outfile, join("\n", QRtools::binarize($code->data)));
             } else {
@@ -485,9 +485,10 @@
                 $tab = $this->encode($intext);
                 $err = ob_get_contents();
                 ob_end_clean();
-                
+
                 if ($err != '')
                     QRtools::log($outfile, $err);
+
                 
                 $maxSize = (int)(QR_PNG_MAXIMUM_SIZE / (count($tab)+2*$this->margin));
                 
