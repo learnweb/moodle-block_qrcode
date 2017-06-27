@@ -24,7 +24,7 @@
 
 require_once('../../config.php');
 require_login();
-$image = required_param('image', PARAM_TEXT);
+$file = required_param('file', PARAM_TEXT);
 $courseid = required_param('courseid', PARAM_INT);
 
 // Output file headers to initialise the download of the file.
@@ -39,7 +39,6 @@ header('Expires: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT');
 header('Content-Type: image/png');
 header('Content-Disposition: attachment; filename=' . get_string('filename', 'block_qrcode') . '-' . $courseid . '.png');
 
-// Output (& download) the image file.
-$im = imagecreatefromstring(base64_decode($image));
-imagepng($im);
+// Outputs (& downloads) the image file.
+readfile($file);
 exit();

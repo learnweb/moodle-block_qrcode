@@ -23,6 +23,8 @@
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/../../moodleblock.class.php');
 require_once(__DIR__ . '/../block_qrcode.php');
+require_once(__DIR__ . '/../phpqrcode/qrlib.php');
+require_once(__DIR__ . '/../phpqrcode/qrconfig.php');
 
 
 /**
@@ -33,8 +35,12 @@ require_once(__DIR__ . '/../block_qrcode.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_qrcode_generator_testcase extends advanced_testcase {
+
+    /**
+     * @runInSeparateProcess
+     */
     public function test_generator() {
-        global $DB, $COURSE;
+        global $DB, $CFG, $COURSE;
         $this->resetAfterTest(true);
 
 
@@ -46,13 +52,9 @@ class block_qrcode_generator_testcase extends advanced_testcase {
         $instance = $generator->create_instance();
         $this->assertEquals($beforeblocks + 1, $DB->count_records('block_instances'));
 
-        $cache = cache::make('block_qrcode', 'qrcodes');
         $block = new block_qrcode();
         $block->context = context_block::instance($instance->id);
         $block->get_content();
-        $this->assertInternalType('string', $cache->get($COURSE->id));
-        // image wird nicht erzeugt...
-  //      print('/'.$cache->get($COURSE->id));
-        $this->assertTrue($cache->delete($COURSE->id));
+        $this->assertFileExists($CFG->localcachedir.'/block_qrcode/course-'.$COURSE->id.'.png');
     }
 }

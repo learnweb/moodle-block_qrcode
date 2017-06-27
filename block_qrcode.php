@@ -56,40 +56,36 @@ class block_qrcode extends block_base {
         }
 
         // Record the current course and page.
-        global $COURSE, $PAGE;
+        global $CFG, $COURSE, $PAGE;
 
         $url = course_get_url($COURSE);
 
         $this->content = new stdClass;
         $this->content->text = '';
 
-        // Gets the cache object.
-        $cache = cache::make('block_qrcode', 'qrcodes');
+        $file = $CFG->localcachedir.'/block_qrcode/course-'.$COURSE->id.'.png';
 
         // Checks if QR code already exists.
-        if (!$cache->get($COURSE->id)) {
-            // Creates the QR .
-            ob_implicit_flush(false);
-            ob_start();
-            QRcode::png($url->out());
-            $image = ob_get_contents();
-            ob_end_clean();
+        if(!file_exists($file)) {
+            // Checks if directory already exists.
+            if(!file_exists(dirname($file))) {
+                // Creates new directory.
+                mkdir(dirname($file), $CFG->directorypermissions, true);
+            }
 
-            // Saves the QR code.
-            $cache->set($COURSE->id, $image);
-        } else {
-            // Loads the QR code.
-            $image = $cache->get($COURSE->id);
+            // Creates the QR code.
+            QRcode::png($url->out(), $file);
         }
 
         // Displays the block.
+        /** @var block_qrcode_renderer $renderer */
         $renderer = $PAGE->get_renderer('block_qrcode');
-        $this->content->text .= $renderer->display_image($image);
+        $this->content->text .= $renderer->display_image($file);
 
         // Students can't see the download button.
         if (has_capability('block/qrcode:seebutton', $this->context)) {
             $this->content->text .= '<br>';
-            $this->content->text .= $renderer->display_download_link(base64_encode($image), $COURSE->id);
+            $this->content->text .= $renderer->display_download_link($file, $COURSE->id);
         }
         return $this->content;
     }
