@@ -15,30 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains the script for downloading a QR code.
+ * This file contains the script for downloading/displaying a QR code.
  *
  * @package block_qrcode
  * @copyright 2017 T Gunkel
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php'); // To include $CFG.
+global $CFG;
+require_once($CFG->dirroot.'/blocks/qrcode/classes/output_image.php');
+
+
+print("until hier");
 require_login();
-$file = required_param('file', PARAM_TEXT);
+$url = required_param('url', PARAM_TEXT);
 $courseid = required_param('courseid', PARAM_INT);
+$download = required_param('download', PARAM_BOOL);
+$file = $CFG->localcachedir . '/block_qrcode/' . get_string('filename', 'block_qrcode') . '-' . $courseid . '.png';
 
-// Output file headers to initialise the download of the file.
-if (is_https()) { // HTTPS sites - watch out for IE! KB812935 and KB316431.
-    header('Cache-Control: max-age=10');
-    header('Pragma: ');
-} else { // Normal http - prevent caching at all cost.
-    header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
-    header('Pragma: no-cache');
-}
-header('Expires: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT');
-header('Content-Type: image/png');
-header('Content-Disposition: attachment; filename=' . get_string('filename', 'block_qrcode') . '-' . $courseid . '.png');
+print("oder hier");
 
-// Outputs (& downloads) the image file.
-readfile($file);
-exit();
+$outputimg = new output_image($url, $courseid, $file);
+$outputimg->output_image($download);

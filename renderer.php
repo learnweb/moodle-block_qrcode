@@ -38,8 +38,13 @@ class block_qrcode_renderer extends plugin_renderer_base {
      * @param $image QR code
      * @return string html-string
      */
-    public function display_image($file) {
-        return html_writer::img($file, get_string('img_tag_alt', 'block_qrcode'));
+    public function display_image($url, $courseid) {
+        global $CFG;
+        $link = new moodle_url('/blocks/qrcode/download.php',
+            array('url' => $url,
+                'courseid' => $courseid,
+                'download' => false));
+        return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'));
     }
 
     /**
@@ -48,9 +53,11 @@ class block_qrcode_renderer extends plugin_renderer_base {
      * @param $id course id
      * @return string button
      */
-    public function display_download_link($file, $id) {
+    public function display_download_link($url, $courseid) {
         $button = new single_button(new moodle_url('/blocks/qrcode/download.php',
-            array('file' => $file, 'courseid' => $id)),
+            array('url' => $url,
+                'courseid' => $courseid,
+                'download' => true)),
             get_string('button', 'block_qrcode'));
         return $this->render($button);
     }

@@ -24,9 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once('phpqrcode/qrlib.php');
-require_once('phpqrcode/qrconfig.php');
-
 /**
  * Class block_qrcode
  *
@@ -42,7 +39,7 @@ class block_qrcode extends block_base {
      */
     public function init() {
         $this->title = get_string('pluginname', 'block_qrcode');
-   }
+    }
 
     /**
      * Returns the content object.
@@ -56,36 +53,20 @@ class block_qrcode extends block_base {
         }
 
         // Record the current course and page.
-        global $CFG, $COURSE, $PAGE;
-
-        $url = course_get_url($COURSE);
+        global $PAGE, $COURSE;
 
         $this->content = new stdClass;
         $this->content->text = '';
 
-        $file = $CFG->localcachedir.'/block_qrcode/course-'.$COURSE->id.'.png';
-
-        // Checks if QR code already exists.
-        if(!file_exists($file)) {
-            // Checks if directory already exists.
-            if(!file_exists(dirname($file))) {
-                // Creates new directory.
-                mkdir(dirname($file), $CFG->directorypermissions, true);
-            }
-
-            // Creates the QR code.
-            QRcode::png($url->out(), $file);
-        }
-
         // Displays the block.
         /** @var block_qrcode_renderer $renderer */
         $renderer = $PAGE->get_renderer('block_qrcode');
-        $this->content->text .= $renderer->display_image($file);
+        $this->content->text .= $renderer->display_image(course_get_url($COURSE)->out(), $COURSE->id);
 
         // Students can't see the download button.
         if (has_capability('block/qrcode:seebutton', $this->context)) {
             $this->content->text .= '<br>';
-            $this->content->text .= $renderer->display_download_link($file, $COURSE->id);
+            $this->content->text .= $renderer->display_download_link(course_get_url($COURSE)->out(), $COURSE->id);
         }
         return $this->content;
     }
@@ -97,18 +78,5 @@ class block_qrcode extends block_base {
      */
     public function applicable_formats() {
         return array('course-view' => true, 'mod' => false, 'my' => false);
-    }
-
-    /**
-     * If a course is deleted, the QR code is also deleted.
-     * @param \core\event\course_deleted $event
-     */
-    public static function observe_course_deleted(\core\event\course_deleted $event) {
-        $cache = cache::make('block_qrcode', 'qrcodes');
-
-        // QR code exists.
-        if ($cache->get($event->courseid)) {
-            $cache->delete($event->courseid);
-        }
     }
 }
