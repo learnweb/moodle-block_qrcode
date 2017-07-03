@@ -22,19 +22,15 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__) . '/../../../config.php'); // To include $CFG.
+require_once(dirname(__FILE__) . '/../../config.php'); // To include $CFG.
 global $CFG;
 require_once($CFG->dirroot.'/blocks/qrcode/classes/output_image.php');
 
-
-print("until hier");
 require_login();
 $url = required_param('url', PARAM_TEXT);
 $courseid = required_param('courseid', PARAM_INT);
 $download = required_param('download', PARAM_BOOL);
 $file = $CFG->localcachedir . '/block_qrcode/' . get_string('filename', 'block_qrcode') . '-' . $courseid . '.png';
-
-print("oder hier");
 
 $outputimg = new output_image($url, $courseid, $file);
 $outputimg->output_image($download);

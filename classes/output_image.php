@@ -22,13 +22,14 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_qrcode;
+// namespace block_qrcode;
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once(dirname(__FILE__) . '/../../../config.php'); // To include $CFG.
 global $CFG;
 require_once($CFG->dirroot.'/blocks/qrcode/phpqrcode/phpqrcode.php');
+require_login();
 
 /**
  * Class output_image
@@ -40,9 +41,9 @@ require_once($CFG->dirroot.'/blocks/qrcode/phpqrcode/phpqrcode.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class output_image {
-    protected $url; // QR code points to this url
+    protected $url; // QR code points to this url.
     protected $courseid;
-    protected $file; // QR code is saved in this file
+    protected $file; // QR code is saved in this file.
 
     /**
      * output_image constructor.
@@ -79,21 +80,21 @@ class output_image {
      * @param $download true, if the QR code should be downloaded
      */
     protected function send_headers($download) {
-        // Caches file for 1 month
+        // Caches file for 1 month.
         header('Cache-Control: public, max-age:2628000');
         header('Content-Type: image/png');
 
         // Checks if the image is downloaded or displayed.
-        if($download) {
+        if ($download) {
             // Output file header to initialise the download of the file.
             header('Content-Disposition: attachment; filename='.get_string('filename', 'block_qrcode').'-'.$this->courseid.'.png');
         }
     }
 
     /**
-    * Outputs (downloads or displays) the QR code.
-    * @param $download true, if the QR code should be downloaded
-    */
+     * Outputs (downloads or displays) the QR code.
+     * @param $download true, if the QR code should be downloaded
+     */
     public function output_image($download) {
         $this->create_image();
         $this->send_headers($download);
