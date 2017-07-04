@@ -43,7 +43,7 @@ class block_qrcode_renderer extends plugin_renderer_base {
             array('url' => $url,
                 'courseid' => $courseid,
                 'download' => false));
-        return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'));
+        return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'), array('id'  => 'img_qrcode'));
     }
 
     /**
