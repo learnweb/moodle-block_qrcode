@@ -39,7 +39,6 @@ class block_qrcode_renderer extends plugin_renderer_base {
      * @return string html-string
      */
     public function display_image($url, $courseid) {
-        global $CFG;
         $link = new moodle_url('/blocks/qrcode/download.php',
             array('url' => $url,
                 'courseid' => $courseid,

@@ -36,13 +36,12 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
      */
     public function test_create_image() {
         global $CFG;
-        require_once($CFG->dirroot.'/blocks/qrcode/classes/output_image.php');
         $this->resetAfterTest(true);
 
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id.'.png';
-        $outputimg = new output_image(course_get_url($course->id)->out(), $course->id, $file);
+        $outputimg = new block_qrcode\output_image(course_get_url($course->id)->out(), $course->id, $file);
         $outputimg->create_image();
         $this->assertFileExists($file);
     }

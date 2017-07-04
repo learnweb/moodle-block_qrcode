@@ -22,15 +22,12 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// namespace block_qrcode;
+namespace block_qrcode;
+use \QRcode;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(dirname(__FILE__) . '/../../../config.php'); // To include $CFG.
-global $CFG;
 require_once($CFG->dirroot.'/blocks/qrcode/phpqrcode/phpqrcode.php');
-require_login();
-
 /**
  * Class output_image
  *
