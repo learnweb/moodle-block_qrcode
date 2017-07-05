@@ -39,7 +39,7 @@ require_once($CFG->dirroot.'/blocks/qrcode/phpqrcode/phpqrcode.php');
  */
 class output_image {
     protected $url; // QR code points to this url.
-    protected $courseid;
+    protected $fullname;
     protected $file; // QR code is saved in this file.
 
     /**
@@ -48,9 +48,9 @@ class output_image {
      * @param $courseid
      * @param $file path to QR code
      */
-    public function __construct($url, $courseid, $file) {
+    public function __construct($url, $fullname, $file) {
         $this->url = $url;
-        $this->courseid = $courseid;
+        $this->fullname = $fullname;
         $this->file = $file;
     }
 
@@ -84,7 +84,8 @@ class output_image {
         // Checks if the image is downloaded or displayed.
         if ($download) {
             // Output file header to initialise the download of the file.
-            header('Content-Disposition: attachment; filename='.get_string('filename', 'block_qrcode').'-'.$this->courseid.'.png');
+            // filename: QR Code - fullname
+            header('Content-Disposition: attachment; filename="QR Code-'.$this->fullname.'.png"');
         }
     }
 

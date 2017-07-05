@@ -25,7 +25,7 @@
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
 require_once(__DIR__.'/../../../../lib/behat/behat_base.php');
-
+use Behat\Mink\Exception\ExpectationException as ExpectationException;
 /**
  * Block QR code functionalities for behat-testing.
  *
@@ -43,6 +43,10 @@ class behat_block_qrcode extends behat_base {
      */
     public function i_should_see_the_qrcode() {
         $img = $this->find('css', '.img_qrcode');
+        if($img->isVisible())
+            return;
+        else
+            throw new ExpectationException('QR code is not displayed.', $this->getSession());
     //    print($img->isVisible);
     }
 

@@ -22,8 +22,6 @@
       Scenario: Teacher sees the QR code and clicks on the Download button
         Given I log in as "teacher1"
         And I am on "Course 1" course homepage
-      #  Then I should see image..
         Then I should see the qrcode
         And I should see "Download" in the "QR code" "block"
-     #   When I clicik on the "Download" block qrcode button
-     #   Then I should ...
+        When I click on "Download" "button"
