@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <libraries>
     <library>
-        <location>phpqrcode/phpqrcode.php</location>
-        <name>Phpqrcode</name>
-        <version>1.1.4</version>
-        <license>GNU GPL</license>
-        <licenseversion>3.0</licenseversion>
+        <location>thirdparty/vendor</location>
+        <name>QR Code Generator</name>
+        <version>v2.2.3</version>
+        <license>MIT</license>
+        <licenseversion>1</licenseversion>
     </library>
 
 </libraries>

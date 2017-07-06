@@ -23,11 +23,14 @@
  */
 
 namespace block_qrcode;
-use \QRcode;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\LabelAlignment;
+use Endroid\QrCode\QrCode;
+use Symfony\Component\HttpFoundation\Response;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/blocks/qrcode/phpqrcode/phpqrcode.php');
+require_once($CFG->dirroot.'/blocks/qrcode/thirdparty/vendor/autoload.php');
 /**
  * Class output_image
  *
@@ -57,6 +60,39 @@ class output_image {
     /**
      * Creates the QR code if it doesn't exists.
      */
+    public function create_image_png() {
+        global $CFG;
+        // Checks if QR code already exists.
+        if (!file_exists($this->file)) {
+            // Checks if directory already exists.
+            if (!file_exists(dirname($this->file))) {
+                // Creates new directory.
+                mkdir(dirname($this->file), $CFG->directorypermissions, true);
+            }
+
+            // Creates the QR code.
+            $qrcode = new QrCode($this->url);
+            $qrcode->setSize(200);
+
+            // Set advanced options.
+            $qrcode
+                ->setWriterByName('png')
+                ->setMargin(10)
+                ->setEncoding('UTF-8')
+                ->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH)
+                ->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0])
+                ->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255])
+                ->setLogoPath($CFG->dirroot.'/blocks/qrcode/moodle-logo.png')
+                ->setLogoWidth(100)
+            ;
+
+            $qrcode->writeFile($this->file);
+        }
+    }
+
+    /**
+     * Creates the QR code if it doesn't exists.
+     */
     public function create_image() {
         global $CFG;
         // Checks if QR code already exists.
@@ -68,7 +104,39 @@ class output_image {
             }
 
             // Creates the QR code.
-            QRcode::png($this->url, $this->file);
+            $qrcode = new QrCode($this->url);
+            $qrcode->setSize(200);
+
+            // Set advanced options.
+            $qrcode
+                ->setWriterByName('svg')
+                ->setMargin(10)
+                ->setEncoding('UTF-8')
+                ->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH)
+                ->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0])
+                ->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255])
+                ->setLogoPath($CFG->dirroot.'/blocks/qrcode/learnweb_logo.svg')
+                ->setLogoWidth(100)
+            ;
+
+            $qrcode->writeFile($this->file);
+        }
+    }
+
+    /**
+     * Outputs file headers to initialise the download of the file / display the file.
+     * @param $download true, if the QR code should be downloaded
+     */
+    protected function send_headers_png($download) {
+        // Caches file for 1 month.
+        header('Cache-Control: public, max-age:2628000');
+        header('Content-Type: image/png');
+
+        // Checks if the image is downloaded or displayed.
+        if ($download) {
+            // Output file header to initialise the download of the file.
+            // filename: QR Code - fullname
+            header('Content-Disposition: attachment; filename="QR Code-'.$this->fullname.'.png"');
         }
     }
 
@@ -79,13 +147,13 @@ class output_image {
     protected function send_headers($download) {
         // Caches file for 1 month.
         header('Cache-Control: public, max-age:2628000');
-        header('Content-Type: image/png');
+        header('Content-Type: image/svg+xml');
 
         // Checks if the image is downloaded or displayed.
         if ($download) {
             // Output file header to initialise the download of the file.
             // filename: QR Code - fullname
-            header('Content-Disposition: attachment; filename="QR Code-'.$this->fullname.'.png"');
+            header('Content-Disposition: attachment; filename="QR Code-'.$this->fullname.'.svg"');
         }
     }
 
