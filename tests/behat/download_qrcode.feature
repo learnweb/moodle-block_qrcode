@@ -4,7 +4,7 @@
     As a teacher
 
     Background:
-      Given the following "coureses" exist:
+      Given the following "courses" exist:
         | fullname | shortname | category |
         | Course 1 | Crs1 | 0 |
       And the following "users" exist:
@@ -25,3 +25,5 @@
         Then I should see the qrcode
         And I should see "Download" in the "QR code" "block"
         When I click on "Download" "button"
+        And I download the image
+        Then the file should exist

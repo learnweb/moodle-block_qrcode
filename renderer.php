@@ -48,7 +48,7 @@ class block_qrcode_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Generates link to download the QR code
+     * Generates link to download the QR code.
      * @param $image QR code
      * @param $id course id
      * @return string button
@@ -61,5 +61,14 @@ class block_qrcode_renderer extends plugin_renderer_base {
                 'download' => true)),
             get_string('button', 'block_qrcode'));
         return $this->render($button);
+    }
+
+    /**
+     * Returns drop down menu with different download formats.
+     * @return string html-string
+     */
+    public function display_format_choices() {
+        // + Label!
+        return html_writer::select(array(1=>'png', 2=>'svg'), get_string('formats', 'block_qrcode'), 'png', false);
     }
 }

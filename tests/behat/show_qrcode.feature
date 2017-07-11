@@ -4,7 +4,7 @@ Feature: Download QR code as .png file
   As a teacher
 
   Background:
-    Given the following "coureses" exist:
+    Given the following "courses" exist:
       | fullname | shortname | category |
       | Course 1 | Crs1 | 0 |
     And the following "users" exist:
@@ -23,7 +23,7 @@ Feature: Download QR code as .png file
 
   @javascript
   Scenario: Only enrolled students are able to see the QR code and they don't see the download button
-    Given I log in as "student 1"
+    Given I log in as "student1"
     And I am on "Course 1" course homepage
     Then I should see the qrcode
     And I should not see "Download" in the "QR code" "block"

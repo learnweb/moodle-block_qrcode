@@ -42,12 +42,32 @@ class behat_block_qrcode extends behat_base {
      * @When /^I should see the qrcode$/
      */
     public function i_should_see_the_qrcode() {
-        $img = $this->find('css', '.img_qrcode');
+        $img = $this->find('css', '#img_qrcode');
         if($img->isVisible())
             return;
         else
             throw new ExpectationException('QR code is not displayed.', $this->getSession());
-    //    print($img->isVisible);
+    }
+
+    /**
+     * Initializes download.
+     *
+     * @When /^I download the image$/
+     */
+    public function i_download_the_image() {
+        $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
+        $checkbox = $this->find_field('Save File');
+        $checkbox->click();
+        $this->pressButton('OK');
+    }
+
+    /**
+     * Checks if the download file (local file) exists.
+     *
+     * @When /^the file should exist$/
+     */
+    public function the_file_should_exist() {
+
     }
 
 }
