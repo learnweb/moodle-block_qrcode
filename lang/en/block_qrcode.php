@@ -30,3 +30,4 @@ $string['cachedef_qrcodes'] = 'Cache for the QR codes';
 $string['img_tag_alt'] = 'QR code';
 $string['button'] = 'Download';
 $string['formats'] = 'Format';
+$string['sizes'] = 'Size';

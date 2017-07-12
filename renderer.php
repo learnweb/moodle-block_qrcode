@@ -43,7 +43,10 @@ class block_qrcode_renderer extends plugin_renderer_base {
             array('url' => $url,
                 'courseid' => $courseid,
                 'fullname' => $fullname,
-                'download' => false));
+                'download' => false,
+                'format' => 1,
+                'size' => 100));
+
         return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'), array('id'  => 'img_qrcode'));
     }
 
@@ -58,17 +61,24 @@ class block_qrcode_renderer extends plugin_renderer_base {
             array('url' => $url,
                 'courseid' => $courseid,
                 'fullname' => $fullname,
-                'download' => true)),
+                'download' => true,
+                'format' => 1,
+                'size' => 100)),
             get_string('button', 'block_qrcode'));
+        $button->add_action(new component_action('click', 'M.M.block_qrcode.getSelectedFormat'));
         return $this->render($button);
     }
 
     /**
-     * Returns drop down menu with different download formats.
+     * Returns drop down list with different download formats and sizes.
      * @return string html-string
      */
-    public function display_format_choices() {
-        // + Label!
-        return html_writer::select(array(1=>'png', 2=>'svg'), get_string('formats', 'block_qrcode'), 'png', false);
+    public function display_download_settings() {
+        $ddl = html_writer::label(get_string('formats', 'block_qrcode'), 'format');
+        $ddl .= html_writer::label(get_string('sizes', 'block_qrcode'), 'size');
+        $ddl .= '<br>';
+        $ddl .= html_writer::select(array(1=>'png', 2=>'svg'), 'ddformat', 'png', false, array('id'=>'format'));
+        $ddl .= html_writer::select(array(100=>'100px', 300=>'300px'), 'ddsize', '100px', false, array('id'=>'size'));
+        return $ddl;
     }
 }

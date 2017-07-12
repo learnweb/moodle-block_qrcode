@@ -29,7 +29,14 @@ $url = required_param('url', PARAM_TEXT);
 $courseid = required_param('courseid', PARAM_INT);
 $fullname = required_param('fullname', PARAM_TEXT);
 $download = required_param('download', PARAM_BOOL);
-$file = $CFG->localcachedir . '/block_qrcode/' . get_string('filename', 'block_qrcode') . '-' . $courseid . '.svg';
+$format = required_param('format', PARAM_TEXT);
+$size = required_param('size', PARAM_INT);
+$file = $CFG->localcachedir . '/block_qrcode/course-' . $courseid; // File path without file ending
 
-$outputimg = new block_qrcode\output_image($url, $fullname, $file);
+if($format==1)
+    $file .= '.png';
+else
+    $file .= '.svg';
+
+$outputimg = new block_qrcode\output_image($url, $fullname, $file, $format, $size);
 $outputimg->output_image($download);

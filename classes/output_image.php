@@ -44,6 +44,8 @@ class output_image {
     protected $url; // QR code points to this url.
     protected $fullname;
     protected $file; // QR code is saved in this file.
+    protected $format;
+    protected $size;
 
     /**
      * output_image constructor.
@@ -51,43 +53,12 @@ class output_image {
      * @param $courseid
      * @param $file path to QR code
      */
-    public function __construct($url, $fullname, $file) {
+    public function __construct($url, $fullname, $file, $format, $size) {
         $this->url = $url;
         $this->fullname = $fullname;
         $this->file = $file;
-    }
-
-    /**
-     * Creates the QR code if it doesn't exists.
-     */
-    public function create_image_png() {
-        global $CFG;
-        // Checks if QR code already exists.
-        if (!file_exists($this->file)) {
-            // Checks if directory already exists.
-            if (!file_exists(dirname($this->file))) {
-                // Creates new directory.
-                mkdir(dirname($this->file), $CFG->directorypermissions, true);
-            }
-
-            // Creates the QR code.
-            $qrcode = new QrCode($this->url);
-            $qrcode->setSize(200);
-
-            // Set advanced options.
-            $qrcode
-                ->setWriterByName('png')
-                ->setMargin(10)
-                ->setEncoding('UTF-8')
-                ->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH)
-                ->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0])
-                ->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255])
-                ->setLogoPath($CFG->dirroot.'/blocks/qrcode/moodle-logo.png')
-                ->setLogoWidth(100)
-            ;
-
-            $qrcode->writeFile($this->file);
-        }
+        $this->format = $format;
+        $this->size = $size;
     }
 
     /**
@@ -105,18 +76,22 @@ class output_image {
 
             // Creates the QR code.
             $qrcode = new QrCode($this->url);
-            $qrcode->setSize(200);
+            $qrcode->setSize($this->size);
+
+            if($this->format == 1)
+                $qrcode->setWriterByName('png');
+            else
+                $qrcode->setWriterByName('svg');
 
             // Set advanced options.
             $qrcode
-                ->setWriterByName('svg')
                 ->setMargin(10)
                 ->setEncoding('UTF-8')
                 ->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH)
                 ->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0])
                 ->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255])
-                ->setLogoPath($CFG->dirroot.'/blocks/qrcode/learnweb_logo.svg')
-                ->setLogoWidth(100)
+                ->setLogoPath($CFG->dirroot.'/blocks/qrcode/moodle-logo.png')
+                ->setLogoWidth($this->size/3)
             ;
 
             $qrcode->writeFile($this->file);
@@ -127,33 +102,24 @@ class output_image {
      * Outputs file headers to initialise the download of the file / display the file.
      * @param $download true, if the QR code should be downloaded
      */
-    protected function send_headers_png($download) {
-        // Caches file for 1 month.
-        header('Cache-Control: public, max-age:2628000');
-        header('Content-Type: image/png');
-
-        // Checks if the image is downloaded or displayed.
-        if ($download) {
-            // Output file header to initialise the download of the file.
-            // filename: QR Code - fullname
-            header('Content-Disposition: attachment; filename="QR Code-'.$this->fullname.'.png"');
-        }
-    }
-
-    /**
-     * Outputs file headers to initialise the download of the file / display the file.
-     * @param $download true, if the QR code should be downloaded
-     */
     protected function send_headers($download) {
         // Caches file for 1 month.
         header('Cache-Control: public, max-age:2628000');
-        header('Content-Type: image/svg+xml');
+
+        if($this->format == 1)
+            header('Content-Type: image/png');
+        else
+            header('Content-Type: image/svg+xml');
+
 
         // Checks if the image is downloaded or displayed.
         if ($download) {
             // Output file header to initialise the download of the file.
             // filename: QR Code - fullname
-            header('Content-Disposition: attachment; filename="QR Code-'.$this->fullname.'.svg"');
+            if($this->format == 1)
+                header('Content-Disposition: attachment; filename="QR Code-'.$this->fullname.'.png"');
+            else
+                header('Content-Disposition: attachment; filename="QR Code-'.$this->fullname.'.svg"');
         }
     }
 
