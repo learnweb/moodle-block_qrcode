@@ -23,6 +23,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
+require_once('block_qrcode_form.php');
 
 /**
  * Class block_qrcode_renderer
@@ -50,6 +51,14 @@ class block_qrcode_renderer extends plugin_renderer_base {
         return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'), array('id'  => 'img_qrcode'));
     }
 
+    public function display_download_section() {
+        $mform = new qrcode_form();
+
+
+
+        return $mform->render();
+    }
+
     /**
      * Generates link to download the QR code.
      * @param $image QR code
@@ -57,6 +66,9 @@ class block_qrcode_renderer extends plugin_renderer_base {
      * @return string button
      */
     public function display_download_link($url, $courseid, $fullname) {
+        global $PAGE;
+    //    $PAGE->requires->js_call_amd('block_qrcode/bock_qrcode_download', 'download', array($url, $courseid, $fullname, true));
+
         $button = new single_button(new moodle_url('/blocks/qrcode/download.php',
             array('url' => $url,
                 'courseid' => $courseid,
