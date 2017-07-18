@@ -62,7 +62,7 @@ class output_image {
     }
 
     /**
-     * Creates the QR code if it doesn't exists.
+     * Creates the QR code if it doesn't exist.
      */
     public function create_image() {
         global $CFG;
@@ -115,7 +115,7 @@ class output_image {
         // Checks if the image is downloaded or displayed.
         if ($download) {
             // Output file header to initialise the download of the file.
-            // filename: QR Code - fullname
+            // filename: QR Code - fullname -> Größe noch benennen??
             if($this->format == 1)
                 header('Content-Disposition: attachment; filename="QR Code-'.$this->fullname.'.png"');
             else

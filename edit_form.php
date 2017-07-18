@@ -15,20 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains language strings used in the qrcode block
+ * Instance configuration for the qrcode block.
  *
  * @package block_qrcode
  * @copyright 2017 T Gunkel
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class block_qrcode_edit_form extends block_edit_form {
+    /**
+     * The definition of the fields to use.
+     *
+     * @param MoodleQuickForm $mform
+     */
+    protected function specific_definition($mform) {
+        //Accepted types hängen davon ab...
+      $mform->addElement('filemanager', 'logo', get_string('file', 'block_qrcode'), null,
+          array('subdirs' => 0,
+              'maxbytes' => 500,
+              'maxfiles' => 1,
+              'accepted_types' => array('png') //change
+          ), 'return_types' => FILE_INTERNAL);
 
-$string['pluginname'] = 'QR code';
-$string['qrcode:addinstance'] = 'Add a new QR code block';
-$string['qrcode:seebutton'] = 'Show Download button';
-$string['filename'] = 'course';
-$string['cachedef_qrcodes'] = 'Cache for the QR codes';
-$string['img_tag_alt'] = 'QR code';
-$string['button'] = 'Download';
-$string['formats'] = 'Format';
-$string['sizes'] = 'Size';
-$string['file'] = 'Choose logo';
+    }
+}

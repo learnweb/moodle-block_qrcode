@@ -51,46 +51,23 @@ class block_qrcode_renderer extends plugin_renderer_base {
         return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'), array('id'  => 'img_qrcode'));
     }
 
-    public function display_download_section() {
-        $mform = new qrcode_form();
-
-
+    /**
+     * Displays download section (menus for choosing format & size, download button).
+     * @param $url target url of the QR code
+     * @param $courseid CourseID
+     * @param $fullname full course name
+     * @return string html-string
+     */
+    public function display_download_section($url, $courseid, $fullname) {
+        $download = new moodle_url('/blocks/qrcode/download.php',
+            array('url' => $url,
+                'courseid' => $courseid,
+                'fullname' => $fullname,
+                'download' => true
+            ));
+        $mform = new qrcode_form($download, array('format' => 'png', 'size' => '100px'));
 
         return $mform->render();
     }
 
-    /**
-     * Generates link to download the QR code.
-     * @param $image QR code
-     * @param $id course id
-     * @return string button
-     */
-    public function display_download_link($url, $courseid, $fullname) {
-        global $PAGE;
-    //    $PAGE->requires->js_call_amd('block_qrcode/bock_qrcode_download', 'download', array($url, $courseid, $fullname, true));
-
-        $button = new single_button(new moodle_url('/blocks/qrcode/download.php',
-            array('url' => $url,
-                'courseid' => $courseid,
-                'fullname' => $fullname,
-                'download' => true,
-                'format' => 1,
-                'size' => 100)),
-            get_string('button', 'block_qrcode'));
-        $button->add_action(new component_action('click', 'M.M.block_qrcode.getSelectedFormat'));
-        return $this->render($button);
-    }
-
-    /**
-     * Returns drop down list with different download formats and sizes.
-     * @return string html-string
-     */
-    public function display_download_settings() {
-        $ddl = html_writer::label(get_string('formats', 'block_qrcode'), 'format');
-        $ddl .= html_writer::label(get_string('sizes', 'block_qrcode'), 'size');
-        $ddl .= '<br>';
-        $ddl .= html_writer::select(array(1=>'png', 2=>'svg'), 'ddformat', 'png', false, array('id'=>'format'));
-        $ddl .= html_writer::select(array(100=>'100px', 300=>'300px'), 'ddsize', '100px', false, array('id'=>'size'));
-        return $ddl;
-    }
 }

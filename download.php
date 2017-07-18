@@ -31,7 +31,7 @@ $fullname = required_param('fullname', PARAM_TEXT);
 $download = required_param('download', PARAM_BOOL);
 $format = required_param('format', PARAM_TEXT);
 $size = required_param('size', PARAM_INT);
-$file = $CFG->localcachedir . '/block_qrcode/course-' . $courseid; // File path without file ending
+$file = $CFG->localcachedir . '/block_qrcode/course-' . $courseid. '-'.$size; // File path without file ending
 
 if($format==1)
     $file .= '.png';

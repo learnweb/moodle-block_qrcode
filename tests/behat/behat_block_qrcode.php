@@ -67,7 +67,11 @@ class behat_block_qrcode extends behat_base {
      * @When /^the file should exist$/
      */
     public function the_file_should_exist() {
+        $this->getSession()->wait(10);
 
+        if(!file_exists('QR Code-Course 1.png')) {
+            throw new ExpectationException('File does not exist.', $this->getSession());
+        }
     }
 
 }
