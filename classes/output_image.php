@@ -23,6 +23,7 @@
  */
 
 namespace block_qrcode;
+use Box\Spout\Reader\Wrapper\SimpleXMLElement;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\LabelAlignment;
 use Endroid\QrCode\QrCode;
@@ -132,5 +133,9 @@ class output_image {
         $this->send_headers($download);
         readfile($this->file);
         exit();
+    }
+
+    private function modify_svg($svgqrcode) {
+        $svg = new SimpleXMLElement($svgqrcode);
     }
 }

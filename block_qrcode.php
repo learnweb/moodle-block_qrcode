@@ -66,7 +66,10 @@ class block_qrcode extends block_base {
         // Students can't see the download button.
         if (has_capability('block/qrcode:seebutton', $this->context)) {
             $this->content->text .= '<br><br>';
-            $this->content->text .= $renderer->display_download_section(course_get_url($COURSE)->out(), $COURSE->id, $COURSE->fullname);
+            $this->content->text .= $renderer->display_download_section(
+                course_get_url($COURSE)->out(),
+                $COURSE->id,
+                $COURSE->fullname);
         }
         return $this->content;
     }

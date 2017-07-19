@@ -26,7 +26,7 @@ Feature: Download QR code as .png file
     Given I log in as "student1"
     And I am on "Course 1" course homepage
     Then I should see the qrcode
-    And I should not see the download button
+    And "Download" "button" should not exist
     And I log out
     And I log in as "student2"
     And I am on "Course 1" course homepage

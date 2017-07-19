@@ -23,5 +23,4 @@
         Given I log in as "teacher1"
         And I am on "Course 1" course homepage
         Then I should see the qrcode
-        When I download the image
-        Then the file should exist
+        And "Download" "button" should exist

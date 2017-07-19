@@ -40,8 +40,10 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
 
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-        $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id.'.png';
-        $outputimg = new block_qrcode\output_image(course_get_url($course->id)->out(), $course->id, $file);
+
+        $size = 100;
+        $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'.png';
+        $outputimg = new block_qrcode\output_image(course_get_url($course->id)->out(), $course->fullname, $file, 1, $size);
         $outputimg->create_image();
         $this->assertFileExists($file);
     }

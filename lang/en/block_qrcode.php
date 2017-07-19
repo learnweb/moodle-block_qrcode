@@ -31,4 +31,5 @@ $string['img_tag_alt'] = 'QR code';
 $string['button'] = 'Download';
 $string['formats'] = 'Format';
 $string['sizes'] = 'Size';
-$string['file'] = 'Choose logo';
+$string['file_png'] = 'Choose logo (.png)';
+$string['file_svg'] = 'Choose logo (.svg)';

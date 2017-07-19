@@ -24,8 +24,9 @@
 
 // NOTE: no MOODLE_INTERNAL test here, this file may be required by behat before including /config.php.
 
-require_once(__DIR__.'/../../../../lib/behat/behat_base.php');
+require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
+
 /**
  * Block QR code functionalities for behat-testing.
  *
@@ -43,48 +44,10 @@ class behat_block_qrcode extends behat_base {
      */
     public function i_should_see_the_qrcode() {
         $img = $this->find('css', '#img_qrcode');
-        if($img->isVisible())
+        if ($img->isVisible()) {
             return;
-        else
+        } else {
             throw new ExpectationException('QR code is not displayed.', $this->getSession());
-    }
-
-    /**
-     * Checks if the download button is displayed.
-     *
-     * @Then /^I should not see the download button$/
-     */
-    public function i_should_not_see_the_download_button() {
-        $button = $this->find_button('Download');
-        if($button != null)
-            throw new ExpectationException('Download button is displayed.', $this->getSession());
-    }
-
-    /**
-     * Initializes download.
-     *
-     * @When /^I download the image$/
-     */
-    public function i_download_the_image() {
-        $button = $this->find_button('Download');
-        if($button == null)
-            throw new ExpectationException('Download button is not displayed.', $this->getSession());
-
-        $button->click();
-
-    //     $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
-      //  $this->getSession()->getDriver()->executeScript('window.confirm = function(){return true;}');
-        $this->getSession()->wait(1000);
-    }
-
-    /**
-     * Checks if the download file (local file) exists.
-     *
-     * @Then /^the file should exist$/
-     */
-    public function the_file_should_exist() {
-        if(!file_exists('/home/tamara/Downloads/QR Code-Course 1.png')) {
-            throw new ExpectationException('File does not exist.', $this->getSession());
         }
     }
 
