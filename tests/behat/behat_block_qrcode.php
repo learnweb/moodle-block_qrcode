@@ -72,8 +72,9 @@ class behat_block_qrcode extends behat_base {
 
         $button->click();
 
-        $okbutton = $this->find_button('OK');
-        $okbutton->click();
+    //     $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
+      //  $this->getSession()->getDriver()->executeScript('window.confirm = function(){return true;}');
+        $this->getSession()->wait(1000);
     }
 
     /**
@@ -82,9 +83,7 @@ class behat_block_qrcode extends behat_base {
      * @Then /^the file should exist$/
      */
     public function the_file_should_exist() {
-        $this->getSession()->wait(100);
-
-        if(!file_exists('QR Code-Course 1.png')) {
+        if(!file_exists('/home/tamara/Downloads/QR Code-Course 1.png')) {
             throw new ExpectationException('File does not exist.', $this->getSession());
         }
     }
