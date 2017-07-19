@@ -23,7 +23,5 @@
         Given I log in as "teacher1"
         And I am on "Course 1" course homepage
         Then I should see the qrcode
-  #      And I should see "Download" in the "QR code" "block"
-        When I click on "Download" "button"
-  #      And I download the image
+        When I download the image
         Then the file should exist

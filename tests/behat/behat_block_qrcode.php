@@ -39,7 +39,7 @@ class behat_block_qrcode extends behat_base {
     /**
      * Checks if QR code is displayed.
      *
-     * @When /^I should see the qrcode$/
+     * @Then /^I should see the qrcode$/
      */
     public function i_should_see_the_qrcode() {
         $img = $this->find('css', '#img_qrcode');
@@ -50,21 +50,36 @@ class behat_block_qrcode extends behat_base {
     }
 
     /**
+     * Checks if the download button is displayed.
+     *
+     * @Then /^I should not see the download button$/
+     */
+    public function i_should_not_see_the_download_button() {
+        $button = $this->find_button('Download');
+        if($button != null)
+            throw new ExpectationException('Download button is displayed.', $this->getSession());
+    }
+
+    /**
      * Initializes download.
      *
      * @When /^I download the image$/
      */
     public function i_download_the_image() {
-        $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
-        $checkbox = $this->find_field('Save File');
-        $checkbox->click();
-        $this->pressButton('OK');
+        $button = $this->find_button('Download');
+        if($button == null)
+            throw new ExpectationException('Download button is not displayed.', $this->getSession());
+
+        $button->click();
+
+        $okbutton = $this->find_button('OK');
+        $okbutton->click();
     }
 
     /**
      * Checks if the download file (local file) exists.
      *
-     * @When /^the file should exist$/
+     * @Then /^the file should exist$/
      */
     public function the_file_should_exist() {
         $this->getSession()->wait(100);
