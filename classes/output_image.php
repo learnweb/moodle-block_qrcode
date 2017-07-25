@@ -28,7 +28,7 @@ use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\LabelAlignment;
 use Endroid\QrCode\QrCode;
 use Symfony\Component\HttpFoundation\Response;
-use SimpleXMLElement;
+use DOMDocument;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -50,6 +50,7 @@ class output_image {
     protected $format;
     protected $size;
     protected $logopath;
+    protected $contextid;
 
     /**
      * output_image constructor.
@@ -57,20 +58,27 @@ class output_image {
      * @param $courseid
      * @param $file path to QR code
      */
-    public function __construct($url, $fullname, $file, $format, $size) {
+    public function __construct($url, $fullname, $file, $format, $size, $contextid) {
         global $CFG;
         $this->url = $url;
         $this->fullname = $fullname;
         $this->file = $file;
         $this->format = $format;
         $this->size = $size;
-        $this->logopath = $CFG->dirroot . '/blocks/qrcode/moodle-logo.png';
+        $this->contextid = $contextid;
+
+        // Set logo path.
+        if(get_config('block_qrcode', 'logo') == 1) {
+            $this->logopath = $this->getLogoPath();
+        }
     }
 
     /**
      * Creates the QR code if it doesn't exist.
      */
     public function create_image() {
+        // new name for qrcodes with logos
+
         global $CFG;
         // Checks if QR code already exists.
         if (!file_exists($this->file)) {
@@ -90,78 +98,126 @@ class output_image {
                 ->setEncoding('UTF-8')
                 ->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH)
                 ->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0])
-                ->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255])
-                ->setLogoPath($this->logopath)
-                ->setLogoWidth($this->size / 2.75);
+                ->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255]);
 
             if ($this->format == 1) {
+                // How to handle cache?? admin verändert einstellung, aber bild wird nicht aktualisiert
+                if(get_config('block_qrcode', 'logo') == 1) {
+                    $qrcode
+                        ->setLogoPath($this->logopath)
+                        ->setLogoWidth($this->size/2.75);
+                }
+
                 $qrcode->setWriterByName('png');
                 $qrcode->writeFile($this->file);
             } else {
                 $qrcode->setWriterByName('svg');
-                $qrcodestring = $qrcode->writeString();
-                $newqrcode = $this->modify_svg($qrcodestring);
-                file_put_contents($this->file, $newqrcode);
+
+                if(get_config('block_qrcode', 'logo') == 1) {
+                    $qrcodestring = $qrcode->writeString();
+                    $newqrcode = $this->modify_svg($qrcodestring);
+                    file_put_contents($this->file, $newqrcode);
+                }
+                else {
+                    $qrcode->writeFile($this->file);
+                }
             }
         }
     }
 
-/**
- * Outputs file headers to initialise the download of the file / display the file.
- * @param $download true, if the QR code should be downloaded
- */
-protected function send_headers($download) {
-    // Caches file for 1 month.
-    header('Cache-Control: public, max-age:2628000');
+    /**
+     * Outputs file headers to initialise the download of the file / display the file.
+     * @param $download true, if the QR code should be downloaded
+     */
+    protected function send_headers($download) {
+        // Caches file for 1 month.
+        header('Cache-Control: public, max-age:2628000');
 
-    if ($this->format == 1)
-        header('Content-Type: image/png');
-    else
-        header('Content-Type: image/svg+xml');
-
-
-    // Checks if the image is downloaded or displayed.
-    if ($download) {
-        // Output file header to initialise the download of the file.
-        // filename: QR Code - fullname -> Größe noch benennen??
         if ($this->format == 1)
-            header('Content-Disposition: attachment; filename="QR Code-' . $this->fullname . '.png"');
+            header('Content-Type: image/png');
         else
-            header('Content-Disposition: attachment; filename="QR Code-' . $this->fullname . '.svg"');
+            header('Content-Type: image/svg+xml');
+
+
+        // Checks if the image is downloaded or displayed.
+        if ($download) {
+            // Output file header to initialise the download of the file.
+            // filename: QR Code - fullname -> Größe noch benennen??
+            if ($this->format == 1)
+                header('Content-Disposition: attachment; filename="QR Code-' . $this->fullname . '.png"');
+            else
+                header('Content-Disposition: attachment; filename="QR Code-' . $this->fullname . '.svg"');
+        }
     }
-}
 
-/**
- * Outputs (downloads or displays) the QR code.
- * @param $download true, if the QR code should be downloaded
- */
-public function output_image($download) {
-    $this->create_image();
-    $this->send_headers($download);
-    readfile($this->file);
-    exit();
-}
+    /**
+     * Outputs (downloads or displays) the QR code.
+     * @param $download true, if the QR code should be downloaded
+     */
+    public function output_image($download) {
+        $this->create_image();
+        $this->send_headers($download);
+        readfile($this->file);
+        exit();
+    }
 
-private function modify_svg($svgqrcode) {
-    // does not work for svg
-    $logo = imagecreatefromstring(file_get_contents($this->logopath));
-        $logoWidth = imagesx($logo);
-        $logoHeight = imagesy($logo);
+    private function modify_svg($svgqrcode) {
+        $type = pathinfo($this->logopath, PATHINFO_EXTENSION);
         $logoTargetWidth = $this->size / 2.75;
 
-        $scale = $logoTargetWidth / $logoWidth;
-        $logoTargetHeight = intval($scale * $logoHeight);
-        $logoX = $this->size / 2 - $logoTargetWidth;
-        $logoY = $this->size / 2 - $logoTargetHeight;
 
-        $svg = new SimpleXMLElement($svgqrcode);
-        $image = $svg->svg->addChild('image');
-        $image->addAttribut('x', $logoX);
-        $image->addAttribut('y', $logoY);
-        $image->addAttribut('width', $logoTargetWidth);
-        $image->addAttribut('height', $logoTargetHeight);
-        $image->addAttribut('xlink:href', $this->logopath);
+        if($type == 'png') {
+            $logo = imagecreatefromstring(file_get_contents($this->logopath));
+            $logoWidth = imagesx($logo);
+            $logoHeight = imagesy($logo);
 
-        return $svg->asXML();
+            $scale = $logoTargetWidth / $logoWidth;
+            $logoTargetHeight = intval($scale * $logoHeight);
+        }
+        else {
+            //get width and height of svg!!
+            $logoTargetHeight = $this->size / 5;
+
+        }
+        $logoX = $this->size / 1.75;
+        $logoY = $this->size / 1.75;
+
+        $xmlDoc = new DOMDocument();
+        $xmlDoc->loadXML($svgqrcode);
+        $logoelem = $xmlDoc->createElement('image');
+        $logoelem->setAttribute('x', $logoX);
+        $logoelem->setAttribute('y', $logoY);
+        $logoelem->setAttribute('width', $logoTargetWidth);
+        $logoelem->setAttribute('height', $logoTargetHeight);
+
+        $type = pathinfo($this->logopath, PATHINFO_EXTENSION);
+        if($type == 'png') {
+            $logoelem->setAttribute('xlink:href', 'data:image/png;base64,'. base64_encode(file_get_contents($this->logopath)));
+        }
+        else {
+            $logoelem->setAttribute('xlink:href', 'data:image/svg+xml;base64,'. base64_encode(file_get_contents($this->logopath)));
+        }
+
+        $svgelem = $xmlDoc->getElementsByTagName('svg')->item(0);
+        $svgelem->appendChild($logoelem);
+
+        return $xmlDoc->saveXML();
+    }
+
+    private function getLogoPath() {
+        if($this->format == 1) {
+            $itemid = 0;
+            $filepath = pathinfo(get_config('block_qrcode', 'logofile_png'), PATHINFO_DIRNAME);
+            $filename = pathinfo( get_config('block_qrcode', 'logofile_png'),PATHINFO_BASENAME);
+        }
+        else {
+            $itemid = 1;
+            $filepath = pathinfo(get_config('block_qrcode', 'logofile_svg'), PATHINFO_DIRNAME);
+            $filename = pathinfo( get_config('block_qrcode', 'logofile_svg'),PATHINFO_BASENAME);
+
+        }
+        $pathhash = sha1("/$this->contextid/block_qrcode/logo/$itemid".$filepath.$filename);
+
+        var_dump($pathhash);
     }
 }

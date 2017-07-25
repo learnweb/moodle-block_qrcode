@@ -31,12 +31,14 @@ $fullname = required_param('fullname', PARAM_TEXT);
 $download = required_param('download', PARAM_BOOL);
 $format = required_param('format', PARAM_TEXT);
 $size = required_param('size', PARAM_INT);
-$file = $CFG->localcachedir . '/block_qrcode/course-' . $courseid. '-'.$size; // File path without file ending
+$contextid = required_param('contextid', PARAM_INT);
+
+$file = $CFG->localcachedir . '/block_qrcode/course-' . $courseid. '-'.$size. '-'. get_config('block_qrcode', 'logo'); // File path without file ending
 
 if($format==1)
     $file .= '.png';
 else
     $file .= '.svg';
 
-$outputimg = new block_qrcode\output_image($url, $fullname, $file, $format, $size);
+$outputimg = new block_qrcode\output_image($url, $fullname, $file, $format, $size, $contextid);
 $outputimg->output_image($download);
