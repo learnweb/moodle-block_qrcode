@@ -29,6 +29,7 @@ use Endroid\QrCode\LabelAlignment;
 use Endroid\QrCode\QrCode;
 use Symfony\Component\HttpFoundation\Response;
 use DOMDocument;
+use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -77,8 +78,6 @@ class output_image {
      * Creates the QR code if it doesn't exist.
      */
     public function create_image() {
-        // new name for qrcodes with logos
-
         global $CFG;
         // Checks if QR code already exists.
         if (!file_exists($this->file)) {
@@ -162,62 +161,58 @@ class output_image {
     }
 
     private function modify_svg($svgqrcode) {
-        $type = pathinfo($this->logopath, PATHINFO_EXTENSION);
-        $logoTargetWidth = $this->size / 2.75;
+        $logoTargetHeight = $this->size / 5;
 
+        $xmlLogo = new DOMDocument();
+        $xmlLogo->load($this->logopath);
 
-        if($type == 'png') {
-            $logo = imagecreatefromstring(file_get_contents($this->logopath));
-            $logoWidth = imagesx($logo);
-            $logoHeight = imagesy($logo);
+        $viewBox = $xmlLogo->documentElement->getAttribute('viewBox');
+        $logoHeight = explode(' ', $viewBox)[2];
+        $logoWidth = explode(' ', $viewBox)[3];
 
-            $scale = $logoTargetWidth / $logoWidth;
-            $logoTargetHeight = intval($scale * $logoHeight);
+        $logoTargetWidth = $logoWidth * ($logoHeight/$logoTargetHeight);
+        if($logoTargetWidth > $this->size/3) {
+            $logoTargetWidth = $this->size/3;
         }
-        else {
-            //get width and height of svg!!
-            $logoTargetHeight = $this->size / 5;
 
-        }
-        $logoX = $this->size / 1.75;
-        $logoY = $this->size / 1.75;
+        $logoY = ($this->size-$logoTargetWidth)/2;
+        $logoX = ($this->size-$logoTargetHeight)/2;
+
+        $xmlLogo->documentElement->setAttribute('width', $logoTargetWidth);
+        $xmlLogo->documentElement->setAttribute('height', $logoTargetHeight);
+        $xmlLogo->documentElement->setAttribute('x', $logoX);
+        $xmlLogo->documentElement->setAttribute('y', $logoY);
 
         $xmlDoc = new DOMDocument();
         $xmlDoc->loadXML($svgqrcode);
-        $logoelem = $xmlDoc->createElement('image');
-        $logoelem->setAttribute('x', $logoX);
-        $logoelem->setAttribute('y', $logoY);
-        $logoelem->setAttribute('width', $logoTargetWidth);
-        $logoelem->setAttribute('height', $logoTargetHeight);
+        $node = $xmlDoc->importNode($xmlLogo->documentElement, true);
 
-        $type = pathinfo($this->logopath, PATHINFO_EXTENSION);
-        if($type == 'png') {
-            $logoelem->setAttribute('xlink:href', 'data:image/png;base64,'. base64_encode(file_get_contents($this->logopath)));
-        }
-        else {
-            $logoelem->setAttribute('xlink:href', 'data:image/svg+xml;base64,'. base64_encode(file_get_contents($this->logopath)));
-        }
-
-        $svgelem = $xmlDoc->getElementsByTagName('svg')->item(0);
-        $svgelem->appendChild($logoelem);
+        $xmlDoc->documentElement->appendChild($node);
 
         return $xmlDoc->saveXML();
     }
 
     private function getLogoPath() {
+        global $CFG;
+
         if($this->format == 1) {
-            $itemid = 0;
+            $filearea = 'logo_png';
             $filepath = pathinfo(get_config('block_qrcode', 'logofile_png'), PATHINFO_DIRNAME);
             $filename = pathinfo( get_config('block_qrcode', 'logofile_png'),PATHINFO_BASENAME);
         }
         else {
-            $itemid = 1;
+            $filearea = 'logo_svg';
             $filepath = pathinfo(get_config('block_qrcode', 'logofile_svg'), PATHINFO_DIRNAME);
             $filename = pathinfo( get_config('block_qrcode', 'logofile_svg'),PATHINFO_BASENAME);
-
         }
-        $pathhash = sha1("/$this->contextid/block_qrcode/logo/$itemid".$filepath.$filename);
 
-        var_dump($pathhash);
+        $fs = get_file_storage();
+        $file = $fs->get_file(1, 'block_qrcode', $filearea, 0, $filepath, $filename);
+        $hash = $file->get_contenthash();
+
+
+        $path = $CFG->dataroot.'/filedir/'.substr($hash, 0, 2).'/'.substr($hash, 2, 2).'/'.substr($hash, 0);
+
+        return $path;
     }
 }

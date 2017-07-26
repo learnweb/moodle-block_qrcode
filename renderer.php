@@ -45,7 +45,7 @@ class block_qrcode_renderer extends plugin_renderer_base {
                 'courseid' => $courseid,
                 'fullname' => $fullname,
                 'download' => false,
-                'format' => 1,
+                'format' => 0,
                 'size' => 100,
                 'contextid' => $contextid));
 

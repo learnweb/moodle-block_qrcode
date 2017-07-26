@@ -58,6 +58,7 @@ class block_qrcode extends block_base {
         $this->content = new stdClass;
         $this->content->text = '';
 
+
         // Displays the block.
         /** @var block_qrcode_renderer $renderer */
         $renderer = $PAGE->get_renderer('block_qrcode');

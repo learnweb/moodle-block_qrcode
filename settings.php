@@ -30,17 +30,20 @@ if($ADMIN->fulltree) {
         'block_qrcode/logofile_png',
         get_string('settings_logofile_png', 'block_qrcode'),
         get_string('logofile_png', 'block_qrcode'),
-        'logo',
+        'logo_png',
         0,
         array('accepted_types' => '.png')
     ));
+
+    //max größe 1mb
+
     $settings->add(new admin_setting_configstoredfile(
         'block_qrcode/logofile_svg',
         get_string('settings_logofile_svg', 'block_qrcode'),
         get_string('logofile_svg', 'block_qrcode'),
-        'logo',
-        1,
-        array('accepted_types' => '.svg')
+        'logo_svg',
+        0,
+        array('max_bytes'=> 1000000, 'accepted_types' => '.svg')
     ));
 
 }
