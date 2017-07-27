@@ -47,7 +47,6 @@ class block_qrcode extends block_base {
      * @return  object $this->content
      */
     public function get_content() {
-
         if ($this->content !== null) {
             return $this->content;
         }
@@ -58,11 +57,14 @@ class block_qrcode extends block_base {
         $this->content = new stdClass;
         $this->content->text = '';
 
-
         // Displays the block.
         /** @var block_qrcode_renderer $renderer */
         $renderer = $PAGE->get_renderer('block_qrcode');
-        $this->content->text .= $renderer->display_image(course_get_url($COURSE)->out(), $COURSE->id, $COURSE->fullname, $this->context->id);
+        $this->content->text .= $renderer->display_image(
+            course_get_url($COURSE)->out(),
+            $COURSE->id,
+            $COURSE->fullname,
+            context_system::instance()->id);
 
         // Students can't see the download button.
         if (has_capability('block/qrcode:seebutton', $this->context)) {
@@ -71,7 +73,7 @@ class block_qrcode extends block_base {
                 course_get_url($COURSE)->out(),
                 $COURSE->id,
                 $COURSE->fullname,
-                $this->context->id);
+                context_system::instance()->id);
         }
 
         return $this->content;
@@ -86,7 +88,7 @@ class block_qrcode extends block_base {
         return array('course-view' => true, 'mod' => false, 'my' => false);
     }
 
-    function has_config() {
+    public function has_config() {
         return true;
     }
 

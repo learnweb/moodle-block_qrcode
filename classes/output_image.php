@@ -25,11 +25,9 @@
 namespace block_qrcode;
 
 use Endroid\QrCode\ErrorCorrectionLevel;
-use Endroid\QrCode\LabelAlignment;
 use Endroid\QrCode\QrCode;
 use Symfony\Component\HttpFoundation\Response;
 use DOMDocument;
-use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -69,8 +67,8 @@ class output_image {
         $this->contextid = $contextid;
 
         // Set logo path.
-        if(get_config('block_qrcode', 'logo') == 1) {
-            $this->logopath = $this->getLogoPath();
+        if (get_config('block_qrcode', 'logo') == 1) {
+            $this->logopath = $this->getlogopath();
         }
     }
 
@@ -92,19 +90,17 @@ class output_image {
             $qrcode->setSize($this->size);
 
             // Set advanced options.
-            $qrcode
-                ->setMargin(10)
-                ->setEncoding('UTF-8')
-                ->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH)
-                ->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0])
-                ->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255]);
+            $qrcode->setMargin(10);
+            $qrcode->setEncoding('UTF-8');
+            $qrcode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
+            $qrcode->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0]);
+            $qrcode->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255]);
 
+            // Png format.
             if ($this->format == 1) {
-                // How to handle cache?? admin verändert einstellung, aber bild wird nicht aktualisiert
-                if(get_config('block_qrcode', 'logo') == 1) {
-                    $qrcode
-                        ->setLogoPath($this->logopath)
-                        ->setLogoWidth($this->size/2.75);
+                if (get_config('block_qrcode', 'logo') == 1) {
+                    $qrcode->setLogoPath($this->logopath);
+                    $qrcode->setLogoWidth($this->size / 2.75);
                 }
 
                 $qrcode->setWriterByName('png');
@@ -112,12 +108,12 @@ class output_image {
             } else {
                 $qrcode->setWriterByName('svg');
 
-                if(get_config('block_qrcode', 'logo') == 1) {
+                if (get_config('block_qrcode', 'logo') == 1) {
+                    // Insert Logo in QR code.
                     $qrcodestring = $qrcode->writeString();
                     $newqrcode = $this->modify_svg($qrcodestring);
                     file_put_contents($this->file, $newqrcode);
-                }
-                else {
+                } else {
                     $qrcode->writeFile($this->file);
                 }
             }
@@ -132,20 +128,21 @@ class output_image {
         // Caches file for 1 month.
         header('Cache-Control: public, max-age:2628000');
 
-        if ($this->format == 1)
+        if ($this->format == 1) {
             header('Content-Type: image/png');
-        else
+        } else {
             header('Content-Type: image/svg+xml');
-
+        }
 
         // Checks if the image is downloaded or displayed.
         if ($download) {
             // Output file header to initialise the download of the file.
             // filename: QR Code - fullname -> Größe noch benennen??
-            if ($this->format == 1)
+            if ($this->format == 1) {
                 header('Content-Disposition: attachment; filename="QR Code-' . $this->fullname . '.png"');
-            else
+            } else {
                 header('Content-Disposition: attachment; filename="QR Code-' . $this->fullname . '.svg"');
+            }
         }
     }
 
@@ -160,58 +157,69 @@ class output_image {
         exit();
     }
 
+    /**
+     * Inserts logo in the QR code (used for svg QR code).
+     * @param $svgqrcode QR code
+     * @return string XML representation of the svg image
+     */
     private function modify_svg($svgqrcode) {
-        $logoTargetHeight = $this->size / 5;
+        // Loads QR code.
+        $xmldoc = new DOMDocument();
+        $xmldoc->loadXML($svgqrcode);
+        $viewboxcode = $xmldoc->documentElement->getAttribute('viewBox');
+        $codeheight = explode(' ', $viewboxcode)[3];
 
-        $xmlLogo = new DOMDocument();
-        $xmlLogo->load($this->logopath);
+        // Loads logo.
+        $xmllogo = new DOMDocument();
+        $xmllogo->load($this->logopath);
 
-        $viewBox = $xmlLogo->documentElement->getAttribute('viewBox');
-        $logoHeight = explode(' ', $viewBox)[2];
-        $logoWidth = explode(' ', $viewBox)[3];
+        $logotargetheight = $codeheight / 5;
 
-        $logoTargetWidth = $logoWidth * ($logoHeight/$logoTargetHeight);
-        if($logoTargetWidth > $this->size/3) {
-            $logoTargetWidth = $this->size/3;
-        }
+        $viewbox = $xmllogo->documentElement->getAttribute('viewBox');
+        $logowidth = explode(' ', $viewbox)[2];
+        $logoheight = explode(' ', $viewbox)[3];
 
-        $logoY = ($this->size-$logoTargetWidth)/2;
-        $logoX = ($this->size-$logoTargetHeight)/2;
+        // Calculate logo width and height.
+        $logotargetwidth = $logotargetheight * ($logowidth / $logoheight);
 
-        $xmlLogo->documentElement->setAttribute('width', $logoTargetWidth);
-        $xmlLogo->documentElement->setAttribute('height', $logoTargetHeight);
-        $xmlLogo->documentElement->setAttribute('x', $logoX);
-        $xmlLogo->documentElement->setAttribute('y', $logoY);
+        // Calculate logo coordinates.
+        $logoy = ($codeheight - $logotargetheight) / 2;
+        $logox = ($codeheight - $logotargetwidth) / 2;
 
-        $xmlDoc = new DOMDocument();
-        $xmlDoc->loadXML($svgqrcode);
-        $node = $xmlDoc->importNode($xmlLogo->documentElement, true);
+        $xmllogo->documentElement->setAttribute('width', $logotargetwidth);
+        $xmllogo->documentElement->setAttribute('height', $logotargetheight);
+        $xmllogo->documentElement->setAttribute('x', $logox);
+        $xmllogo->documentElement->setAttribute('y', $logoy);
 
-        $xmlDoc->documentElement->appendChild($node);
+        $node = $xmldoc->importNode($xmllogo->documentElement, true);
 
-        return $xmlDoc->saveXML();
+        $xmldoc->documentElement->appendChild($node);
+
+        return $xmldoc->saveXML();
     }
 
-    private function getLogoPath() {
+    /**
+     * Generates logo file path.
+     * @return string file path
+     */
+    private function getlogopath() {
         global $CFG;
 
-        if($this->format == 1) {
+        if ($this->format == 1) {
             $filearea = 'logo_png';
             $filepath = pathinfo(get_config('block_qrcode', 'logofile_png'), PATHINFO_DIRNAME);
-            $filename = pathinfo( get_config('block_qrcode', 'logofile_png'),PATHINFO_BASENAME);
-        }
-        else {
+            $filename = pathinfo(get_config('block_qrcode', 'logofile_png'), PATHINFO_BASENAME);
+        } else {
             $filearea = 'logo_svg';
             $filepath = pathinfo(get_config('block_qrcode', 'logofile_svg'), PATHINFO_DIRNAME);
-            $filename = pathinfo( get_config('block_qrcode', 'logofile_svg'),PATHINFO_BASENAME);
+            $filename = pathinfo(get_config('block_qrcode', 'logofile_svg'), PATHINFO_BASENAME);
         }
 
         $fs = get_file_storage();
-        $file = $fs->get_file(1, 'block_qrcode', $filearea, 0, $filepath, $filename);
+        $file = $fs->get_file($this->contextid, 'block_qrcode', $filearea, 0, $filepath, $filename);
         $hash = $file->get_contenthash();
 
-
-        $path = $CFG->dataroot.'/filedir/'.substr($hash, 0, 2).'/'.substr($hash, 2, 2).'/'.substr($hash, 0);
+        $path = $CFG->dataroot . '/filedir/' . substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/' . substr($hash, 0);
 
         return $path;
     }

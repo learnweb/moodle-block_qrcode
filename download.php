@@ -22,7 +22,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__. '/../../config.php'); // To include $CFG.
+require_once(__DIR__ . '/../../config.php'); // To include $CFG.
 require_login();
 
 $url = required_param('url', PARAM_TEXT);
@@ -33,12 +33,14 @@ $format = required_param('format', PARAM_TEXT);
 $size = required_param('size', PARAM_INT);
 $contextid = required_param('contextid', PARAM_INT);
 
-$file = $CFG->localcachedir . '/block_qrcode/course-' . $courseid. '-'.$size. '-'. get_config('block_qrcode', 'logo'); // File path without file ending
+$file = $CFG->localcachedir . '/block_qrcode/course-' .
+    $courseid . '-' . $size . '-' .
+    get_config('block_qrcode', 'logo'); // File path without file ending.
 
-if($format==1)
+if ($format == 1) {
     $file .= '.png';
-else
+} else {
     $file .= '.svg';
-
+}
 $outputimg = new block_qrcode\output_image($url, $fullname, $file, $format, $size, $contextid);
 $outputimg->output_image($download);

@@ -24,8 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-if($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configcheckbox('block_qrcode/logo', get_string('settings_logo', 'block_qrcode'), get_string('custom_logo', 'block_qrcode'), 0));
+if ($ADMIN->fulltree) {
+    $settings->add(new admin_setting_configcheckbox(
+        'block_qrcode/logo',
+        get_string('settings_logo', 'block_qrcode'),
+        get_string('custom_logo', 'block_qrcode'),
+        0));
     $settings->add(new admin_setting_configstoredfile(
         'block_qrcode/logofile_png',
         get_string('settings_logofile_png', 'block_qrcode'),
@@ -35,15 +39,13 @@ if($ADMIN->fulltree) {
         array('accepted_types' => '.png')
     ));
 
-    //max größe 1mb
-
     $settings->add(new admin_setting_configstoredfile(
         'block_qrcode/logofile_svg',
         get_string('settings_logofile_svg', 'block_qrcode'),
         get_string('logofile_svg', 'block_qrcode'),
         'logo_svg',
         0,
-        array('max_bytes'=> 1000000, 'accepted_types' => '.svg')
+        array('max_bytes' => 1000000, 'accepted_types' => '.svg')
     ));
 
 }

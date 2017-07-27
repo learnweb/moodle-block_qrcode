@@ -34,10 +34,20 @@ class qrcode_form extends moodleform {
      */
     public function definition() {
         $mform = $this->_form;
-        $selectF = $mform->addElement('select', 'format', get_string('formats', 'block_qrcode'), array(1 => 'png', 2 => 'svg'));
-        $selectF->setSelected($this->_customdata['format']);
-        $selectS = $mform->addElement('select', 'size', get_string('sizes', 'block_qrcode'), array(100 => '100px', 300 => '300px'));
-        $selectS->setSelected($this->_customdata['size']);
+        $selectf = $mform->addElement(
+            'select',
+            'format',
+            get_string('formats', 'block_qrcode'),
+            array(1 => 'png', 2 => 'svg'),
+            array('id' => 'slc_format'));
+        $selectf->setSelected($this->_customdata['format']);
+        $selects = $mform->addElement(
+            'select',
+            'size',
+            get_string('sizes', 'block_qrcode'),
+            array(100 => '100px', 300 => '300px'),
+            array('id' => 'slc_size'));
+        $selects->setSelected($this->_customdata['size']);
 
         $this->add_action_buttons(false, get_string('button', 'block_qrcode'));
     }

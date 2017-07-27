@@ -46,10 +46,10 @@ class block_qrcode_renderer extends plugin_renderer_base {
                 'fullname' => $fullname,
                 'download' => false,
                 'format' => 0,
-                'size' => 100,
+                'size' => 150,
                 'contextid' => $contextid));
 
-        return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'), array('id'  => 'img_qrcode'));
+        return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'), array('id'  => 'img_qrcode', 'width' => '100%'));
     }
 
     /**
@@ -67,7 +67,7 @@ class block_qrcode_renderer extends plugin_renderer_base {
                 'download' => true,
                 'contextid' => $contextid
             ));
-        $mform = new qrcode_form($download, array('format' => 'png', 'size' => '100px'));
+        $mform = new qrcode_form($download, array('format' => 'svg', 'size' => '300px'));
 
         return $mform->render();
     }

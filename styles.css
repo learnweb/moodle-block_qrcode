@@ -1,0 +1,15 @@
+.block_qrcode #fitem_slc_format .fitemtitle,
+.block_qrcode #fitem_slc_size .fitemtitle {
+    width: 0px;
+    text-align: left;
+}
+
+
+.block_qrcode #fitem_slc_format .felement,
+.block_qrcode #fitem_slc_size .felement {
+    margin-left: 60px;
+}
+
+.block_qrcode #fitem_id_submitbutton .fsubmit {
+    margin: 0px;
+}
