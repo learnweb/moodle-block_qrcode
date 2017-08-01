@@ -30,7 +30,7 @@ $courseid = required_param('courseid', PARAM_INT);
 $fullname = required_param('fullname', PARAM_TEXT);
 $download = required_param('download', PARAM_BOOL);
 $format = required_param('format', PARAM_TEXT);
-$size = required_param('size', PARAM_INT);
+$size = optional_param('size', 150, PARAM_INT);
 $contextid = required_param('contextid', PARAM_INT);
 
 $file = $CFG->localcachedir . '/block_qrcode/course-' .

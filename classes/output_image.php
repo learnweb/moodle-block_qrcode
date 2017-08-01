@@ -58,7 +58,6 @@ class output_image {
      * @param $file path to QR code
      */
     public function __construct($url, $fullname, $file, $format, $size, $contextid) {
-        global $CFG;
         $this->url = $url;
         $this->fullname = $fullname;
         $this->file = $file;

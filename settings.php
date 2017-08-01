@@ -24,12 +24,17 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-if ($ADMIN->fulltree) {
+$ADMIN->add('block_qrcode_setting', new admin_externalpage('block_qrcode_settings', 'dieseseite', "$CFG->wwwroot/blocks/qrcode/index.php"));
+
+$settings = null;
+
+/*if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox(
         'block_qrcode/logo',
         get_string('settings_logo', 'block_qrcode'),
         get_string('custom_logo', 'block_qrcode'),
         0));
+
     $settings->add(new admin_setting_configstoredfile(
         'block_qrcode/logofile_png',
         get_string('settings_logofile_png', 'block_qrcode'),
@@ -48,4 +53,4 @@ if ($ADMIN->fulltree) {
         array('max_bytes' => 1000000, 'accepted_types' => '.svg')
     ));
 
-}
+}*/

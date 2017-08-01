@@ -1,3 +1,4 @@
+<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -14,29 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Javascript module for block_qrcode.
+ * Settings for the qrcode block.
  *
  * @package block_qrcode
  * @copyright 2017 T Gunkel
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery'], function($) {
-    var t = {
+require(__DIR__.'/../../config.php');
+require_once($CFG->libdir.'/adminlib.php');
 
-        init: function() {
-            $('#slc_format').change(this.handleselect());
-        },
+admin_externalpage_setup('block_qrcode_settings');
+echo $OUTPUT->header();
+echo $OUTPUT->heading(get_string('configlog', 'report_configlog'));
 
-        handleselect: function() {
-            if ($('#slc_format').val() == 1) {
-                $('#slc_size').val('150');
-                $('#slc_size').prop('disabled', true);
-            } else {
-                $('#slc_size').prop('disabled', false);
-            }
-        }
-    };
+$ADMIN->add(new admin_setting_configcheckbox(
+    'block_qrcode/logo',
+    get_string('settings_logo', 'block_qrcode'),
+    get_string('custom_logo', 'block_qrcode'),
+    0));
 
-    return t;
-});
+echo "Hallo";
+
+echo $OUTPUT->footer();

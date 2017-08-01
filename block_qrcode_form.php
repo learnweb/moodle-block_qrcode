@@ -33,7 +33,6 @@ class qrcode_form extends moodleform {
      * Displays dropdown menus (format & size) and an action button (Download).
      */
     public function definition() {
-        global $PAGE;
         $mform = $this->_form;
         $selectf = $mform->addElement(
             'select',
@@ -47,11 +46,10 @@ class qrcode_form extends moodleform {
             'size',
             get_string('sizes', 'block_qrcode'),
             array(150 => '150px', 300 => '300px'),
-            array('id' => 'slc_size'));
+            array('id' => 'slc_size', 'disabled' => true));
         $selects->setSelected($this->_customdata['size']);
+        $mform->disabledIf('size', 'format', 'eq', 1);
 
         $this->add_action_buttons(false, get_string('button', 'block_qrcode'));
-
-        // $PAGE->requires->js_call_amd('block_qrcode/handlesizeselect', 'init');
     }
 }
