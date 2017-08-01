@@ -1,4 +1,3 @@
-<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,14 +14,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
- * @package   block_qrcode
+ * Javascript module for block_qrcode.
+ *
+ * @package block_qrcode
  * @copyright 2017 T Gunkel
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+define(['jquery'], function($) {
+    var t = {
 
-$plugin->component = 'block_qrcode'; // Full name of the plugin
-$plugin->version = 2017072701; // The current plugin version (Date: YYYMMDDXX)
-$plugin->requires = 2017050500; // Requires this Moodle version.
+        init: function() {
+            $('#slc_format').change(this.handleselect());
+        },
+
+        handleselect: function() {
+            if ($('#slc_format').val() == 1) {
+                $('#slc_size').val('150');
+                $('#slc_size').prop('disabled', true);
+            } else {
+                $('#slc_size').prop('disabled', false);
+            }
+        }
+    };
+
+    return t;
+});

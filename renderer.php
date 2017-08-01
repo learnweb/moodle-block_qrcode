@@ -45,7 +45,7 @@ class block_qrcode_renderer extends plugin_renderer_base {
                 'courseid' => $courseid,
                 'fullname' => $fullname,
                 'download' => false,
-                'format' => 0,
+                'format' => 1,
                 'size' => 150,
                 'contextid' => $contextid));
 
@@ -67,8 +67,7 @@ class block_qrcode_renderer extends plugin_renderer_base {
                 'download' => true,
                 'contextid' => $contextid
             ));
-        $mform = new qrcode_form($download, array('format' => 'svg', 'size' => '300px'));
-
+        $mform = new qrcode_form($download, array('format' => 1, 'size' => 150));
         return $mform->render();
     }
 

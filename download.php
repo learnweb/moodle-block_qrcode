@@ -38,9 +38,9 @@ $file = $CFG->localcachedir . '/block_qrcode/course-' .
     get_config('block_qrcode', 'logo'); // File path without file ending.
 
 if ($format == 1) {
-    $file .= '.png';
-} else {
     $file .= '.svg';
+} else {
+    $file .= '.png';
 }
 $outputimg = new block_qrcode\output_image($url, $fullname, $file, $format, $size, $contextid);
 $outputimg->output_image($download);

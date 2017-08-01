@@ -97,7 +97,7 @@ class output_image {
             $qrcode->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255]);
 
             // Png format.
-            if ($this->format == 1) {
+            if ($this->format == 2) {
                 if (get_config('block_qrcode', 'logo') == 1) {
                     $qrcode->setLogoPath($this->logopath);
                     $qrcode->setLogoWidth($this->size / 2.75);
@@ -128,7 +128,7 @@ class output_image {
         // Caches file for 1 month.
         header('Cache-Control: public, max-age:2628000');
 
-        if ($this->format == 1) {
+        if ($this->format == 2) {
             header('Content-Type: image/png');
         } else {
             header('Content-Type: image/svg+xml');
@@ -138,7 +138,7 @@ class output_image {
         if ($download) {
             // Output file header to initialise the download of the file.
             // filename: QR Code - fullname -> Größe noch benennen??
-            if ($this->format == 1) {
+            if ($this->format == 2) {
                 header('Content-Disposition: attachment; filename="QR Code-' . $this->fullname . '.png"');
             } else {
                 header('Content-Disposition: attachment; filename="QR Code-' . $this->fullname . '.svg"');
@@ -205,7 +205,7 @@ class output_image {
     private function getlogopath() {
         global $CFG;
 
-        if ($this->format == 1) {
+        if ($this->format == 2) {
             $filearea = 'logo_png';
             $filepath = pathinfo(get_config('block_qrcode', 'logofile_png'), PATHINFO_DIRNAME);
             $filename = pathinfo(get_config('block_qrcode', 'logofile_png'), PATHINFO_BASENAME);
