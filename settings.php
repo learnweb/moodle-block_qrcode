@@ -24,33 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$ADMIN->add('block_qrcode_setting', new admin_externalpage('block_qrcode_settings', 'dieseseite', "$CFG->wwwroot/blocks/qrcode/index.php"));
-
+if ($hassiteconfig) { // Needs this condition or there is error on login page.
+    $ADMIN->add('blocksettings', new admin_externalpage('block_qrcode',
+        get_string('pluginname', 'block_qrcode'),
+        new moodle_url('/blocks/qrcode/index.php')));
+}
 $settings = null;
 
-/*if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configcheckbox(
-        'block_qrcode/logo',
-        get_string('settings_logo', 'block_qrcode'),
-        get_string('custom_logo', 'block_qrcode'),
-        0));
-
-    $settings->add(new admin_setting_configstoredfile(
-        'block_qrcode/logofile_png',
-        get_string('settings_logofile_png', 'block_qrcode'),
-        get_string('logofile_png', 'block_qrcode'),
-        'logo_png',
-        0,
-        array('accepted_types' => '.png')
-    ));
-
-    $settings->add(new admin_setting_configstoredfile(
-        'block_qrcode/logofile_svg',
-        get_string('settings_logofile_svg', 'block_qrcode'),
-        get_string('logofile_svg', 'block_qrcode'),
-        'logo_svg',
-        0,
-        array('max_bytes' => 1000000, 'accepted_types' => '.svg')
-    ));
-
-}*/

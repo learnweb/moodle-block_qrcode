@@ -33,14 +33,5 @@ $format = required_param('format', PARAM_TEXT);
 $size = optional_param('size', 150, PARAM_INT);
 $contextid = required_param('contextid', PARAM_INT);
 
-$file = $CFG->localcachedir . '/block_qrcode/course-' .
-    $courseid . '-' . $size . '-' .
-    get_config('block_qrcode', 'logo'); // File path without file ending.
-
-if ($format == 1) {
-    $file .= '.svg';
-} else {
-    $file .= '.png';
-}
-$outputimg = new block_qrcode\output_image($url, $fullname, $file, $format, $size, $contextid);
+$outputimg = new block_qrcode\output_image($url, $fullname, $format, $size, $contextid, $courseid);
 $outputimg->output_image($download);

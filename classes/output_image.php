@@ -57,18 +57,37 @@ class output_image {
      * @param $courseid
      * @param $file path to QR code
      */
-    public function __construct($url, $fullname, $file, $format, $size, $contextid) {
+    public function __construct($url, $fullname, $format, $size, $contextid, $courseid) {
+        global $CFG;
         $this->url = $url;
         $this->fullname = $fullname;
-        $this->file = $file;
         $this->format = $format;
         $this->size = $size;
         $this->contextid = $contextid;
 
         // Set logo path.
-        if (get_config('block_qrcode', 'logo') == 1) {
+        if (get_config('block_qrcode', 'custom_logo') == 1) {
             $this->logopath = $this->getlogopath();
+            if ($this->logopath === null) {
+                $file = $CFG->localcachedir . '/block_qrcode/course-' .
+                    $courseid . '-' . $size . '-0'; // File path without file ending.
+            } else {
+                $file = $CFG->localcachedir . '/block_qrcode/course-' .
+                    $courseid . '-' . $size . '-1';
+            }
+        } else {
+            $file = $CFG->localcachedir . '/block_qrcode/course-' .
+                $courseid . '-' . $size . '-0';
         }
+
+        // Add file ending.
+        if ($format == 1) {
+            $file .= '.svg';
+        } else {
+            $file .= '.png';
+        }
+
+        $this->file = $file;
     }
 
     /**
@@ -97,7 +116,7 @@ class output_image {
 
             // Png format.
             if ($this->format == 2) {
-                if (get_config('block_qrcode', 'logo') == 1) {
+                if (get_config('block_qrcode', 'custom_logo') == 1 && $this->logopath !== null) {
                     $qrcode->setLogoPath($this->logopath);
                     $qrcode->setLogoWidth($this->size / 2.75);
                 }
@@ -107,7 +126,7 @@ class output_image {
             } else {
                 $qrcode->setWriterByName('svg');
 
-                if (get_config('block_qrcode', 'logo') == 1) {
+                if (get_config('block_qrcode', 'custom_logo') == 1 && $this->logopath !== null) {
                     // Insert Logo in QR code.
                     $qrcodestring = $qrcode->writeString();
                     $newqrcode = $this->modify_svg($qrcodestring);
@@ -216,10 +235,12 @@ class output_image {
 
         $fs = get_file_storage();
         $file = $fs->get_file($this->contextid, 'block_qrcode', $filearea, 0, $filepath, $filename);
-        $hash = $file->get_contenthash();
 
-        $path = $CFG->dataroot . '/filedir/' . substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/' . substr($hash, 0);
-
-        return $path;
+        if ($file) {
+            $hash = $file->get_contenthash();
+            $path = $CFG->dataroot . '/filedir/' . substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/' . substr($hash, 0);
+            return $path;
+        }
+        return null;
     }
 }
