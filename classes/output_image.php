@@ -172,7 +172,6 @@ class output_image {
         $this->create_image();
         $this->send_headers($download);
         readfile($this->file);
-        exit();
     }
 
     /**

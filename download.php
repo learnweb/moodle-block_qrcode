@@ -33,5 +33,9 @@ $format = required_param('format', PARAM_TEXT);
 $size = optional_param('size', 150, PARAM_INT);
 $contextid = required_param('contextid', PARAM_INT);
 
-$outputimg = new block_qrcode\output_image($url, $fullname, $format, $size, $contextid, $courseid);
-$outputimg->output_image($download);
+if ($download) {
+    if (has_capability('block/qrcode:download',context_course::instance($courseid))) {
+        $outputimg = new block_qrcode\output_image($url, $fullname, $format, $size, $contextid, $courseid);
+        $outputimg->output_image($download);
+    }
+}

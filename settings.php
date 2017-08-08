@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 if ($hassiteconfig) { // Needs this condition or there is error on login page.
     $ADMIN->add('blocksettings', new admin_externalpage('block_qrcode',
         get_string('pluginname', 'block_qrcode'),
-        new moodle_url('/blocks/qrcode/index.php')));
+        new moodle_url('/blocks/qrcode/adminsettings.php')));
 }
 $settings = null;
 

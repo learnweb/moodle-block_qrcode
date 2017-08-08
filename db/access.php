@@ -34,14 +34,26 @@ $capabilities = array(
         'clonepermissionsfrom' => 'moodle/site:manageblocks'
     ),
 
-    'block/qrcode:seebutton' => array(
+    'block/qrcode:download' => array(
         'captype' => 'read',
-        'contextlevel' => CONTEXT_BLOCK,
+        'contextlevel' => CONTEXT_COURSE,
         'archetypes' => array(
             'student' => CAP_PROHIBIT,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
             'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
+    'block/qrcode:changelogo' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'student' => CAP_PROHIBIT,
+            'teacher' => CAP_PROHIBIT,
+            'editingteacher' => CAP_PROHIBIT,
+            'coursecreator' => CAP_PROHIBIT,
             'manager' => CAP_ALLOW
         )
     ),
