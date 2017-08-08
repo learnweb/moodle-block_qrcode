@@ -49,7 +49,7 @@ class block_qrcode_renderer extends plugin_renderer_base {
                 'size' => 150,
                 'contextid' => $contextid));
 
-        return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'), array('id'  => 'img_qrcode', 'width' => '100%'));
+        return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'), array('id'  => 'img_qrcode', 'width' => '90%'));
     }
 
     /**

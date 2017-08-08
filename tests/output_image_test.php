@@ -31,6 +31,9 @@ defined('MOODLE_INTERNAL') || die();
  */
 class block_qrcode_output_image_testcase extends advanced_testcase {
 
+    /**
+     * Tests, if the image is created.
+     */
     public function test_create_image() {
         global $CFG;
         $this->resetAfterTest(true);
@@ -39,19 +42,22 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
         $course = $generator->create_course();
 
         $size = 150;
-        // course id unique??
         $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-0.svg';
         $outputimg = new block_qrcode\output_image(
             course_get_url($course->id)->out(),
             $course->fullname,
-            $file,
             1,
             $size,
-            context_system::instance()->id);
+            context_system::instance()->id,
+            $course->id);
         $outputimg->create_image();
         $this->assertFileExists($file);
     }
 
+    /**
+     * Tests, if the QR code is created without a logo although custom logo is checked
+     * when no logo is uploaded.
+     */
     public function test_no_logo() {
         global $CFG;
         $this->resetAfterTest(true);
@@ -60,17 +66,18 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
         $course = $generator->create_course();
 
         set_config('custom_logo', true, 'block_qrcode');
-        var_dump(get_config('block_qrcode', 'logofile_svg'));
+        $this->assertEquals(1, get_config('block_qrcode', 'custom_logo'));
+        $this->assertFalse(get_config('block_qrcode', 'logofile_svg'));
 
         $size = 150;
-        $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'.svg';
+        $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-0.svg';
         $outputimg = new block_qrcode\output_image(
             course_get_url($course->id)->out(),
             $course->fullname,
-            $file,
             1,
             $size,
-            context_system::instance()->id);
+            context_system::instance()->id,
+            $course->id);
         $outputimg->create_image();
         $this->assertFileExists($file);
     }
