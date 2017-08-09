@@ -32,7 +32,7 @@ if (has_capability('block/qrcode:changelogo', context_system::instance())) {
     echo $OUTPUT->header();
     echo $OUTPUT->heading(get_string('settings', 'block_qrcode'));
 
-    $mform = new block_qrcode\settings_form();
+    $mform = new block_qrcode\admin_form();
 
     // Form is submitted.
     if ($data = $mform->get_data()) {

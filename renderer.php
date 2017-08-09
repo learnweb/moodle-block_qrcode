@@ -23,7 +23,6 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-require_once('block_qrcode_form.php');
 
 /**
  * Class block_qrcode_renderer
@@ -67,7 +66,7 @@ class block_qrcode_renderer extends plugin_renderer_base {
                 'download' => true,
                 'contextid' => $contextid
             ));
-        $mform = new block_qrcode\qrcode_form($download, array('format' => 1, 'size' => 150));
+        $mform = new block_qrcode\block_qrcode_form($download, array('format' => 1, 'size' => 150));
         return $mform->render();
     }
 

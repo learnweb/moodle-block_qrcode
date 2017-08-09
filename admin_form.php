@@ -21,15 +21,13 @@
  * @copyright 2017 T Gunkel
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 namespace block_qrcode;
-use moodleform;
 
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
-class admin_form extends moodleform {
+class settings_form extends moodleform {
     protected function definition() {
         $mform = $this->_form;
 

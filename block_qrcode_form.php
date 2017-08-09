@@ -24,13 +24,11 @@
 
 namespace block_qrcode;
 
-use moodleform;
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
 
-class block_qrcode_form extends moodleform {
+class qrcode_form extends moodleform {
 
     /**
      * Form definition.

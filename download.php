@@ -39,3 +39,7 @@ if ($download) {
         $outputimg->output_image($download);
     }
 }
+else {
+    $outputimg = new block_qrcode\output_image($url, $fullname, $format, $size, $contextid, $courseid);
+    $outputimg->output_image($download);
+}
