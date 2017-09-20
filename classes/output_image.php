@@ -28,10 +28,12 @@ use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\QrCode;
 use Symfony\Component\HttpFoundation\Response;
 use DOMDocument;
+use core\datalib;
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/blocks/qrcode/thirdparty/vendor/autoload.php');
+require_once($CFG->dirroot . '/course/lib.php');
 
 /**
  * Class output_image
@@ -43,27 +45,21 @@ require_once($CFG->dirroot . '/blocks/qrcode/thirdparty/vendor/autoload.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class output_image {
-    protected $url; // QR code points to this url.
-    protected $fullname;
     protected $file; // QR code is saved in this file.
     protected $format;
     protected $size;
     protected $logopath;
-    protected $contextid;
+    protected $course;
 
     /**
      * output_image constructor.
-     * @param $url of the course (content of QR code)
      * @param $courseid
-     * @param $file path to QR code
      */
-    public function __construct($url, $fullname, $format, $size, $contextid, $courseid) {
+    public function __construct($format, $size, $courseid) {
         global $CFG;
-        $this->url = $url;
-        $this->fullname = $fullname;
         $this->format = $format;
         $this->size = $size;
-        $this->contextid = $contextid;
+        $this->course = get_course($courseid);
 
         // Set logo path.
         if (get_config('block_qrcode', 'custom_logo') == 1) {
@@ -104,7 +100,7 @@ class output_image {
             }
 
             // Creates the QR code.
-            $qrcode = new QrCode($this->url);
+            $qrcode = new QrCode(course_get_url($this->course)->out());
             $qrcode->setSize($this->size);
 
             // Set advanced options.
@@ -143,6 +139,7 @@ class output_image {
      * @param $download true, if the QR code should be downloaded
      */
     protected function send_headers($download) {
+        global $DB;
         // Caches file for 1 month.
         header('Cache-Control: public, max-age:2628000');
 
@@ -155,11 +152,11 @@ class output_image {
         // Checks if the image is downloaded or displayed.
         if ($download) {
             // Output file header to initialise the download of the file.
-            // filename: QR Code - fullname -> Größe noch benennen??
+            // filename: QR Code - fullname
             if ($this->format == 2) {
-                header('Content-Disposition: attachment; filename="QR Code-' . $this->fullname . '.png"');
+                header('Content-Disposition: attachment; filename="QR Code-' . clean_param($this->course->fullname, PARAM_FILE) . '.png"');
             } else {
-                header('Content-Disposition: attachment; filename="QR Code-' . $this->fullname . '.svg"');
+                header('Content-Disposition: attachment; filename="QR Code-' . clean_param($this->course->fullname, PARAM_FILE). '.svg"');
             }
         }
     }
@@ -233,7 +230,7 @@ class output_image {
         }
 
         $fs = get_file_storage();
-        $file = $fs->get_file($this->contextid, 'block_qrcode', $filearea, 0, $filepath, $filename);
+        $file = $fs->get_file(context_system::instance()->id, 'block_qrcode', $filearea, 0, $filepath, $filename);
 
         if ($file) {
             $hash = $file->get_contenthash();

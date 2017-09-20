@@ -38,34 +38,25 @@ class block_qrcode_renderer extends plugin_renderer_base {
      * @param $image QR code
      * @return string html-string
      */
-    public function display_image($url, $courseid, $fullname, $contextid) {
+    public function display_image($courseid) {
         $link = new moodle_url('/blocks/qrcode/download.php',
-            array('url' => $url,
-                'courseid' => $courseid,
-                'fullname' => $fullname,
+            array('courseid' => $courseid,
                 'download' => false,
                 'format' => 1,
-                'size' => 150,
-                'contextid' => $contextid));
+                'size' => 150));
 
         return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'), array('id'  => 'img_qrcode', 'width' => '90%'));
     }
 
     /**
      * Displays download section (menus for choosing format & size, download button).
-     * @param $url target url of the QR code
      * @param $courseid CourseID
-     * @param $fullname full course name
      * @return string html-string
      */
-    public function display_download_section($url, $courseid, $fullname, $contextid) {
+    public function display_download_section($courseid) {
         $download = new moodle_url('/blocks/qrcode/download.php',
-            array('url' => $url,
-                'courseid' => $courseid,
-                'fullname' => $fullname,
-                'download' => true,
-                'contextid' => $contextid
-            ));
+            array('courseid' => $courseid,
+                'download' => true));
         $mform = new block_qrcode\block_qrcode_form($download, array('format' => 1, 'size' => 150));
         return $mform->render();
     }

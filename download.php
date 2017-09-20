@@ -25,20 +25,14 @@
 require_once(__DIR__ . '/../../config.php'); // To include $CFG.
 require_login();
 
-$url = required_param('url', PARAM_TEXT);
 $courseid = required_param('courseid', PARAM_INT);
-$fullname = required_param('fullname', PARAM_TEXT);
 $download = required_param('download', PARAM_BOOL);
 $format = required_param('format', PARAM_TEXT);
 $size = optional_param('size', 150, PARAM_INT);
-$contextid = required_param('contextid', PARAM_INT);
 
-if ($download) {
-    if (has_capability('block/qrcode:download', context_course::instance($courseid))) {
-        $outputimg = new block_qrcode\output_image($url, $fullname, $format, $size, $contextid, $courseid);
-        $outputimg->output_image($download);
-    }
-} else {
-    $outputimg = new block_qrcode\output_image($url, $fullname, $format, $size, $contextid, $courseid);
-    $outputimg->output_image($download);
+if($download) {
+    require_capability('block/qrcode:download', context_course::instance($courseid));
 }
+
+$outputimg = new block_qrcode\output_image($format, $size, $courseid);
+$outputimg->output_image($download);

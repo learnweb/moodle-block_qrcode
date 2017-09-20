@@ -60,20 +60,12 @@ class block_qrcode extends block_base {
         // Displays the block.
         /** @var block_qrcode_renderer $renderer */
         $renderer = $PAGE->get_renderer('block_qrcode');
-        $this->content->text .= $renderer->display_image(
-            course_get_url($COURSE)->out(),
-            $COURSE->id,
-            $COURSE->fullname,
-            context_system::instance()->id);
+        $this->content->text .= $renderer->display_image($COURSE->id);
 
         // Students can't see the download button.
         if (has_capability('block/qrcode:download', $this->context)) {
             $this->content->text .= '<br><br>';
-            $this->content->text .= $renderer->display_download_section(
-                course_get_url($COURSE)->out(),
-                $COURSE->id,
-                $COURSE->fullname,
-                context_system::instance()->id);
+            $this->content->text .= $renderer->display_download_section($COURSE->id);
         }
 
         return $this->content;
