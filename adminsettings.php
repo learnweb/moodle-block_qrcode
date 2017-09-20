@@ -76,7 +76,12 @@ if (has_capability('block/qrcode:changelogo', context_system::instance())) {
 
         // Save svg logo.
         if ($draftitemid = file_get_submitted_draft_itemid('logo_svg')) {
-            file_save_draft_area_files($draftitemid, $contextid, 'block_qrcode', 'logo_svg', 0,
+            file_save_draft_area_files(
+                $draftitemid,
+                $contextid,
+                'block_qrcode',
+                'logo_svg',
+                0,
                 array('subdirs' => false, 'maxfiles' => 1));
 
             $fs = get_file_storage();
@@ -107,6 +112,21 @@ if (has_capability('block/qrcode:changelogo', context_system::instance())) {
 
     // Load existing files in draft area.
     $draftitemid = file_get_submitted_draft_itemid('logo_png');
+
+    if($draftitemid == 0) {
+        // Use default Moodlelogo
+        $fs = get_file_storage();
+        $fileinfo = array(
+            'contextid' => context_system::instance()->id,
+            'component' => 'block_qrcode',
+            'filearea' => 'logo_png',
+            'itemid' => 0,
+            'filepath' => '/',
+            'filename' => 'moodlelogo.png');
+        $logofile = $fs->create_file_from_pathname($fileinfo, $CFG->wwwroot.'/pix/moodlelogo.png');
+        $draftitemid = $logofile->get_itemid();
+    }
+
     file_prepare_draft_area($draftitemid, context_system::instance()->id, 'block_qrcode', 'logo_png',
         $entry->id, array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 1));
 

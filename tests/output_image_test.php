@@ -44,11 +44,8 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
         $size = 150;
         $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-0.svg';
         $outputimg = new block_qrcode\output_image(
-            course_get_url($course->id)->out(),
-            $course->fullname,
             1,
             $size,
-            context_system::instance()->id,
             $course->id);
         $outputimg->create_image();
         $this->assertFileExists($file);
@@ -72,11 +69,8 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
         $size = 150;
         $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-0.svg';
         $outputimg = new block_qrcode\output_image(
-            course_get_url($course->id)->out(),
-            $course->fullname,
             1,
             $size,
-            context_system::instance()->id,
             $course->id);
         $outputimg->create_image();
         $this->assertFileExists($file);

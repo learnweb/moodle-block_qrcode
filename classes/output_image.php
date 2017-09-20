@@ -63,14 +63,18 @@ class output_image {
         $file = $CFG->localcachedir . '/block_qrcode/course-' .
             (int)$courseid . '-' . $this->size; // Set file path.
 
-        // Set logo path.
+        // Set custom logo path.
         if (get_config('block_qrcode', 'custom_logo') == 1) {
             $this->logopath = $this->getlogopath();
-        }
-
-        if ($this->logopath !== null) {
             $file .= '-1';
-        } else {
+        }
+        else {
+            // Use Moodle logo.
+            if ($format == 1) {
+                $this->logopath = $CFG->wwwroot.'/pix/moodlelogo.svg';
+            } else {
+                $this->logopath = $CFG->wwwroot.'/pix/moodlelogo.png';
+            }
             $file .= '-0';
         }
 
@@ -88,13 +92,13 @@ class output_image {
      * Creates the QR code if it doesn't exist.
      */
     public function create_image() {
-        global $CFG;
+        global $CFG, $PAGE;
         // Checks if QR code already exists.
         if (file_exists($this->file)) {
             // File exists in cache.
             return;
         }
-        
+
         // Checks if directory already exists.
         if (!file_exists(dirname($this->file))) {
             // Creates new directory.
@@ -114,22 +118,20 @@ class output_image {
 
         // Png format.
         if ($this->format == 2) {
-            if (get_config('block_qrcode', 'custom_logo') == 1 && $this->logopath !== null) {
+            if($this->logopath !== null) {
                 $qrcode->setLogoPath($this->logopath);
                 $qrcode->setLogoWidth($this->size / 2.75);
             }
-
             $qrcode->setWriterByName('png');
             $qrcode->writeFile($this->file);
         } else {
             $qrcode->setWriterByName('svg');
-
-            if (get_config('block_qrcode', 'custom_logo') == 1 && $this->logopath !== null) {
-                // Insert Logo in QR code.
+            if($this->logopath !== null) {
                 $qrcodestring = $qrcode->writeString();
                 $newqrcode = $this->modify_svg($qrcodestring);
                 file_put_contents($this->file, $newqrcode);
-            } else {
+            }
+            else {
                 $qrcode->writeFile($this->file);
             }
         }
@@ -140,7 +142,6 @@ class output_image {
      * @param $download true, if the QR code should be downloaded
      */
     protected function send_headers($download) {
-        global $DB;
         // Caches file for 1 month.
         header('Cache-Control: public, max-age:2628000');
 
@@ -231,7 +232,7 @@ class output_image {
         }
 
         $fs = get_file_storage();
-        $file = $fs->get_file(context_system::instance()->id, 'block_qrcode', $filearea, 0, $filepath, $filename);
+        $file = $fs->get_file(\context_system::instance()->id, 'block_qrcode', $filearea, 0, $filepath, $filename);
 
         if ($file) {
             $hash = $file->get_contenthash();
