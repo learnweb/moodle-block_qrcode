@@ -58,22 +58,20 @@ class output_image {
     public function __construct($format, $size, $courseid) {
         global $CFG;
         $this->format = $format;
-        $this->size = $size;
+        $this->size = (int)$size;
         $this->course = get_course($courseid);
+        $file = $CFG->localcachedir . '/block_qrcode/course-' .
+            (int)$courseid . '-' . $this->size; // Set file path.
 
         // Set logo path.
         if (get_config('block_qrcode', 'custom_logo') == 1) {
             $this->logopath = $this->getlogopath();
-            if ($this->logopath === null) {
-                $file = $CFG->localcachedir . '/block_qrcode/course-' .
-                    $courseid . '-' . $size . '-0'; // File path without file ending.
-            } else {
-                $file = $CFG->localcachedir . '/block_qrcode/course-' .
-                    $courseid . '-' . $size . '-1';
-            }
+        }
+
+        if ($this->logopath !== null) {
+            $file .= '-1';
         } else {
-            $file = $CFG->localcachedir . '/block_qrcode/course-' .
-                $courseid . '-' . $size . '-0';
+            $file .= '-0';
         }
 
         // Add file ending.
@@ -92,44 +90,47 @@ class output_image {
     public function create_image() {
         global $CFG;
         // Checks if QR code already exists.
-        if (!file_exists($this->file)) {
-            // Checks if directory already exists.
-            if (!file_exists(dirname($this->file))) {
-                // Creates new directory.
-                mkdir(dirname($this->file), $CFG->directorypermissions, true);
+        if (file_exists($this->file)) {
+            // File exists in cache.
+            return;
+        }
+        
+        // Checks if directory already exists.
+        if (!file_exists(dirname($this->file))) {
+            // Creates new directory.
+            mkdir(dirname($this->file), $CFG->directorypermissions, true);
+        }
+
+        // Creates the QR code.
+        $qrcode = new QrCode(course_get_url($this->course)->out());
+        $qrcode->setSize($this->size);
+
+        // Set advanced options.
+        $qrcode->setMargin(10);
+        $qrcode->setEncoding('UTF-8');
+        $qrcode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
+        $qrcode->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0]);
+        $qrcode->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255]);
+
+        // Png format.
+        if ($this->format == 2) {
+            if (get_config('block_qrcode', 'custom_logo') == 1 && $this->logopath !== null) {
+                $qrcode->setLogoPath($this->logopath);
+                $qrcode->setLogoWidth($this->size / 2.75);
             }
 
-            // Creates the QR code.
-            $qrcode = new QrCode(course_get_url($this->course)->out());
-            $qrcode->setSize($this->size);
+            $qrcode->setWriterByName('png');
+            $qrcode->writeFile($this->file);
+        } else {
+            $qrcode->setWriterByName('svg');
 
-            // Set advanced options.
-            $qrcode->setMargin(10);
-            $qrcode->setEncoding('UTF-8');
-            $qrcode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
-            $qrcode->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0]);
-            $qrcode->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255]);
-
-            // Png format.
-            if ($this->format == 2) {
-                if (get_config('block_qrcode', 'custom_logo') == 1 && $this->logopath !== null) {
-                    $qrcode->setLogoPath($this->logopath);
-                    $qrcode->setLogoWidth($this->size / 2.75);
-                }
-
-                $qrcode->setWriterByName('png');
-                $qrcode->writeFile($this->file);
+            if (get_config('block_qrcode', 'custom_logo') == 1 && $this->logopath !== null) {
+                // Insert Logo in QR code.
+                $qrcodestring = $qrcode->writeString();
+                $newqrcode = $this->modify_svg($qrcodestring);
+                file_put_contents($this->file, $newqrcode);
             } else {
-                $qrcode->setWriterByName('svg');
-
-                if (get_config('block_qrcode', 'custom_logo') == 1 && $this->logopath !== null) {
-                    // Insert Logo in QR code.
-                    $qrcodestring = $qrcode->writeString();
-                    $newqrcode = $this->modify_svg($qrcodestring);
-                    file_put_contents($this->file, $newqrcode);
-                } else {
-                    $qrcode->writeFile($this->file);
-                }
+                $qrcode->writeFile($this->file);
             }
         }
     }
@@ -156,7 +157,7 @@ class output_image {
             if ($this->format == 2) {
                 header('Content-Disposition: attachment; filename="QR Code-' . clean_param($this->course->fullname, PARAM_FILE) . '.png"');
             } else {
-                header('Content-Disposition: attachment; filename="QR Code-' . clean_param($this->course->fullname, PARAM_FILE). '.svg"');
+                header('Content-Disposition: attachment; filename="QR Code-' . clean_param($this->course->fullname, PARAM_FILE) . '.svg"');
             }
         }
     }
