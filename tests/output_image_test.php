@@ -64,7 +64,7 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
 
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-        
+
         $this->assertFalse(get_config('block_qrcode', 'logofile_svg'));
 
         $size = 150;
@@ -75,5 +75,16 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
             $course->id);
         $outputimg->create_image();
         $this->assertFileExists($file);
+    }
+
+    /**
+     * Tests, if the moodle logos exist in the folder 'pix'.
+     */
+    public function test_moodlelogo_exists() {
+        global  $CFG;
+        $this->resetAfterTest(true);
+        
+        $this->assertFileExists($CFG->dirroot . '/pix/moodlelogo.png');
+        $this->assertFileExists($CFG->dirroot . '/pix/moodlelogo.svg');
     }
 }

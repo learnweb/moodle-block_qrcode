@@ -71,9 +71,9 @@ class output_image {
             if ($this->logopath === null) {
                 // Use default moodle logo.
                 if ($format == 1) {
-                    $this->logopath = $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.svg';
+                    $this->logopath = $CFG->dirroot . '/pix/moodlelogo.svg';
                 } else {
-                    $this->logopath = $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.pnb';
+                    $this->logopath = $CFG->dirroot . '/pix/moodlelogo.png';
                 }
             }
         } else {
@@ -122,7 +122,7 @@ class output_image {
         if ($this->format == 2) {
             if (get_config('block_qrcode', 'use_logo') == 1) {
                 $qrcode->setLogoPath($this->logopath);
-                $qrcode->setLogoWidth($this->size / 2.75);
+                $qrcode->setLogoWidth($this->size / 2);
             }
             $qrcode->setWriterByName('png');
             $qrcode->writeFile($this->file);
