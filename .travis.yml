@@ -23,6 +23,7 @@ php:
 env:
  global:
   - MOODLE_BRANCH=MOODLE_33_STABLE
+  - IGNORE_PATHS=thirdparty BEHAT=yes
  matrix:
   - DB=pgsql
   - DB=mysqli
