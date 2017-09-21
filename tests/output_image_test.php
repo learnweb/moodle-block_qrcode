@@ -41,6 +41,9 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
 
+        set_config('use_logo', 0, 'block_qrcode');
+        $this->assertEquals(0, get_config('block_qrcode', 'use_logo'));
+
         $size = 150;
         $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-0.svg';
         $outputimg = new block_qrcode\output_image(
@@ -52,7 +55,7 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
     }
 
     /**
-     * Tests, if the QR code is created without a logo although custom logo is checked
+     * Tests, if the QR code is created with the moodle logo if no custom logo was uploaded
      * when no logo is uploaded.
      */
     public function test_no_logo() {
@@ -61,13 +64,11 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
 
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-
-        set_config('custom_logo', true, 'block_qrcode');
-        $this->assertEquals(1, get_config('block_qrcode', 'custom_logo'));
+        
         $this->assertFalse(get_config('block_qrcode', 'logofile_svg'));
 
         $size = 150;
-        $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-0.svg';
+        $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-1.svg';
         $outputimg = new block_qrcode\output_image(
             1,
             $size,

@@ -34,8 +34,9 @@ class admin_form extends moodleform {
         $mform = $this->_form;
 
         // Checkbox.
-        $mform->addElement('advcheckbox', 'custom_logo', get_string('custom_logo', 'block_qrcode'));
-        $mform->setType('custom_logo', PARAM_BOOL);
+        $mform->addElement('advcheckbox', 'use_logo', get_string('use_logo', 'block_qrcode'));
+        $mform->setType('use_logo', PARAM_BOOL);
+        $mform->addHelpButton('use_logo', 'use_logo', 'block_qrcode');
 
         // Filemanager for .png logo.
         $mform->addElement('filemanager', 'logo_png', get_string('logofile_png', 'block_qrcode'), null,

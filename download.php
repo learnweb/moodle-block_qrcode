@@ -30,7 +30,7 @@ $download = required_param('download', PARAM_BOOL);
 $format = required_param('format', PARAM_TEXT);
 $size = optional_param('size', 150, PARAM_INT);
 
-if($download) {
+if ($download) {
     require_capability('block/qrcode:download', context_course::instance($courseid));
 }
 

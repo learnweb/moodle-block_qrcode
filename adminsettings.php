@@ -37,13 +37,13 @@ if (has_capability('block/qrcode:changelogo', context_system::instance())) {
     // Form is submitted.
     if ($data = $mform->get_data()) {
         // Set logo config.
-        $oldvalue = get_config('block_qrcode', 'custom_logo');
+        $oldvalue = get_config('block_qrcode', 'use_logo');
         $oldvalue = ($oldvalue === false) ? null : $oldvalue;
-        $value = $data->custom_logo;
+        $value = $data->use_logo;
 
         if ($oldvalue !== $value) {
             // Store change.
-            set_config('custom_logo', $value, 'block_qrcode');
+            set_config('use_logo', $value, 'block_qrcode');
         }
 
 
@@ -112,21 +112,6 @@ if (has_capability('block/qrcode:changelogo', context_system::instance())) {
 
     // Load existing files in draft area.
     $draftitemid = file_get_submitted_draft_itemid('logo_png');
-
-    if($draftitemid == 0) {
-        // Use default Moodlelogo
-        $fs = get_file_storage();
-        $fileinfo = array(
-            'contextid' => context_system::instance()->id,
-            'component' => 'block_qrcode',
-            'filearea' => 'logo_png',
-            'itemid' => 0,
-            'filepath' => '/',
-            'filename' => 'moodlelogo.png');
-        $logofile = $fs->create_file_from_pathname($fileinfo, $CFG->wwwroot.'/pix/moodlelogo.png');
-        $draftitemid = $logofile->get_itemid();
-    }
-
     file_prepare_draft_area($draftitemid, context_system::instance()->id, 'block_qrcode', 'logo_png',
         $entry->id, array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 1));
 
@@ -138,7 +123,7 @@ if (has_capability('block/qrcode:changelogo', context_system::instance())) {
 
     $entry->logo_svg = $draftitemid;
 
-    $entry->custom_logo = get_config('block_qrcode', 'custom_logo');
+    $entry->use_logo = get_config('block_qrcode', 'use_logo');
 
     $mform->set_data($entry);
     $mform->display();

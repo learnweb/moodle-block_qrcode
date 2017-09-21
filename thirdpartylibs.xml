@@ -1,9 +1,64 @@
 <?xml version="1.0" ?>
 <libraries>
     <library>
-        <location>thirdparty/vendor</location>
+        <location>thirdparty/vendor/endroid/qrcode</location>
         <name>QR Code Generator</name>
         <version>v2.2.3</version>
+        <license>MIT</license>
+        <licenseversion>1</licenseversion>
+    </library>
+    <library>
+        <location>thirdparty/vendor/bacon/bacon-qr-code</location>
+        <name>Bacon QR Code</name>
+        <version>v1.0.1</version>
+        <license>BSD-2-Clause</license>
+    </library>
+    <library>
+        <location>thirdparty/vendor/khanamiryan/qrcode-detector-decoder</location>
+        <name>QR Code Detector Decoder</name>
+        <version>v0.0.1</version>
+        <license>MIT</license>
+        <licenseversion>1</licenseversion>
+    </library>
+    <library>
+        <location>thirdparty/vendor/myclabs/php-enum</location>
+        <name>PHP Enum</name>
+        <version>v1.5.2</version>
+        <license>MIT</license>
+        <licenseversion>1</licenseversion>
+    </library>
+    <library>
+        <location>thirdparty/vendor/paragonie/random_compat</location>
+        <name>Random Compat</name>
+        <version>v2.0.10</version>
+        <license>MIT</license>
+        <licenseversion>1</licenseversion>
+    </library>
+    <library>
+        <location>thirdparty/vendor/symfony/inflector</location>
+        <name>Symfonfy Inflector</name>
+        <version>v3.3.4</version>
+        <license>MIT</license>
+        <licenseversion>1</licenseversion>
+    </library>
+    <library>
+        <location>thirdparty/vendor/symfony/options-resolver</location>
+        <name>Symfonfy OptionsResolver</name>
+        <version>v3.3.4</version>
+        <license>MIT</license>
+        <licenseversion>1</licenseversion>
+    </library>
+    <library>
+        <location>thirdparty/vendor/symfony/polyfill-php70</location>
+        <name>Symfonfy Polyfill php70</name>
+        <version>v1.4.0</version>
+        <license>MIT</license>
+        <licenseversion>1</licenseversion>
+    </library>
+    <library>
+        <location>thirdparty/vendor/symfony/property-access</location>
+        <name>Symfonfy Inflector</name>
+        <version>v3.3.4</version>
         <license>MIT</license>
         <licenseversion>1</licenseversion>
     </library>

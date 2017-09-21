@@ -64,17 +64,19 @@ class output_image {
             (int)$courseid . '-' . $this->size; // Set file path.
 
         // Set custom logo path.
-        if (get_config('block_qrcode', 'custom_logo') == 1) {
+        if (get_config('block_qrcode', 'use_logo') == 1) {
             $this->logopath = $this->getlogopath();
             $file .= '-1';
-        }
-        else {
-            // Use Moodle logo.
-            if ($format == 1) {
-                $this->logopath = $CFG->wwwroot.'/pix/moodlelogo.svg';
-            } else {
-                $this->logopath = $CFG->wwwroot.'/pix/moodlelogo.png';
+
+            if ($this->logopath === null) {
+                // Use default moodle logo.
+                if ($format == 1) {
+                    $this->logopath = $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.svg';
+                } else {
+                    $this->logopath = $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.pnb';
+                }
             }
+        } else {
             $file .= '-0';
         }
 
@@ -118,7 +120,7 @@ class output_image {
 
         // Png format.
         if ($this->format == 2) {
-            if($this->logopath !== null) {
+            if (get_config('block_qrcode', 'use_logo') == 1) {
                 $qrcode->setLogoPath($this->logopath);
                 $qrcode->setLogoWidth($this->size / 2.75);
             }
@@ -126,12 +128,11 @@ class output_image {
             $qrcode->writeFile($this->file);
         } else {
             $qrcode->setWriterByName('svg');
-            if($this->logopath !== null) {
+            if (get_config('block_qrcode', 'use_logo') == 1) {
                 $qrcodestring = $qrcode->writeString();
                 $newqrcode = $this->modify_svg($qrcodestring);
                 file_put_contents($this->file, $newqrcode);
-            }
-            else {
+            } else {
                 $qrcode->writeFile($this->file);
             }
         }

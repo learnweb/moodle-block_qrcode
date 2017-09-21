@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
- * @package   block_qrcode
+ * QR code block installation.
+ *
+ * @package block_qrcode
  * @copyright 2017 T Gunkel
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+function xmldb_block_qrcode_install() {
+    set_config('use_logo', 1, 'block_qrcode');
+}
 
-$plugin->component = 'block_qrcode'; // Full name of the plugin
-$plugin->version = 2017092011; // The current plugin version (Date: YYYMMDDXX)
-$plugin->requires = 2017050500; // Requires this Moodle version.
