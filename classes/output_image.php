@@ -94,7 +94,7 @@ class output_image {
      * Creates the QR code if it doesn't exist.
      */
     public function create_image() {
-        global $CFG, $PAGE;
+        global $CFG;
         // Checks if QR code already exists.
         if (file_exists($this->file)) {
             // File exists in cache.

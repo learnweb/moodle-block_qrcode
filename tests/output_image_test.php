@@ -83,7 +83,7 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
     public function test_moodlelogo_exists() {
         global  $CFG;
         $this->resetAfterTest(true);
-        
+
         $this->assertFileExists($CFG->dirroot . '/pix/moodlelogo.png');
         $this->assertFileExists($CFG->dirroot . '/pix/moodlelogo.svg');
     }
