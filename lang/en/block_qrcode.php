@@ -24,7 +24,7 @@
 
 $string['pluginname'] = 'QR code';
 $string['qrcode:addinstance'] = 'Add a new QR code block';
-$string['qrcode:seebutton'] = 'Show Download button';
+$string['qrcode:download'] = 'Show Download button';
 $string['filename'] = 'course';
 $string['cachedef_qrcodes'] = 'Cache for the QR codes';
 $string['img_tag_alt'] = 'QR code';
