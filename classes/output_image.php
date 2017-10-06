@@ -184,24 +184,25 @@ class output_image {
         $xmldoc = new DOMDocument();
         $xmldoc->loadXML($svgqrcode);
         $viewboxcode = $xmldoc->documentElement->getAttribute('viewBox');
-        $codeheight = explode(' ', $viewboxcode)[3];
+        $codewidth = explode(' ', $viewboxcode)[2];
 
         // Loads logo.
         $xmllogo = new DOMDocument();
         $xmllogo->load($this->logopath);
 
-        $logotargetheight = $codeheight / 5;
+        $logotargetwidth = $codewidth / 2;
 
         $viewbox = $xmllogo->documentElement->getAttribute('viewBox');
-        $logowidth = explode(' ', $viewbox)[2];
-        $logoheight = explode(' ', $viewbox)[3];
+        $viewboxbounds = explode(' ', $viewbox);
+        $logowidth = $viewboxbounds[2];
+        $logoheight = $viewboxbounds[3];
 
-        // Calculate logo width and height.
-        $logotargetwidth = $logotargetheight * ($logowidth / $logoheight);
+        // Calculate logo height from width.
+        $logotargetheight = $logotargetwidth * ($logoheight / $logowidth);
 
         // Calculate logo coordinates.
-        $logoy = ($codeheight - $logotargetheight) / 2;
-        $logox = ($codeheight - $logotargetwidth) / 2;
+        $logoy = ($codewidth - $logotargetheight) / 2;
+        $logox = ($codewidth - $logotargetwidth) / 2;
 
         $xmllogo->documentElement->setAttribute('width', $logotargetwidth);
         $xmllogo->documentElement->setAttribute('height', $logotargetheight);
@@ -237,7 +238,7 @@ class output_image {
 
         if ($file) {
             $hash = $file->get_contenthash();
-            $path = $CFG->dataroot . '/filedir/' . substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/' . substr($hash, 0);
+            $path = $CFG->dataroot . '/filedir/' . substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/' . $hash;
             return $path;
         }
         return null;
