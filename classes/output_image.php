@@ -65,16 +65,20 @@ class output_image {
 
         // Set custom logo path.
         if (get_config('block_qrcode', 'use_logo') == 1) {
-            $this->logopath = $this->getlogopath();
-            $file .= '-1';
+            $logo = $this->getlogo();
 
-            if ($this->logopath === null) {
+            if ($logo === null) {
                 // Use default moodle logo.
                 if ($format == 1) {
-                    $this->logopath = $CFG->dirroot . '/pix/moodlelogo.svg';
+                    $this->logopath = $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.svg';
                 } else {
-                    $this->logopath = $CFG->dirroot . '/pix/moodlelogo.png';
+                    $this->logopath = $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.png';
                 }
+                $file .= '-'.sha1_file($this->logopath);
+            }
+            else {
+                $this->logopath = $logo->path;
+                $file .= '-'.$logo->hash;
             }
         } else {
             $file .= '-0';
@@ -217,11 +221,12 @@ class output_image {
     }
 
     /**
-     * Generates logo file path.
-     * @return string file path
+     * Generates logo file path and hash.
+     * @return string file path and hash
      */
-    private function getlogopath() {
+    private function getlogo() {
         global $CFG;
+        $logo = new \stdClass();
 
         if ($this->format == 2) {
             $filearea = 'logo_png';
@@ -239,7 +244,10 @@ class output_image {
         if ($file) {
             $hash = $file->get_contenthash();
             $path = $CFG->dataroot . '/filedir/' . substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/' . $hash;
-            return $path;
+            $logo->hash = $hash;
+            $logo->path = $path;
+
+            return $logo;
         }
         return null;
     }

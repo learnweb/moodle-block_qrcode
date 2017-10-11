@@ -15,14 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
- * @package   block_qrcode
+ * Qr code cron job.
+ *
+ * @package block_qrcode
  * @copyright 2017 T Gunkel
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace block_qrcode\task;
 
-$plugin->component = 'block_qrcode'; // Full name of the plugin
-$plugin->version = 2017092013; // The current plugin version (Date: YYYMMDDXX)
-$plugin->requires = 2017050500; // Requires this Moodle version.
+class clean_up_caches extends \core\task\scheduled_task {
+    public function get_name() {
+        // Shown in admin screens
+        return get_string('cleanupcaches', 'block_qrcode');
+    }
+
+    public function execute() {
+        //TODO deletes only the files on the current server and all files
+        $files = glob($CFG->localcachedir . '/block_qrcode/*');
+        foreach ($files as $filename) {
+            unlink($filename);
+        }
+    }
+}

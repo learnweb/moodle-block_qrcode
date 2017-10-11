@@ -24,7 +24,7 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * PHPUnit output image testcase
- * @package block_groups
+ * @package block_qrcode
  * @category test
  * @copyright 2017 T Gunkel
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -68,23 +68,13 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
         $this->assertFalse(get_config('block_qrcode', 'logofile_svg'));
 
         $size = 150;
-        $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-1.svg';
+        $filehash = sha1_file($CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.svg');
+        $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-'.$filehash.'.svg';
         $outputimg = new block_qrcode\output_image(
             1,
             $size,
             $course->id);
         $outputimg->create_image();
         $this->assertFileExists($file);
-    }
-
-    /**
-     * Tests, if the moodle logos exist in the folder 'pix'.
-     */
-    public function test_moodlelogo_exists() {
-        global  $CFG;
-        $this->resetAfterTest(true);
-
-        $this->assertFileExists($CFG->dirroot . '/pix/moodlelogo.png');
-        $this->assertFileExists($CFG->dirroot . '/pix/moodlelogo.svg');
     }
 }

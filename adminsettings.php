@@ -66,11 +66,11 @@ if ($data = $mform->get_data()) {
         set_config('logofile_png', $filepath, 'block_qrcode');
 
         // Delete old QR codes.
-        $pattern = $CFG->localcachedir . '/block_qrcode/course-*-*-1.png';
+//        $pattern = $CFG->localcachedir . '/block_qrcode/course-*-*-1.png';
 
-        foreach (glob($pattern) as $filename) {
-            unlink($filename);
-        }
+//        foreach (glob($pattern) as $filename) {
+ //           unlink($filename);
+  //      }
 
     }
 
@@ -96,11 +96,11 @@ if ($data = $mform->get_data()) {
         set_config('logofile_svg', $filepath, 'block_qrcode');
 
         // Delete old QR codes.
-        $pattern = $CFG->localcachedir . '/block_qrcode/course-*-*-1.svg';
+  //      $pattern = $CFG->localcachedir . '/block_qrcode/course-*-*-1.svg';
 
-        foreach (glob($pattern) as $filename) {
-            unlink($filename);
-        }
+    //    foreach (glob($pattern) as $filename) {
+      //      unlink($filename);
+       // }
     }
 
 }

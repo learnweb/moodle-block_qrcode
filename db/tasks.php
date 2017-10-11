@@ -14,15 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Version details
- * @package   block_qrcode
- * @copyright 2017 T Gunkel
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'block_qrcode'; // Full name of the plugin
-$plugin->version = 2017092013; // The current plugin version (Date: YYYMMDDXX)
-$plugin->requires = 2017050500; // Requires this Moodle version.
+$tasks = array(
+    array(
+        'classname' => 'block_qrcode\task\clean_up_caches',
+        'blocking' => 0,
+        'minute' => 'R',
+        'hour' => 'R',
+        'day' => '*/2',
+        'dayofweek' => '*',
+        'month' => '*'
+    )
+);
