@@ -13,3 +13,7 @@
 .block_qrcode #fitem_id_submitbutton .fsubmit {
     margin: 0px;
 }
+
+.block_qrcode .mform {
+    margin: 0px 10px;
+}
