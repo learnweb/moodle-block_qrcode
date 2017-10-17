@@ -46,7 +46,6 @@ if ($data = $mform->get_data()) {
         set_config('use_logo', $value, 'block_qrcode');
     }
 
-
     $contextid = context_system::instance()->id;
 
     // Save png logo.
@@ -64,14 +63,6 @@ if ($data = $mform->get_data()) {
             $filepath = $file->get_filepath() . $file->get_filename();
         }
         set_config('logofile_png', $filepath, 'block_qrcode');
-
-        // Delete old QR codes.
-//        $pattern = $CFG->localcachedir . '/block_qrcode/course-*-*-1.png';
-
-//        foreach (glob($pattern) as $filename) {
- //           unlink($filename);
-  //      }
-
     }
 
     // Save svg logo.
@@ -94,15 +85,7 @@ if ($data = $mform->get_data()) {
             $filepath = $file->get_filepath() . $file->get_filename();
         }
         set_config('logofile_svg', $filepath, 'block_qrcode');
-
-        // Delete old QR codes.
-  //      $pattern = $CFG->localcachedir . '/block_qrcode/course-*-*-1.svg';
-
-    //    foreach (glob($pattern) as $filename) {
-      //      unlink($filename);
-       // }
     }
-
 }
 
 if (empty($entry->id)) {

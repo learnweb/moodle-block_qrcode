@@ -74,11 +74,10 @@ class output_image {
                 } else {
                     $this->logopath = $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.png';
                 }
-                $file .= '-'.sha1_file($this->logopath);
-            }
-            else {
+                $file .= '-' . sha1_file($this->logopath);
+            } else {
                 $this->logopath = $logo->path;
-                $file .= '-'.$logo->hash;
+                $file .= '-' . $logo->hash;
             }
         } else {
             $file .= '-0';
