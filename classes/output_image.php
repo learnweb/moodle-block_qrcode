@@ -241,10 +241,8 @@ class output_image {
         $file = $fs->get_file(\context_system::instance()->id, 'block_qrcode', $filearea, 0, $filepath, $filename);
 
         if ($file) {
-            $hash = $file->get_contenthash();
-            $path = $CFG->dataroot . '/filedir/' . substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/' . $hash;
-            $logo->hash = $hash;
-            $logo->path = $path;
+            $logo->hash = $file->get_contenthash();
+            $logo->path = $CFG->dataroot . '/filedir/' . substr($logo->hash, 0, 2) . '/' . substr($logo->hash, 2, 2) . '/' . $logo->hash;
 
             return $logo;
         }
