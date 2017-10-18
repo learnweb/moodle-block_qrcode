@@ -63,7 +63,7 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
 
         $size = 150;
         $filehash = sha1_file($CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.svg');
-        $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-'.$filehash.'.svg';
+        $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-default.svg';
         $outputimg = new block_qrcode\output_image(
             1,
             $size,
