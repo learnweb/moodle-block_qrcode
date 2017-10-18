@@ -12,6 +12,7 @@ return array(
     'Error' => $vendorDir . '/symfony/polyfill-php70/Resources/stubs/Error.php',
     'ParseError' => $vendorDir . '/symfony/polyfill-php70/Resources/stubs/ParseError.php',
     'QrReader' => $vendorDir . '/khanamiryan/qrcode-detector-decoder/lib/QrReader.php',
+    'SessionUpdateTimestampHandlerInterface' => $vendorDir . '/symfony/polyfill-php70/Resources/stubs/SessionUpdateTimestampHandlerInterface.php',
     'TypeError' => $vendorDir . '/symfony/polyfill-php70/Resources/stubs/TypeError.php',
     'Zxing\\Binarizer' => $vendorDir . '/khanamiryan/qrcode-detector-decoder/lib/Binarizer.php',
     'Zxing\\BinaryBitmap' => $vendorDir . '/khanamiryan/qrcode-detector-decoder/lib/BinaryBitmap.php',

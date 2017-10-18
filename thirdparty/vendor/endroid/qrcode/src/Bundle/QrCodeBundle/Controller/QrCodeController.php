@@ -7,7 +7,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Endroid\QrCode\Bundle\Controller;
+namespace Endroid\QrCode\Bundle\QrCodeBundle\Controller;
 
 use Endroid\QrCode\Factory\QrCodeFactory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -25,8 +25,9 @@ class QrCodeController extends Controller
      * @Route("/{text}.{extension}", name="endroid_qrcode_generate", requirements={"text"="[\w\W]+"})
      *
      * @param Request $request
-     * @param string $text
-     * @param string $extension
+     * @param string  $text
+     * @param string  $extension
+     *
      * @return Response
      */
     public function generateAction(Request $request, $text, $extension)
@@ -48,7 +49,7 @@ class QrCodeController extends Controller
     public function twigFunctionsAction()
     {
         return [
-            'message' => 'QR Code'
+            'message' => 'QR Code',
         ];
     }
 
