@@ -23,11 +23,13 @@ matrix:
   fast_finish: true
 
 env:
-  - DB=pgsql MOODLE_BRANCH=MOODLE_33_STABLE
-  - DB=pgsql MOODLE_BRANCH=master
-  - DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
-  - DB=mysqli MOODLE_BRANCH=master
-  - IGNORE_PATHS=thirdparty BEHAT=yes
+  global:
+    - IGNORE_PATHS=thirdparty BEHAT=yes
+  matrix:
+    - DB=pgsql MOODLE_BRANCH=MOODLE_33_STABLE
+    - DB=pgsql MOODLE_BRANCH=master
+    - DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
+    - DB=mysqli MOODLE_BRANCH=master
 
 before_install:
   - phpenv config-rm xdebug.ini
