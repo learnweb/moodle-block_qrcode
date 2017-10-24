@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-defined('MOODLE_INTERNAL') || die();
+
 /**
  * QR code block installation.
  *
@@ -22,7 +22,17 @@ defined('MOODLE_INTERNAL') || die();
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * QR code block installation.
+ *
+ * @package block_qrcode
+ * @copyright 2017 T Gunkel
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 function xmldb_block_qrcode_install() {
+    // Default to showing the logo.
     set_config('use_logo', 1, 'block_qrcode');
 }
 
