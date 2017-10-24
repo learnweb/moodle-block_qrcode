@@ -1,7 +1,7 @@
 @block @block_qrcode @show_qrcode
-Feature: Download QR code as .png file
-  In order to download a QR code
-  As a teacher
+Feature: Display the QR code block
+  In order to see a QR code
+  As a student
 
   Background:
     Given the following "courses" exist:
