@@ -160,9 +160,11 @@ class output_image {
             // Output file header to initialise the download of the file.
             // filename: QR Code - fullname
             if ($this->format == 2) {
-                header('Content-Disposition: attachment; filename="QR Code-' . clean_param($this->course->fullname, PARAM_FILE) . '.png"');
+                header('Content-Disposition: attachment; filename="QR Code-' .
+                    clean_param($this->course->fullname, PARAM_FILE) . '.png"');
             } else {
-                header('Content-Disposition: attachment; filename="QR Code-' . clean_param($this->course->fullname, PARAM_FILE) . '.svg"');
+                header('Content-Disposition: attachment; filename="QR Code-' .
+                    clean_param($this->course->fullname, PARAM_FILE) . '.svg"');
             }
         }
     }
@@ -238,11 +240,19 @@ class output_image {
         }
 
         $fs = get_file_storage();
-        $file = $fs->get_file(\context_system::instance()->id, 'block_qrcode', $filearea, 0, $filepath, $filename);
+        $file = $fs->get_file(\context_system::instance()->id,
+            'block_qrcode',
+            $filearea,
+            0,
+            $filepath,
+            $filename);
 
         if ($file) {
             $logo->hash = $file->get_contenthash();
-            $logo->path = $CFG->dataroot . '/filedir/' . substr($logo->hash, 0, 2) . '/' . substr($logo->hash, 2, 2) . '/' . $logo->hash;
+            $logo->path = $CFG->dataroot . '/filedir/' .
+                substr($logo->hash, 0, 2) . '/' .
+                substr($logo->hash, 2, 2) . '/' .
+                $logo->hash;
 
             return $logo;
         }

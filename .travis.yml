@@ -42,13 +42,38 @@ before_install:
 install:
   - moodle-plugin-ci install
 
+jobs:
+  include:
+    # Prechecks against latest Moodle stable only.
+    - stage: static
+      php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
+      script:
+      - moodle-plugin-ci phplint
+      - moodle-plugin-ci phpcpd
+      - moodle-plugin-ci phpmd
+      - moodle-plugin-ci codechecker
+      - moodle-plugin-ci savepoints
+      - moodle-plugin-ci mustache
+      - moodle-plugin-ci grunt
+      - moodle-plugin-ci validate
+
+    # Smaller build matrix for development builds
+    - stage: develop
+      php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
+      script:
+      - moodle-plugin-ci phpunit --coverage-clover
+      - moodle-plugin-ci behat
+
+# Default 'test' stage: Unit tests and behat tests against full matrix.
 script:
-  - moodle-plugin-ci phplint
-  - moodle-plugin-ci phpcpd
-  - moodle-plugin-ci phpmd
-  - moodle-plugin-ci codechecker
-  - moodle-plugin-ci validate
-  - moodle-plugin-ci savepoints
-  - moodle-plugin-ci mustache
-  - moodle-plugin-ci phpunit
+  - moodle-plugin-ci phpunit --coverage-clover
   - moodle-plugin-ci behat
+
+stages:
+  - static
+  - name: develop
+    if: branch != master AND (type != pull_request OR head_branch != master) AND (tag IS blank)
+  - name: test
+    if: branch = master OR (type = pull_request AND head_branch = master) OR (tag IS present)
