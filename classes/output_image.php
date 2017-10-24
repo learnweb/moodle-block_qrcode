@@ -65,7 +65,7 @@ class output_image {
 
         // Set custom logo path.
         if (get_config('block_qrcode', 'use_logo') == 1) {
-            $logo = $this->getlogo();
+            $logo = $this->get_logo();
 
             if ($logo === null) {
                 // Use default moodle logo.
@@ -158,7 +158,7 @@ class output_image {
         // Checks if the image is downloaded or displayed.
         if ($download) {
             // Output file header to initialise the download of the file.
-            // filename: QR Code - fullname
+            // filename: QR Code-%s.(svg|png), where %s is derived from the course's fullname.
             if ($this->format == 2) {
                 header('Content-Disposition: attachment; filename="QR Code-' .
                     clean_param($this->course->fullname, PARAM_FILE) . '.png"');
@@ -225,7 +225,7 @@ class output_image {
      * Generates logo file path and hash.
      * @return string file path and hash
      */
-    private function getlogo() {
+    private function get_logo() {
         global $CFG;
         $logo = new \stdClass();
 
