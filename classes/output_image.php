@@ -82,17 +82,22 @@ class output_image {
      * @param int $format file type
      * @param int $size image size
      * @param int $courseid course for which the qrcode is created
+     * @param int $instanceid
      */
-    public function __construct($format, $size, $courseid) {
-        global $CFG;
+    public function __construct($format, $size, $courseid, $instanceid) {
+        global $CFG, $DB;
         $this->format = $format;
         $this->size = (int)$size;
         $this->course = get_course($courseid);
         $file = $CFG->localcachedir . '/block_qrcode/course-' .
             (int)$courseid . '-' . $this->size; // Set file path.
 
+        $instance = $DB->get_record('block_instances', array('id' => $instanceid), '*', MUST_EXIST);
+        $block = block_instance('qrcode', $instance);
+        
         // Set custom logo path.
-        if (get_config('block_qrcode', 'use_logo') == 1) {
+        if (($block->config->usedefault && get_config('block_qrcode', 'use_logo') == 1) ||
+            (!$block->config->usedefault && $block->config->instc_uselogo)) {
             $logo = $this->get_logo();
 
             if ($logo === null) {

@@ -38,12 +38,13 @@ class block_qrcode_renderer extends plugin_renderer_base {
      * @param itn $courseid QR code
      * @return string html-string
      */
-    public function display_image($courseid) {
+    public function display_image($courseid, $instance) {
         $link = new moodle_url('/blocks/qrcode/download.php',
             array('courseid' => $courseid,
                 'download' => false,
                 'format' => 1,
-                'size' => 150));
+                'size' => 150,
+                'instance' => $instance));
 
         return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'), array('id'  => 'img_qrcode', 'width' => '90%'));
     }

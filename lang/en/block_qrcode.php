@@ -37,3 +37,6 @@ $string['use_logo_help'] = 'If the checkbox is checked, a logo is shown in the Q
 $string['logofile_png'] = 'Choose .png logo';
 $string['logofile_svg'] = 'Choose .svg logo';
 $string['submit'] = 'Save changes';
+$string['editblock'] = 'Edit QR code block';
+$string['usedefault'] = 'Use default settings';
+$string['instc_uselogo'] = 'Use logo';
