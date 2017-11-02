@@ -80,6 +80,10 @@ class block_qrcode extends block_base {
         return array('course-view' => true, 'mod' => false, 'my' => false);
     }
 
+    /**
+     * Tells moodle, that the qrcode block has a settings file.
+     * @return bool true
+     */
     public function has_config() {
         return true;
     }

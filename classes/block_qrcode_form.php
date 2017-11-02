@@ -30,6 +30,11 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class block_qrcode_form
+ * Moodle form for qrcode block.
+ * @package block_qrcode
+ */
 class block_qrcode_form extends moodleform {
 
     /**

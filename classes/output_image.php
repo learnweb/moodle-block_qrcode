@@ -45,15 +45,43 @@ require_once($CFG->dirroot . '/course/lib.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class output_image {
-    protected $file; // QR code is saved in this file.
+    /**
+     * QR code is saved in this file.
+     * @var string
+     */
+    protected $file;
+
+    /**
+     * Output file type.
+     * 0 - png, 1 - svg
+     * @var int
+     */
     protected $format;
+
+    /**
+     * Size of qrcode (downloaded image).
+     * Only for png.
+     * @var int
+     */
     protected $size;
+
+    /**
+     * Filepath for logo.
+     * @var string
+     */
     protected $logopath;
+
+    /**
+     * Course for which the qrcode is created.
+     * @var \stdClass
+     */
     protected $course;
 
     /**
      * output_image constructor.
-     * @param $courseid
+     * @param int $format file type
+     * @param int $size image size
+     * @param int $courseid course for which the qrcode is created
      */
     public function __construct($format, $size, $courseid) {
         global $CFG;
@@ -143,7 +171,7 @@ class output_image {
 
     /**
      * Outputs file headers to initialise the download of the file / display the file.
-     * @param $download true, if the QR code should be downloaded
+     * @param bool $download true, if the QR code should be downloaded
      */
     protected function send_headers($download) {
         // Caches file for 1 month.
@@ -171,7 +199,7 @@ class output_image {
 
     /**
      * Outputs (downloads or displays) the QR code.
-     * @param $download true, if the QR code should be downloaded
+     * @param bool $download true, if the QR code should be downloaded
      */
     public function output_image($download) {
         $this->create_image();
@@ -181,7 +209,7 @@ class output_image {
 
     /**
      * Inserts logo in the QR code (used for svg QR code).
-     * @param $svgqrcode QR code
+     * @param string $svgqrcode QR code
      * @return string XML representation of the svg image
      */
     private function modify_svg($svgqrcode) {
