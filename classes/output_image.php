@@ -89,12 +89,17 @@ class output_image {
         $this->format = $format;
         $this->size = (int)$size;
         $this->course = get_course($courseid);
+        $this->logopath = null;
         $file = $CFG->localcachedir . '/block_qrcode/course-' .
             (int)$courseid . '-' . $this->size; // Set file path.
 
         $instance = $DB->get_record('block_instances', array('id' => $instanceid), '*', MUST_EXIST);
         $block = block_instance('qrcode', $instance);
-        
+
+        if(is_null($block->config)) {
+            $block->config->usedefault = true;
+        }
+
         // Set custom logo path.
         if (($block->config->usedefault && get_config('block_qrcode', 'use_logo') == 1) ||
             (!$block->config->usedefault && $block->config->instc_uselogo)) {
@@ -156,7 +161,7 @@ class output_image {
 
         // Png format.
         if ($this->format == 2) {
-            if (get_config('block_qrcode', 'use_logo') == 1) {
+            if ($this->logopath !== null) {
                 $qrcode->setLogoPath($this->logopath);
                 $qrcode->setLogoWidth($this->size / 2);
             }
@@ -164,7 +169,7 @@ class output_image {
             $qrcode->writeFile($this->file);
         } else {
             $qrcode->setWriterByName('svg');
-            if (get_config('block_qrcode', 'use_logo') == 1) {
+            if ($this->logopath !== null) {
                 $qrcodestring = $qrcode->writeString();
                 $newqrcode = $this->modify_svg($qrcodestring);
                 file_put_contents($this->file, $newqrcode);
