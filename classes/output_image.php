@@ -96,13 +96,14 @@ class output_image {
         $instance = $DB->get_record('block_instances', array('id' => $instanceid), '*', MUST_EXIST);
         $block = block_instance('qrcode', $instance);
 
-        if(is_null($block->config)) {
+        if (is_null($block->config)) {
             $block->config->usedefault = true;
         }
 
         // Set custom logo path.
         if (($block->config->usedefault && get_config('block_qrcode', 'use_logo') == 1) ||
-            (!$block->config->usedefault && $block->config->instc_uselogo)) {
+            (!$block->config->usedefault && $block->config->instc_uselogo)
+        ) {
             $logo = $this->get_logo();
 
             if ($logo === null) {

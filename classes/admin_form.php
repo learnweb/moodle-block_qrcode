@@ -23,6 +23,7 @@
  */
 
 namespace block_qrcode;
+
 use moodleform;
 
 defined('MOODLE_INTERNAL') || die;
