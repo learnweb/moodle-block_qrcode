@@ -97,6 +97,7 @@ class output_image {
         $block = block_instance('qrcode', $instance);
 
         if (is_null($block->config)) {
+            $block->config = new \StdClass();
             $block->config->usedefault = true;
         }
 

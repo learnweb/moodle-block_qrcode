@@ -32,26 +32,39 @@ defined('MOODLE_INTERNAL') || die();
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_qrcode_output_image_testcase extends advanced_testcase {
+    protected $course;
+    protected $block;
+
+    /**
+     * Tests initial setup.
+     *
+     *  Create a course and a block instance.
+     */
+    protected function setUp() {
+        $generator = $this->getDataGenerator()->get_plugin_generator('block_qrcode');
+        $this->course = $generator->create_course()['course'];
+        $this->block = $generator->create_instance();
+
+        // Confirm we have modified the site and requires reset.
+        $this->resetAfterTest(true);
+    }
 
     /**
      * Tests, if the image is created.
      */
     public function test_create_image() {
         global $CFG;
-        $this->resetAfterTest(true);
-
-        $generator = $this->getDataGenerator();
-        $course = $generator->create_course();
 
         set_config('use_logo', 0, 'block_qrcode');
         $this->assertEquals(0, get_config('block_qrcode', 'use_logo'));
 
         $size = 150;
-        $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-0.svg';
+        $file = $CFG->localcachedir.'/block_qrcode/course-'.$this->course->id. '-'.$size.'-0.svg';
         $outputimg = new block_qrcode\output_image(
             1,
             $size,
-            $course->id);
+            $this->course->id,
+            $this->block->id);
         $outputimg->create_image();
         $this->assertFileExists($file);
     }
@@ -62,19 +75,16 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
      */
     public function test_no_logo() {
         global $CFG;
-        $this->resetAfterTest(true);
-
-        $generator = $this->getDataGenerator();
-        $course = $generator->create_course();
 
         $this->assertFalse(get_config('block_qrcode', 'logofile_svg'));
 
         $size = 150;
-        $file = $CFG->localcachedir.'/block_qrcode/course-'.$course->id. '-'.$size.'-default.svg';
+        $file = $CFG->localcachedir.'/block_qrcode/course-'.$this->course->id. '-'.$size.'-default.svg';
         $outputimg = new block_qrcode\output_image(
             1,
             $size,
-            $course->id);
+            $this->course->id,
+            $this->block->id);
         $outputimg->create_image();
         $this->assertFileExists($file);
     }
