@@ -151,7 +151,9 @@ class output_image {
         }
 
         // Creates the QR code.
-        $qrcode = new QrCode(course_get_url($this->course)->out().'&utm_source=qrcode');
+        $url = course_get_url($this->course);
+        $url->param('utm_source', 'block_qrcode');
+        $qrcode = new QrCode($url->out());
         $qrcode->setSize($this->size);
 
         // Set advanced options.
