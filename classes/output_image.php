@@ -167,7 +167,7 @@ class output_image {
         if ($this->format == 2) {
             if ($this->logopath !== null) {
                 $qrcode->setLogoPath($this->logopath);
-                $qrcode->setLogoWidth($this->size / 2);
+                $qrcode->setLogoWidth($this->size * 0.4);
             }
             $qrcode->setWriterByName('png');
             $qrcode->writeFile($this->file);
@@ -237,7 +237,7 @@ class output_image {
         $xmllogo = new DOMDocument();
         $xmllogo->load($this->logopath);
 
-        $logotargetwidth = $codewidth / 2;
+        $logotargetwidth = $codewidth * 0.4;
 
         $viewbox = $xmllogo->documentElement->getAttribute('viewBox');
         $viewboxbounds = explode(' ', $viewbox);
