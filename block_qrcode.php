@@ -60,12 +60,12 @@ class block_qrcode extends block_base {
         // Displays the block.
         /** @var block_qrcode_renderer $renderer */
         $renderer = $PAGE->get_renderer('block_qrcode');
-        $this->content->text .= $renderer->display_image($COURSE->id);
+        $this->content->text .= $renderer->display_image($COURSE->id, $this->instance->id);
 
         // Students can't see the download button.
         if (has_capability('block/qrcode:download', $this->context)) {
             $this->content->text .= '<br><br>';
-            $this->content->text .= $renderer->display_download_section($COURSE->id);
+            $this->content->text .= $renderer->display_download_section($COURSE->id, $this->instance->id);
         }
 
         return $this->content;
@@ -80,6 +80,10 @@ class block_qrcode extends block_base {
         return array('course-view' => true, 'mod' => false, 'my' => false);
     }
 
+    /**
+     * Tells moodle, that the qrcode block has a settings file.
+     * @return bool true
+     */
     public function has_config() {
         return true;
     }

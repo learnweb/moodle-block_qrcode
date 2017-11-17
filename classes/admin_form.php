@@ -23,13 +23,23 @@
  */
 
 namespace block_qrcode;
+
 use moodleform;
 
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class admin_form
+ * Moodle form for settings site.
+ * @package block_qrcode
+ */
 class admin_form extends moodleform {
+
+    /**
+     * Creates the form.
+     */
     protected function definition() {
         $mform = $this->_form;
 

@@ -30,6 +30,11 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class block_qrcode_form
+ * Moodle form for qrcode block.
+ * @package block_qrcode
+ */
 class block_qrcode_form extends moodleform {
 
     /**
@@ -38,6 +43,8 @@ class block_qrcode_form extends moodleform {
      */
     public function definition() {
         $mform = $this->_form;
+
+        // Select file type.
         $selectf = $mform->addElement(
             'select',
             'format',
@@ -45,6 +52,8 @@ class block_qrcode_form extends moodleform {
             array(1 => 'svg', 2 => 'png'),
             array('id' => 'slc_format'));
         $selectf->setSelected($this->_customdata['format']);
+
+        // Select image size.
         $selects = $mform->addElement(
             'select',
             'size',

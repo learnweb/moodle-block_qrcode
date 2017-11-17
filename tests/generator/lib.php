@@ -15,16 +15,35 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
- * @package   block_qrcode
- * @copyright 2017 T Gunkel
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * block_qrcode data generator
+ *
+ * @package    block_qrcode
+ * @category   test
+ * @copyright  2017 Tamara Gunkel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'block_qrcode'; // Full name of the plugin.
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = 'v3.4-r2';
-$plugin->version = 2017111700; // The current plugin version (Date: YYYMMDDXX)
-$plugin->requires = 2017050500; // Requires this Moodle version.
+
+/**
+ * Online users block data generator class
+ *
+ * @package    block_qrcode
+ * @category   test
+ * @copyright  2017 Tamara Gunkel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class block_qrcode_generator extends testing_block_generator {
+
+    public function create_course() {
+        $generator = advanced_testcase::getDataGenerator();
+        $data = array();
+
+        // Create a course.
+        $course = $generator->create_course();
+        $data['course'] = $course;
+
+        return $data;
+    }
+}

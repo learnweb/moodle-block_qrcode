@@ -45,26 +45,66 @@ require_once($CFG->dirroot . '/course/lib.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class output_image {
-    protected $file; // QR code is saved in this file.
+    /**
+     * QR code is saved in this file.
+     * @var string
+     */
+    protected $file;
+
+    /**
+     * Output file type.
+     * 0 - png, 1 - svg
+     * @var int
+     */
     protected $format;
+
+    /**
+     * Size of qrcode (downloaded image).
+     * Only for png.
+     * @var int
+     */
     protected $size;
+
+    /**
+     * Filepath for logo.
+     * @var string
+     */
     protected $logopath;
+
+    /**
+     * Course for which the qrcode is created.
+     * @var \stdClass
+     */
     protected $course;
 
     /**
      * output_image constructor.
-     * @param $courseid
+     * @param int $format file type
+     * @param int $size image size
+     * @param int $courseid course for which the qrcode is created
+     * @param int $instanceid
      */
-    public function __construct($format, $size, $courseid) {
-        global $CFG;
+    public function __construct($format, $size, $courseid, $instanceid) {
+        global $CFG, $DB;
         $this->format = $format;
         $this->size = (int)$size;
         $this->course = get_course($courseid);
+        $this->logopath = null;
         $file = $CFG->localcachedir . '/block_qrcode/course-' .
             (int)$courseid . '-' . $this->size; // Set file path.
 
+        $instance = $DB->get_record('block_instances', array('id' => $instanceid), '*', MUST_EXIST);
+        $block = block_instance('qrcode', $instance);
+
+        if (is_null($block->config)) {
+            $block->config = new \StdClass();
+            $block->config->usedefault = true;
+        }
+
         // Set custom logo path.
-        if (get_config('block_qrcode', 'use_logo') == 1) {
+        if (($block->config->usedefault && get_config('block_qrcode', 'use_logo') == 1) ||
+            (!$block->config->usedefault && $block->config->instc_uselogo)
+        ) {
             $logo = $this->get_logo();
 
             if ($logo === null) {
@@ -111,7 +151,9 @@ class output_image {
         }
 
         // Creates the QR code.
-        $qrcode = new QrCode(course_get_url($this->course)->out());
+        $url = course_get_url($this->course);
+        $url->param('utm_source', 'block_qrcode');
+        $qrcode = new QrCode($url->out());
         $qrcode->setSize($this->size);
 
         // Set advanced options.
@@ -123,15 +165,15 @@ class output_image {
 
         // Png format.
         if ($this->format == 2) {
-            if (get_config('block_qrcode', 'use_logo') == 1) {
+            if ($this->logopath !== null) {
                 $qrcode->setLogoPath($this->logopath);
-                $qrcode->setLogoWidth($this->size / 2);
+                $qrcode->setLogoWidth($this->size * 0.4);
             }
             $qrcode->setWriterByName('png');
             $qrcode->writeFile($this->file);
         } else {
             $qrcode->setWriterByName('svg');
-            if (get_config('block_qrcode', 'use_logo') == 1) {
+            if ($this->logopath !== null) {
                 $qrcodestring = $qrcode->writeString();
                 $newqrcode = $this->modify_svg($qrcodestring);
                 file_put_contents($this->file, $newqrcode);
@@ -143,7 +185,7 @@ class output_image {
 
     /**
      * Outputs file headers to initialise the download of the file / display the file.
-     * @param $download true, if the QR code should be downloaded
+     * @param bool $download true, if the QR code should be downloaded
      */
     protected function send_headers($download) {
         // Caches file for 1 month.
@@ -171,7 +213,7 @@ class output_image {
 
     /**
      * Outputs (downloads or displays) the QR code.
-     * @param $download true, if the QR code should be downloaded
+     * @param bool $download true, if the QR code should be downloaded
      */
     public function output_image($download) {
         $this->create_image();
@@ -181,7 +223,7 @@ class output_image {
 
     /**
      * Inserts logo in the QR code (used for svg QR code).
-     * @param $svgqrcode QR code
+     * @param string $svgqrcode QR code
      * @return string XML representation of the svg image
      */
     private function modify_svg($svgqrcode) {
@@ -195,7 +237,7 @@ class output_image {
         $xmllogo = new DOMDocument();
         $xmllogo->load($this->logopath);
 
-        $logotargetwidth = $codewidth / 2;
+        $logotargetwidth = $codewidth * 0.4;
 
         $viewbox = $xmllogo->documentElement->getAttribute('viewBox');
         $viewboxbounds = explode(' ', $viewbox);

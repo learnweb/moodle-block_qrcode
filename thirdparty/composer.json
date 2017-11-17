@@ -1,5 +1,5 @@
 {
     "require": {
-        "endroid/qrcode": "^2.2"
+        "endroid/qrcode": "^2.4"
     }
 }
