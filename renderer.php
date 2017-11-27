@@ -35,7 +35,8 @@ class block_qrcode_renderer extends plugin_renderer_base {
 
     /**
      * Returns a QR code as html image.
-     * @param itn $courseid QR code
+     * @param int $courseid course id
+     * @param int $instanceid instance id of block
      * @return string html-string
      */
     public function display_image($courseid, $instanceid) {
@@ -50,8 +51,9 @@ class block_qrcode_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Displays download section (menus for choosing format & size, download button).
-     * @param int $courseid CourseID
+     * Displays the download section (menus for choosing format & size, download button).     *
+     * @param int $courseid course id
+     * @param int $instanceid instance id of block
      * @return string html-string
      */
     public function display_download_section($courseid, $instanceid) {

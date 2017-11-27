@@ -26,13 +26,18 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Class block_qrcode_form
+ *
  * Moodle form for editing a qrcode block.
+ *
  * @package block_qrcode
+ * @copyright 2017 T Gunkel
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_qrcode_edit_form extends block_edit_form {
 
     /**
-     * Form definition.
+     * Form definition
+     * @param object $mform moodleform
      */
     protected function specific_definition($mform) {
         $mform->addElement('header', 'configheader', get_string('editblock', 'block_qrcode'));

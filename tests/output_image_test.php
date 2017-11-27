@@ -32,7 +32,15 @@ defined('MOODLE_INTERNAL') || die();
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_qrcode_output_image_testcase extends advanced_testcase {
+    /**
+     * course object
+     * @var object
+     */
     protected $course;
+    /**
+     * block instance
+     * @var object
+     */
     protected $block;
 
     /**
