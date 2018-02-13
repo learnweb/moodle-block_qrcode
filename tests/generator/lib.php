@@ -36,6 +36,10 @@ defined('MOODLE_INTERNAL') || die();
  */
 class block_qrcode_generator extends testing_block_generator {
 
+    /**
+     * Creates a course.
+     * @return array
+     */
     public function create_course() {
         $generator = advanced_testcase::getDataGenerator();
         $data = array();

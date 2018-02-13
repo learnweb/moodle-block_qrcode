@@ -32,8 +32,12 @@ require_once($CFG->libdir . '/formslib.php');
 
 /**
  * Class admin_form
+ *
  * Moodle form for settings site.
+ *
  * @package block_qrcode
+ * @copyright 2017 T Gunkel
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class admin_form extends moodleform {
 

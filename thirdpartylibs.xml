@@ -62,5 +62,12 @@
         <license>MIT</license>
         <licenseversion>1</licenseversion>
     </library>
-
+    <library>
+        <location>thirdparty/vendor/composer</location>
+        <name>Automatically generated files by composer</name>
+    </library>
+    <library>
+        <location>thirdparty/vendor/autoload.php</location>
+        <name>Automatically generated file by composer</name>
+    </library>
 </libraries>

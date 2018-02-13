@@ -32,8 +32,12 @@ require_once($CFG->libdir . '/formslib.php');
 
 /**
  * Class block_qrcode_form
+ *
  * Moodle form for qrcode block.
+ *
  * @package block_qrcode
+ * @copyright 2017 T Gunkel
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_qrcode_form extends moodleform {
 
