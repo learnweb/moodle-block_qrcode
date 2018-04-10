@@ -40,3 +40,4 @@ $string['submit'] = 'Save changes';
 $string['editblock'] = 'Edit QR code block';
 $string['usedefault'] = 'Use default settings';
 $string['instc_uselogo'] = 'Use logo';
+$string['privacy:null_reason'] = 'The qrcode block displays information about a course, but does not effect or store any personal data. All displayed logos are managed by the file manager.';
