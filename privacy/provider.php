@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for block_calendar_month.
+ * Privacy Subsystem implementation for block_qrcode.
  *
  * @package    block_qrcode
  * @copyright  2018 Tamara Gunkel
