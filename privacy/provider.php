@@ -17,8 +17,8 @@
 /**
  * Privacy Subsystem implementation for block_calendar_month.
  *
- * @package    block_calendar_month
- * @copyright  2018 Zig Tan <zig@moodle.com>
+ * @package    block_qrcode
+ * @copyright  2018 Tamara Gunkel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
