@@ -1,10 +1,11 @@
 language: php
 
 sudo: required
+dist: trusty
 
 addons:
   firefox: "47.0.1"
-  postgresql: "9.3"
+  postgresql: "9.4"
   apt:
     packages:
       - oracle-java9-installer
@@ -33,6 +34,10 @@ matrix:
     env: DB=pgsql MOODLE_BRANCH=MOODLE_34_STABLE
   - php: 5.6
     env: DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
+  - php: 5.6
+    env: DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
+  - php: 5.6
+    env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
   fast_finish: true
 
 env:
@@ -42,9 +47,11 @@ env:
   matrix:
     - DB=pgsql MOODLE_BRANCH=MOODLE_33_STABLE
     - DB=pgsql MOODLE_BRANCH=MOODLE_34_STABLE
+    - DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
     - DB=pgsql MOODLE_BRANCH=master
     - DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
     - DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
+    - DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
     - DB=mysqli MOODLE_BRANCH=master
 
 before_install:
@@ -60,7 +67,7 @@ jobs:
     # Prechecks against latest Moodle stable only.
     - stage: static
       php: 7.1
-      env: DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
       install:
       - moodle-plugin-ci install --no-init
       script:
@@ -72,16 +79,6 @@ jobs:
       - moodle-plugin-ci savepoints
       - moodle-plugin-ci mustache
       - moodle-plugin-ci grunt
-
-    # Smaller build matrix for development builds
-    - stage: develop
-      php: 7.1
-      env: DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
-      install:
-      - moodle-plugin-ci install
-      script:
-      - moodle-plugin-ci phpunit --coverage-clover
-      - moodle-plugin-ci behat
 
 # Default 'test' stage: Unit tests and behat tests against full matrix.
 
@@ -96,7 +93,4 @@ after_success:
 
 stages:
   - static
-  - name: develop
-    if: branch != master AND (type != pull_request OR head_branch != master) AND (tag IS blank)
-  - name: test
-    if: branch = master OR (type = pull_request AND head_branch = master) OR (tag IS present)
+  - test
