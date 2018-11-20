@@ -22,9 +22,9 @@ php:
  - 7.1
 
 matrix:
-  allow_failures:
-  - env: DB=pgsql MOODLE_BRANCH=master
-  - env: DB=mysqli MOODLE_BRANCH=master
+  #allow_failures:
+  #- env: DB=pgsql MOODLE_BRANCH=master
+  #- env: DB=mysqli MOODLE_BRANCH=master
   exclude:
   - php: 5.6
     env: DB=pgsql MOODLE_BRANCH=master
@@ -38,6 +38,10 @@ matrix:
     env: DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
   - php: 5.6
     env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
+  #- php: 5.6
+  #  env: DB=pgsql MOODLE_BRANCH=MOODLE_36_STABLE
+  #- php: 5.6
+  #  env: DB=mysqli MOODLE_BRANCH=MOODLE_36_STABLE
   fast_finish: true
 
 env:
@@ -48,10 +52,12 @@ env:
     - DB=pgsql MOODLE_BRANCH=MOODLE_33_STABLE
     - DB=pgsql MOODLE_BRANCH=MOODLE_34_STABLE
     - DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
+    #- DB=pgsql MOODLE_BRANCH=MOODLE_36_STABLE
     - DB=pgsql MOODLE_BRANCH=master
     - DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
     - DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
     - DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
+    #- DB=mysqli MOODLE_BRANCH=MOODLE_36_STABLE
     - DB=mysqli MOODLE_BRANCH=master
 
 before_install:
@@ -79,6 +85,15 @@ jobs:
       - moodle-plugin-ci savepoints
       - moodle-plugin-ci mustache
       - moodle-plugin-ci grunt
+    # Smaller build matrix for development builds
+    - stage: develop
+      php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
+      install:
+      - moodle-plugin-ci install
+      script:
+      - moodle-plugin-ci phpunit --coverage-clover
+      - moodle-plugin-ci behat
 
 # Default 'test' stage: Unit tests and behat tests against full matrix.
 
@@ -93,4 +108,7 @@ after_success:
 
 stages:
   - static
-  - test
+  - name: develop
+    if: branch != master AND (type != pull_request OR head_branch != master) AND (tag IS blank)
+  - name: test
+    if: branch = master OR (type = pull_request AND head_branch = master) OR (tag IS present)
