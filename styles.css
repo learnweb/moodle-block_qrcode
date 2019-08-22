@@ -10,10 +10,21 @@
     margin-left: 60px;
 }
 
+.block_qrcode #fitem_slc_size .felement.col-md-9,
+.block_qrcode #fitem_slc_format .felement.col-md-9 {
+    /** Boostrap design fix */
+    margin-left: 0;
+}
+
 .block_qrcode #fitem_id_submitbutton .fsubmit {
     margin: 0;
 }
 
 .block_qrcode .mform {
     margin: 0 10px;
+}
+
+.block_qrcode .mform > .form-group {
+    /** Boostrap design fix */
+    margin-left: 0;
 }
