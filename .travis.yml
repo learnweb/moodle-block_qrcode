@@ -44,6 +44,10 @@ matrix:
   - php: 7.2
     env: DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
   - php: 7.0
+    env: DB=pgsql MOODLE_BRANCH=MOODLE_37_STABLE
+  - php: 7.0
+    env: DB=mysqli MOODLE_BRANCH=MOODLE_37_STABLE
+  - php: 7.0
     env: DB=pgsql MOODLE_BRANCH=master
   - php: 7.0
     env: DB=mysqli MOODLE_BRANCH=master
@@ -58,11 +62,13 @@ env:
     - DB=pgsql MOODLE_BRANCH=MOODLE_34_STABLE
     - DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
     - DB=pgsql MOODLE_BRANCH=MOODLE_36_STABLE
+    - DB=pgsql MOODLE_BRANCH=MOODLE_37_STABLE
     - DB=pgsql MOODLE_BRANCH=master
     - DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
     - DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
     - DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
     - DB=mysqli MOODLE_BRANCH=MOODLE_36_STABLE
+    - DB=mysqli MOODLE_BRANCH=MOODLE_37_STABLE
     - DB=mysqli MOODLE_BRANCH=master
 
 before_install:
