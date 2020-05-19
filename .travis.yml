@@ -7,6 +7,7 @@ addons:
 
 services:
   - mysql
+  - docker
 
 cache:
   directories:
@@ -81,6 +82,7 @@ jobs:
 # Default 'test' stage: Unit tests and behat tests against full matrix.
 
 install:
+  - docker run -d -p 127.0.0.1:4444:4444 --net=host -v /dev/shm:/dev/shm selenium/standalone-firefox:2.53.1
   - moodle-plugin-ci install
 script:
   - moodle-plugin-ci phpunit --coverage-clover
