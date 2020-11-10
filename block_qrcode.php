@@ -52,14 +52,14 @@ class block_qrcode extends block_base {
         }
 
         // Record the current course and page.
-        global $PAGE, $COURSE;
+        global $COURSE;
 
         $this->content = new stdClass;
         $this->content->text = '';
 
         // Displays the block.
         /** @var block_qrcode_renderer $renderer */
-        $renderer = $PAGE->get_renderer('block_qrcode');
+        $renderer = $this->page->get_renderer('block_qrcode');
         $this->content->text .= $renderer->display_image($COURSE->id, $this->instance->id);
 
         // Students can't see the download button.
