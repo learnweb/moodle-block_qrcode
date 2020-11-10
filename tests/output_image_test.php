@@ -48,7 +48,7 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
      *
      *  Create a course and a block instance.
      */
-    protected function setUp() {
+    protected function setUp() : void {
         $generator = $this->getDataGenerator()->get_plugin_generator('block_qrcode');
         $this->course = $generator->create_course()['course'];
         $this->block = $generator->create_instance();
