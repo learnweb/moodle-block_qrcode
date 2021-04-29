@@ -1,4 +1,0 @@
-fixes:
-	- "moodle/blocks/qrcode/::"
-ignore:
-	- "tests"
