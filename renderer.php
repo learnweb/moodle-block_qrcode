@@ -61,7 +61,8 @@ class block_qrcode_renderer extends plugin_renderer_base {
             array('courseid' => $courseid,
                 'download' => true,
                 'instance' => $instanceid));
-        $mform = new block_qrcode\block_qrcode_form($download, array('format' => 1, 'size' => 150));
+        $mform = new block_qrcode\block_qrcode_form($download, array('format' => 1, 'size' => 150), 'post',
+                '', ['data-double-submit-protection' => 'off']);
         return $mform->render();
     }
 
