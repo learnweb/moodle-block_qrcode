@@ -22,8 +22,6 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * QR code block installation.
  *
@@ -35,4 +33,3 @@ function xmldb_block_qrcode_install() {
     // Default to showing the logo.
     set_config('use_logo', 1, 'block_qrcode');
 }
-

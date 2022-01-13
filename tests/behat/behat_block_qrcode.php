@@ -50,5 +50,4 @@ class behat_block_qrcode extends behat_base {
             throw new ExpectationException('QR code is not displayed.', $this->getSession());
         }
     }
-
 }
