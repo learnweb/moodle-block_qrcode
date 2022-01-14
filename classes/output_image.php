@@ -274,15 +274,15 @@ class output_image {
     private function get_logo() {
         if ($this->format == 2) {
             $filearea = 'logo_png';
-            $filepath = pathinfo(get_config('block_qrcode', 'logofile_png'), PATHINFO_DIRNAME);
-            $filename = pathinfo(get_config('block_qrcode', 'logofile_png'), PATHINFO_BASENAME);
+            $completepath = get_config('block_qrcode', 'logofile_png');
         } else {
             $filearea = 'logo_svg';
-            $filepath = pathinfo(get_config('block_qrcode', 'logofile_svg'), PATHINFO_DIRNAME);
-            $filename = pathinfo(get_config('block_qrcode', 'logofile_svg'), PATHINFO_BASENAME);
+            $completepath = get_config('block_qrcode', 'logofile_svg');
         }
 
         $fs = get_file_storage();
+        $filepath = pathinfo($completepath, PATHINFO_DIRNAME);
+        $filename = pathinfo($completepath, PATHINFO_BASENAME);
         $file = $fs->get_file(\context_system::instance()->id,
             'block_qrcode',
             $filearea,
