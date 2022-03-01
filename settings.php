@@ -24,10 +24,21 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-if ($hassiteconfig) { // Needs this condition or there is error on login page.
-    $ADMIN->add('blocksettings', new admin_externalpage('block_qrcode',
-        get_string('pluginname', 'block_qrcode'),
-        new moodle_url('/blocks/qrcode/adminsettings.php')));
-}
-$settings = null;
+if ($ADMIN->fulltree) {
 
+    $settings->add(new admin_setting_configcheckbox('block_qrcode/use_logo',
+            get_string('use_logo', 'block_qrcode'),
+            get_string('use_logo_help', 'block_qrcode'),
+            '1'
+    ));
+
+    $settings->add(new admin_setting_configstoredfile('block_qrcode/logofile_png',
+            get_string('logofile_png', 'block_qrcode'),
+            '', 'logo_png', 0, ['accepted_types' => '.png']
+    ));
+
+    $settings->add(new admin_setting_configstoredfile('block_qrcode/logofile_svg',
+            get_string('logofile_svg', 'block_qrcode'),
+            '', 'logo_svg', 0, ['accepted_types' => '.svg']
+    ));
+}

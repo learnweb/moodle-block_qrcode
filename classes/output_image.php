@@ -66,10 +66,14 @@ class output_image {
     protected $size;
 
     /**
-     * Filepath for logo.
-     * @var string
+     * @var bool Whether to use a logo in the qrcode.
      */
-    protected $logopath;
+    protected $uselogo;
+
+    /**
+     * @var \stored_file Stored file for custom logo.
+     */
+    protected $logofile;
 
     /**
      * Course for which the qrcode is created.
@@ -89,7 +93,6 @@ class output_image {
         $this->format = $format;
         $this->size = (int)$size;
         $this->course = get_course($courseid);
-        $this->logopath = null;
         $file = $CFG->localcachedir . '/block_qrcode/course-' .
             (int)$courseid . '-' . $this->size; // Set file path.
 
@@ -101,23 +104,17 @@ class output_image {
             $block->config->usedefault = true;
         }
 
-        // Set custom logo path.
-        if (($block->config->usedefault && get_config('block_qrcode', 'use_logo') == 1) ||
-            (!$block->config->usedefault && $block->config->instc_uselogo)
-        ) {
-            $logo = $this->get_logo();
+        $this->uselogo = ($block->config->usedefault && get_config('block_qrcode', 'use_logo') == 1) ||
+                (!$block->config->usedefault && $block->config->instc_uselogo);
 
-            if ($logo === null) {
-                // Use default moodle logo.
-                if ($format == 1) {
-                    $this->logopath = $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.svg';
-                } else {
-                    $this->logopath = $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.png';
-                }
-                $file .= '-default';
+        // Set custom logo path.
+        if ($this->uselogo) {
+            $this->logofile = $this->get_logo();
+
+            if ($this->logofile) {
+                $file .= '-' . $this->logofile->get_contenthash();
             } else {
-                $this->logopath = $logo->path;
-                $file .= '-' . $logo->hash;
+                $file .= '-default';
             }
         } else {
             $file .= '-0';
@@ -165,17 +162,23 @@ class output_image {
 
         // Png format.
         if ($this->format == 2) {
-            if ($this->logopath !== null) {
-                $qrcode->setLogoPath($this->logopath);
-                $qrcode->setLogoWidth($this->size * 0.4);
-            }
             $qrcode->setWriterByName('png');
+            if ($this->uselogo) {
+                $qrcode->setLogoWidth($this->size * 0.4);
+                if ($this->logofile) {
+                    $qrcode->setLogoPath($this->logofile->copy_content_to_temp());
+                } else {
+                    $qrcode->setLogoPath($CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.png');
+                }
+            }
             $qrcode->writeFile($this->file);
         } else {
             $qrcode->setWriterByName('svg');
-            if ($this->logopath !== null) {
+            if ($this->uselogo) {
                 $qrcodestring = $qrcode->writeString();
-                $newqrcode = $this->modify_svg($qrcodestring);
+                $logopath = $this->logofile ? $this->logofile->copy_content_to_temp()
+                        : $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.svg';
+                $newqrcode = $this->modify_svg($qrcodestring, $logopath);
                 file_put_contents($this->file, $newqrcode);
             } else {
                 $qrcode->writeFile($this->file);
@@ -224,9 +227,10 @@ class output_image {
     /**
      * Inserts logo in the QR code (used for svg QR code).
      * @param string $svgqrcode QR code
+     * @param string $logopath Path of logo to add
      * @return string XML representation of the svg image
      */
-    private function modify_svg($svgqrcode) {
+    private function modify_svg($svgqrcode, $logopath) {
         // Loads QR code.
         $xmldoc = new DOMDocument();
         $xmldoc->loadXML($svgqrcode);
@@ -235,7 +239,7 @@ class output_image {
 
         // Loads logo.
         $xmllogo = new DOMDocument();
-        $xmllogo->load($this->logopath);
+        $xmllogo->load($logopath);
 
         $logotargetwidth = $codewidth * 0.4;
 
@@ -264,39 +268,29 @@ class output_image {
     }
 
     /**
-     * Generates logo file path and hash.
-     * @return string file path and hash
+     * Returns the stored file of the logo, if possible.
+     * @return \stored_file|null stored file
      */
     private function get_logo() {
-        global $CFG;
-        $logo = new \stdClass();
-
         if ($this->format == 2) {
             $filearea = 'logo_png';
-            $filepath = pathinfo(get_config('block_qrcode', 'logofile_png'), PATHINFO_DIRNAME);
-            $filename = pathinfo(get_config('block_qrcode', 'logofile_png'), PATHINFO_BASENAME);
+            $completepath = get_config('block_qrcode', 'logofile_png');
         } else {
             $filearea = 'logo_svg';
-            $filepath = pathinfo(get_config('block_qrcode', 'logofile_svg'), PATHINFO_DIRNAME);
-            $filename = pathinfo(get_config('block_qrcode', 'logofile_svg'), PATHINFO_BASENAME);
+            $completepath = get_config('block_qrcode', 'logofile_svg');
         }
 
         $fs = get_file_storage();
+        $filepath = pathinfo($completepath, PATHINFO_DIRNAME);
+        $filename = pathinfo($completepath, PATHINFO_BASENAME);
         $file = $fs->get_file(\context_system::instance()->id,
             'block_qrcode',
             $filearea,
             0,
             $filepath,
             $filename);
-
         if ($file) {
-            $logo->hash = $file->get_contenthash();
-            $logo->path = $CFG->dataroot . '/filedir/' .
-                substr($logo->hash, 0, 2) . '/' .
-                substr($logo->hash, 2, 2) . '/' .
-                $logo->hash;
-
-            return $logo;
+            return $file;
         }
         return null;
     }

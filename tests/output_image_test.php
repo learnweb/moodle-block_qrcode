@@ -22,7 +22,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace block_qrcode;
 
 /**
  * PHPUnit output image testcase
@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2017 T Gunkel
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block_qrcode_output_image_testcase extends advanced_testcase {
+class output_image_test extends \advanced_testcase {
     /**
      * course object
      * @var object
@@ -68,7 +68,7 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
 
         $size = 150;
         $file = $CFG->localcachedir.'/block_qrcode/course-'.$this->course->id. '-'.$size.'-0.svg';
-        $outputimg = new block_qrcode\output_image(
+        $outputimg = new output_image(
             1,
             $size,
             $this->course->id,
@@ -84,11 +84,11 @@ class block_qrcode_output_image_testcase extends advanced_testcase {
     public function test_no_logo() {
         global $CFG;
 
-        $this->assertFalse(get_config('block_qrcode', 'logofile_svg'));
+        $this->assertEquals('', get_config('block_qrcode', 'logofile_svg'));
 
         $size = 150;
         $file = $CFG->localcachedir.'/block_qrcode/course-'.$this->course->id. '-'.$size.'-default.svg';
-        $outputimg = new block_qrcode\output_image(
+        $outputimg = new output_image(
             1,
             $size,
             $this->course->id,
