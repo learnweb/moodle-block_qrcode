@@ -6,20 +6,28 @@ jobs:
   static:
     runs-on: ubuntu-latest
 
+    outputs:
+      has_tests: ${{ steps.check_tests.outputs.has_tests }}
+
     strategy:
       matrix:
         php: ['7.4']
-        moodle-branch: ['MOODLE_311_STABLE']
+        moodle-branch: ['MOODLE_400_STABLE']
         database: ['pgsql']
 
     steps:
       - name: Start PostgreSQL
-        run: docker run -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres:9.6
+        run: docker run -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres:10
 
       - name: Check out repository code
         uses: actions/checkout@v2
         with:
           path: plugin
+
+      - name: Check for test folder
+        id: check_tests
+        run: |
+          echo "::set-output name=has_tests::${{ hashFiles('plugin/tests') != '' }}"
 
       - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
@@ -101,22 +109,23 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: static
+    if: ${{ needs.static.outputs.has_tests == 'true' }}
 
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.3', '7.4']
-        moodle-branch: ['MOODLE_39_STABLE', 'MOODLE_310_STABLE', 'MOODLE_311_STABLE']
+        php: ['7.4']
+        moodle-branch: ['MOODLE_39_STABLE', 'MOODLE_310_STABLE', 'MOODLE_311_STABLE', 'MOODLE_400_STABLE']
         database: ['mariadb', 'pgsql']
 
     steps:
       - name: Start MariaDB
         if: matrix.database == 'mariadb'
-        run: docker run -p 3306:3306 -e MYSQL_USER=root -e MYSQL_ALLOW_EMPTY_PASSWORD=true -d mariadb:10.5
+        run: docker run -p 3306:3306 -e MYSQL_USER=root -e MYSQL_ALLOW_EMPTY_PASSWORD=true -d mariadb:10
 
       - name: Start PostgreSQL
         if: matrix.database == 'pgsql'
-        run: docker run -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres:9.6
+        run: docker run -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres:10
 
       - name: Check out repository code
         uses: actions/checkout@v2
