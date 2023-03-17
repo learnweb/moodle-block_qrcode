@@ -50,5 +50,23 @@ class block_qrcode_edit_form extends block_edit_form {
         $mform->disabledIf('config_instc_uselogo', 'config_usedefault', 'checked');
         $mform->setDefault('config_instc_uselogo', true);
         $mform->setType('config_instc_uselogo', PARAM_BOOL);
+
+        $mform->addElement('filemanager', 'config_customlogo', get_string('customfile', 'block_qrcode'),
+            null,
+            [
+                'subdirs' => 0,
+                'areamaxbytes' => 10485760,
+                'maxfiles' => 1,
+                'accepted_types' => ['.png'],
+            ]
+        );
+
+    }
+
+    function set_data($defaults) {
+        $draftitemid = file_get_submitted_draft_itemid('customlogo');
+        file_prepare_draft_area($draftitemid, $defaults->parentcontextid, 'block_qrcode', 'customlogo', 0);
+        $defaults->customlogo = $draftitemid;
+        parent::set_data($defaults);
     }
 }
