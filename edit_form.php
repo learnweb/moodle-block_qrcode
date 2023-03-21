@@ -51,7 +51,19 @@ class block_qrcode_edit_form extends block_edit_form {
         $mform->setDefault('config_instc_uselogo', true);
         $mform->setType('config_instc_uselogo', PARAM_BOOL);
 
-        $mform->addElement('filemanager', 'config_customlogo', get_string('customfile', 'block_qrcode'),
+        //File Area for Customlogo as svg.
+        $mform->addElement('filemanager', 'config_customlogosvg', get_string('customfilesvg', 'block_qrcode'),
+            null,
+            [
+                'subdirs' => 0,
+                'areamaxbytes' => 10485760,
+                'maxfiles' => 1,
+                'accepted_types' => ['.svg'],
+            ]
+        );
+
+        //File Area for Customlogo as png.
+        $mform->addElement('filemanager', 'config_customlogopng', get_string('customfilepng', 'block_qrcode'),
             null,
             [
                 'subdirs' => 0,
@@ -63,10 +75,18 @@ class block_qrcode_edit_form extends block_edit_form {
 
     }
 
+    /**
+     * Copies existing logos into draft areas.
+     * @param $defaults
+     * @return void
+     */
     function set_data($defaults) {
-        $draftitemid = file_get_submitted_draft_itemid('customlogo');
-        file_prepare_draft_area($draftitemid, $defaults->parentcontextid, 'block_qrcode', 'customlogo', 0);
-        $defaults->customlogo = $draftitemid;
+        $draftitemidsvg = file_get_submitted_draft_itemid('customlogosvg');
+        $draftitemidpng = file_get_submitted_draft_itemid('customlogopng');
+        file_prepare_draft_area($draftitemidsvg, $defaults->parentcontextid, 'block_qrcode', 'customlogosvg', 0);
+        file_prepare_draft_area($draftitemidpng, $defaults->parentcontextid, 'block_qrcode', 'customlogopng', 0);
+        $defaults->customlogosvg = $draftitemidsvg;
+        $defaults->customlogopng = $draftitemidpng;
         parent::set_data($defaults);
     }
 }

@@ -53,7 +53,7 @@ class output_image {
 
     /**
      * Output file type.
-     * 0 - png, 1 - svg
+     * 1 - svg, 2 - png
      * @var int
      */
     protected $format;
@@ -82,6 +82,11 @@ class output_image {
     protected $course;
 
     /**
+     * Block instanceID.
+     * @var int
+     */
+    protected  $instanceid;
+    /**
      * output_image constructor.
      * @param int $format file type
      * @param int $size image size
@@ -93,6 +98,7 @@ class output_image {
         $this->format = $format;
         $this->size = (int)$size;
         $this->course = get_course($courseid);
+        $this->instanceid = $instanceid;
         $file = $CFG->localcachedir . '/block_qrcode/course-' .
             (int)$courseid . '-' . $this->size; // Set file path.
 
@@ -268,29 +274,82 @@ class output_image {
     }
 
     /**
-     * Returns the stored file of the logo, if possible.
+     * Returns the stored file of the customlogo, if possible.
+     * If not, returns the stored file of the default logo.
      * @return \stored_file|null stored file
      */
     private function get_logo() {
-        if ($this->format == 2) {
-            $filearea = 'logo_png';
-            $completepath = get_config('block_qrcode', 'logofile_png');
-        } else {
-            $filearea = 'logo_svg';
-            $completepath = get_config('block_qrcode', 'logofile_svg');
-        }
 
-        $fs = get_file_storage();
-        $filepath = pathinfo($completepath, PATHINFO_DIRNAME);
-        $filename = pathinfo($completepath, PATHINFO_BASENAME);
-        $file = $fs->get_file(\context_system::instance()->id,
-            'block_qrcode',
-            $filearea,
-            0,
-            $filepath,
-            $filename);
-        if ($file) {
-            return $file;
+        $fssvg = get_file_storage();
+        $fspng = get_file_storage();
+
+        $fileinfosvg = array(
+            'component' => 'block_qrcode',
+            'filearea' => 'customlogosvg',
+            'itemid' => 0,
+            'contextid' => \context_block::instance($this->instanceid)->id,
+            'filepath' => '/',
+            'filename' => null);
+        $fileinfopng = array(
+            'component' => 'block_qrcode',
+            'filearea' => 'customlogopng',
+            'itemid' => 0,
+            'contextid' => \context_block::instance($this->instanceid)->id,
+            'filepath' => '/',
+            'filename' => null);
+
+        // Get file
+        $filesvg = $fssvg->get_file($fileinfosvg['contextid'], $fileinfosvg['component'], $fileinfosvg['filearea'],
+            $fileinfosvg['itemid'], $fileinfosvg['filepath'], $fileinfosvg['filename']);
+        $filepng = $fspng->get_file($fileinfopng['contextid'], $fileinfopng['component'], $fileinfopng['filearea'],
+            $fileinfopng['itemid'], $fileinfopng['filepath'], $fileinfopng['filename']);
+
+        $filessvg = $fssvg->get_area_files(\context_block::instance($this->instanceid)->id, 'block_qrcode', 'customlogosvg', 0, 'sortorder', false);
+        $filespng = $fspng->get_area_files(\context_block::instance($this->instanceid)->id, 'block_qrcode', 'customlogopng', 0, 'sortorder', false);
+
+
+        if($this->format == 1){
+            if(count($filessvg) == 1) {
+                $filesvg = reset($filessvg);
+                return $filesvg;
+            }else{
+                $filearea = 'logo_svg';
+                $completepath = get_config('block_qrcode', 'logofile_svg');
+
+                $fs = get_file_storage();
+                $filepath = pathinfo($completepath, PATHINFO_DIRNAME);
+                $filename = pathinfo($completepath, PATHINFO_BASENAME);
+                $file = $fs->get_file(\context_system::instance()->id,
+                    'block_qrcode',
+                    $filearea,
+                    0,
+                    $filepath,
+                    $filename);
+                if ($file) {
+                    return $file;
+                }
+            }
+        }else{
+            if(count($filespng) == 1) {
+                $filepng = reset($filespng);
+                return $filepng;
+            }else{
+                $filearea = 'logo_png';
+                $completepath = get_config('block_qrcode', 'logofile_png');
+
+                $fs = get_file_storage();
+                $filepath = pathinfo($completepath, PATHINFO_DIRNAME);
+                $filename = pathinfo($completepath, PATHINFO_BASENAME);
+                $file = $fs->get_file(\context_system::instance()->id,
+                    'block_qrcode',
+                    $filearea,
+                    0,
+                    $filepath,
+                    $filename);
+                if ($file) {
+                    return $file;
+                }
+            }
         }
         return null;
     }

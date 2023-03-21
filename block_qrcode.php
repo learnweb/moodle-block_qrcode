@@ -49,8 +49,6 @@ class block_qrcode extends block_base {
             return $this->content;
         }
 
-        //var_dump($this->config);
-
         // Record the current course and page.
         global $COURSE;
 
@@ -70,26 +68,6 @@ class block_qrcode extends block_base {
         }
 
         $this->page->requires->js_call_amd('block_qrcode/fullscreenqrcode', 'init', array($qrcode));
-
-        $fs = get_file_storage();
-        $fileinfo = array(
-            'component' => 'block_qrcode',
-            'filearea' => 'customlogo',     // usually = table name
-            'itemid' => 0,               // usually = ID of row in table
-            'contextid' => $this->context->id, // ID of context
-            'filepath' => '/',           // any path beginning and ending in /
-            'filename' => null); // any filename
-
-// Get file
-        $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-            $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
-
-
-        if ($file) {
-            $this->content->text .= 'File gefunden';
-        }else{
-            $this->content->text .= 'File nicht gefunden';
-        }
 
         return $this->content;
 
@@ -113,32 +91,39 @@ class block_qrcode extends block_base {
         return true;
     }
 
+    /**
+     * method for saving custom logos in database
+     * @param $data
+     * @param $nolongerused
+     * @return void
+     * @throws coding_exception
+     */
     public function instance_config_save($data, $nolongerused = false)
     {
-
-        if (isset($data->customlogo)) {
-
+        if (isset($data->customlogosvg)) {
+            //saves logo from the customlogosvg filearea
             file_save_draft_area_files(
-            // The $data->attachments property contains the itemid of the draft file area.
-
-                $data->customlogo,
-
-                // The combination of contextid / component / filearea / itemid
-                // form the virtual bucket that file are stored in.
+                $data->customlogosvg,
                 $this->context->id,
                 'block_qrcode',
-                'customlogo',
+                'customlogosvg',
                 0,
-
-                [
-                    'subdirs' => 0,
-                    'maxfiles' => 1,
-                ]
+                ['subdirs' => 0, 'maxfiles' => 1,]
             );
 
         }
+        if (isset($data->customlogopng)) {
+            //saves files from the customlogopng filearea
+            file_save_draft_area_files(
+                $data->customlogopng,
+                $this->context->id,
+                'block_qrcode',
+                'customlogopng',
+                0,
+                ['subdirs' => 0, 'maxfiles' => 1,]
+            );
 
-
+        }
         return parent::instance_config_save($data, $nolongerused);
     }
 }

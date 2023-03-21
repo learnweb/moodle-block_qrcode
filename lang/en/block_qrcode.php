@@ -41,4 +41,5 @@ $string['editblock'] = 'Edit QR code block';
 $string['usedefault'] = 'Use default settings';
 $string['instc_uselogo'] = 'Use logo';
 $string['privacy:metadata'] = 'The qrcode block only displays information about a course, but does not effect or store any personal data.';
-$string['customfile'] = 'Custom File';
+$string['customfilesvg'] = 'Custom File .svg';
+$string['customfilepng'] = 'Custom File .png';
