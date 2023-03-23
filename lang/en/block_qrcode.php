@@ -43,3 +43,6 @@ $string['instc_uselogo'] = 'Use logo';
 $string['privacy:metadata'] = 'The qrcode block only displays information about a course, but does not effect or store any personal data.';
 $string['customfilesvg'] = 'Custom File .svg';
 $string['customfilepng'] = 'Custom File .png';
+$string['uploadpng'] = 'Upload Customlogo as .png also';
+$string['allow_customlogo'] = 'Allow Customlogo';
+$string['allow_customlogo_help'] = 'If the checkbox is checked, it allows teachers to upload a custom logo to be shown in the QR code';

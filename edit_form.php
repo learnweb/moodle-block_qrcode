@@ -51,27 +51,38 @@ class block_qrcode_edit_form extends block_edit_form {
         $mform->setDefault('config_instc_uselogo', true);
         $mform->setType('config_instc_uselogo', PARAM_BOOL);
 
-        //File Area for Customlogo as svg.
-        $mform->addElement('filemanager', 'config_customlogosvg', get_string('customfilesvg', 'block_qrcode'),
-            null,
-            [
-                'subdirs' => 0,
-                'areamaxbytes' => 10485760,
-                'maxfiles' => 1,
-                'accepted_types' => ['.svg'],
-            ]
-        );
 
-        //File Area for Customlogo as png.
-        $mform->addElement('filemanager', 'config_customlogopng', get_string('customfilepng', 'block_qrcode'),
-            null,
-            [
-                'subdirs' => 0,
-                'areamaxbytes' => 10485760,
-                'maxfiles' => 1,
-                'accepted_types' => ['.png'],
-            ]
-        );
+        //If the admin settings don't allow a customlogo, the upload option should be disabled.
+        if(get_config('block_qrcode', 'allow_customlogo') == 1) {
+
+            //File Area for Customlogo as svg.
+            $mform->addElement('filemanager', 'config_customlogosvg', get_string('customfilesvg', 'block_qrcode'),
+                null,
+                [
+                    'subdirs' => 0,
+                    'areamaxbytes' => 10485760,
+                    'maxfiles' => 1,
+                    'accepted_types' => ['.svg'],
+                ]
+            );
+
+            $mform->addElement('checkbox', 'uploadpng', get_string('uploadpng', 'block_qrcode'));
+
+            //File Area for Customlogo as png.
+            $mform->addElement('filemanager', 'config_customlogopng', get_string('customfilepng', 'block_qrcode'),
+                null,
+                [
+                    'subdirs' => 0,
+                    'areamaxbytes' => 10485760,
+                    'maxfiles' => 1,
+                    'accepted_types' => ['.png'],
+                ]
+            );
+
+            //Only the svg custom logo is displayed in the Qr code. Therefore, the file area for .png is hidden until the checkbox is checked in order to discourage uploading only a .png file.
+            $mform->hideIf('config_customlogopng','uploadpng','notchecked');
+
+        }
 
     }
 
