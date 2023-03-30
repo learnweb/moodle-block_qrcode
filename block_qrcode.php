@@ -70,8 +70,6 @@ class block_qrcode extends block_base {
         $this->page->requires->js_call_amd('block_qrcode/fullscreenqrcode', 'init', array($qrcode));
 
         return $this->content;
-
-
     }
 
     /**
@@ -98,29 +96,29 @@ class block_qrcode extends block_base {
      * @return void
      * @throws coding_exception
      */
-    public function instance_config_save($data, $nolongerused = false)
-    {
+    public function instance_config_save($data, $nolongerused = false) {
+
         if (isset($data->customlogosvg)) {
-            //saves logo from the customlogosvg filearea
+            // Saves logo from the customlogosvg filearea.
             file_save_draft_area_files(
                 $data->customlogosvg,
                 $this->context->id,
                 'block_qrcode',
                 'customlogosvg',
                 0,
-                ['subdirs' => 0, 'maxfiles' => 1,]
+                ['subdirs' => 0, 'maxfiles' => 1]
             );
 
         }
         if (isset($data->customlogopng)) {
-            //saves files from the customlogopng filearea
+            // Saves files from the customlogopng filearea.
             file_save_draft_area_files(
                 $data->customlogopng,
                 $this->context->id,
                 'block_qrcode',
                 'customlogopng',
                 0,
-                ['subdirs' => 0, 'maxfiles' => 1,]
+                ['subdirs' => 0, 'maxfiles' => 1]
             );
 
         }

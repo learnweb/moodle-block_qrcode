@@ -24,6 +24,8 @@
 
 namespace block_qrcode;
 
+use function PHPUnit\Framework\assertEquals;
+
 /**
  * PHPUnit output image testcase
  * @package block_qrcode
@@ -96,4 +98,5 @@ class output_image_test extends \advanced_testcase {
         $outputimg->create_image();
         $this->assertFileExists($file);
     }
+
 }

@@ -51,11 +51,10 @@ class block_qrcode_edit_form extends block_edit_form {
         $mform->setDefault('config_instc_uselogo', true);
         $mform->setType('config_instc_uselogo', PARAM_BOOL);
 
+        // If the admin settings don't allow a customlogo, the upload option should be disabled.
+        if (get_config('block_qrcode', 'allow_customlogo') == 1) {
 
-        //If the admin settings don't allow a customlogo, the upload option should be disabled.
-        if(get_config('block_qrcode', 'allow_customlogo') == 1) {
-
-            //File Area for Customlogo as svg.
+            // File Area for Customlogo as svg.
             $mform->addElement('filemanager', 'config_customlogosvg', get_string('customfilesvg', 'block_qrcode'),
                 null,
                 [
@@ -68,7 +67,7 @@ class block_qrcode_edit_form extends block_edit_form {
 
             $mform->addElement('checkbox', 'uploadpng', get_string('uploadpng', 'block_qrcode'));
 
-            //File Area for Customlogo as png.
+            // File Area for Customlogo as png.
             $mform->addElement('filemanager', 'config_customlogopng', get_string('customfilepng', 'block_qrcode'),
                 null,
                 [
@@ -79,8 +78,10 @@ class block_qrcode_edit_form extends block_edit_form {
                 ]
             );
 
-            //Only the svg custom logo is displayed in the Qr code. Therefore, the file area for .png is hidden until the checkbox is checked in order to discourage uploading only a .png file.
-            $mform->hideIf('config_customlogopng','uploadpng','notchecked');
+            // Only the svg custom logo is displayed in the Qr code.
+            // Therefore, the file area for .png is hidden until the checkbox is checked,
+            // in order to discourage uploading only a .png file.
+            $mform->hideIf('config_customlogopng', 'uploadpng', 'notchecked');
 
         }
 
@@ -91,7 +92,7 @@ class block_qrcode_edit_form extends block_edit_form {
      * @param $defaults
      * @return void
      */
-    function set_data($defaults) {
+    public function set_data($defaults) {
         $draftitemidsvg = file_get_submitted_draft_itemid('customlogosvg');
         $draftitemidpng = file_get_submitted_draft_itemid('customlogopng');
         file_prepare_draft_area($draftitemidsvg, $defaults->parentcontextid, 'block_qrcode', 'customlogosvg', 0);

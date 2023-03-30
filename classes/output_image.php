@@ -85,7 +85,7 @@ class output_image {
      * Block instanceID.
      * @var int
      */
-    protected  $instanceid;
+    protected $instanceid;
     /**
      * output_image constructor.
      * @param int $format file type
@@ -278,7 +278,7 @@ class output_image {
      * If not, returns the stored file of the default logo.
      * @return \stored_file|null stored file
      */
-    private function get_logo() {
+    public function get_logo() {
 
         $fssvg = get_file_storage();
         $fspng = get_file_storage();
@@ -298,21 +298,34 @@ class output_image {
             'filepath' => '/',
             'filename' => null);
 
-        // Get file
-        $filesvg = $fssvg->get_file($fileinfosvg['contextid'], $fileinfosvg['component'], $fileinfosvg['filearea'],
-            $fileinfosvg['itemid'], $fileinfosvg['filepath'], $fileinfosvg['filename']);
-        $filepng = $fspng->get_file($fileinfopng['contextid'], $fileinfopng['component'], $fileinfopng['filearea'],
-            $fileinfopng['itemid'], $fileinfopng['filepath'], $fileinfopng['filename']);
+        // Get file.
+        $filesvg = $fssvg->get_file(
+            $fileinfosvg['contextid'],
+            $fileinfosvg['component'],
+            $fileinfosvg['filearea'],
+            $fileinfosvg['itemid'],
+            $fileinfosvg['filepath'],
+            $fileinfosvg['filename']
+        );
+        $filepng = $fspng->get_file(
+            $fileinfopng['contextid'],
+            $fileinfopng['component'],
+            $fileinfopng['filearea'],
+            $fileinfopng['itemid'],
+            $fileinfopng['filepath'],
+            $fileinfopng['filename']
+        );
 
-        $filessvg = $fssvg->get_area_files(\context_block::instance($this->instanceid)->id, 'block_qrcode', 'customlogosvg', 0, 'sortorder', false);
-        $filespng = $fspng->get_area_files(\context_block::instance($this->instanceid)->id, 'block_qrcode', 'customlogopng', 0, 'sortorder', false);
+        $filessvg = $fssvg->get_area_files(\context_block::instance($this->instanceid)->id,
+            'block_qrcode', 'customlogosvg', 0, 'sortorder', false);
+        $filespng = $fspng->get_area_files(\context_block::instance($this->instanceid)->id,
+            'block_qrcode', 'customlogopng', 0, 'sortorder', false);
 
-
-        if($this->format == 1){
-            if(count($filessvg) == 1) {
+        if ($this->format == 1) {
+            if (count($filessvg) == 1) {
                 $filesvg = reset($filessvg);
                 return $filesvg;
-            }else{
+            } else {
                 $filearea = 'logo_svg';
                 $completepath = get_config('block_qrcode', 'logofile_svg');
 
@@ -329,11 +342,11 @@ class output_image {
                     return $file;
                 }
             }
-        }else{
-            if(count($filespng) == 1) {
+        } else {
+            if (count($filespng) == 1) {
                 $filepng = reset($filespng);
                 return $filepng;
-            }else{
+            } else {
                 $filearea = 'logo_png';
                 $completepath = get_config('block_qrcode', 'logofile_png');
 
