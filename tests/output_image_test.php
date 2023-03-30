@@ -24,8 +24,6 @@
 
 namespace block_qrcode;
 
-use function PHPUnit\Framework\assertEquals;
-
 /**
  * PHPUnit output image testcase
  * @package block_qrcode
