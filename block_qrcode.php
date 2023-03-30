@@ -91,8 +91,8 @@ class block_qrcode extends block_base {
 
     /**
      * method for saving custom logos in database
-     * @param $data
-     * @param $nolongerused
+     * @param mixed $data
+     * @param  bool $nolongerused
      * @return void
      * @throws coding_exception
      */

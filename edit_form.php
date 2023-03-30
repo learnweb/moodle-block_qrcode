@@ -89,7 +89,7 @@ class block_qrcode_edit_form extends block_edit_form {
 
     /**
      * Copies existing logos into draft areas.
-     * @param $defaults
+     * @param mixed $defaults
      * @return void
      */
     public function set_data($defaults) {
