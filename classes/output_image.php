@@ -283,46 +283,14 @@ class output_image {
         $fssvg = get_file_storage();
         $fspng = get_file_storage();
 
-        $fileinfosvg = array(
-            'component' => 'block_qrcode',
-            'filearea' => 'customlogosvg',
-            'itemid' => 0,
-            'contextid' => \context_block::instance($this->instanceid)->id,
-            'filepath' => '/',
-            'filename' => null);
-        $fileinfopng = array(
-            'component' => 'block_qrcode',
-            'filearea' => 'customlogopng',
-            'itemid' => 0,
-            'contextid' => \context_block::instance($this->instanceid)->id,
-            'filepath' => '/',
-            'filename' => null);
-
-        // Get file.
-        $filesvg = $fssvg->get_file(
-            $fileinfosvg['contextid'],
-            $fileinfosvg['component'],
-            $fileinfosvg['filearea'],
-            $fileinfosvg['itemid'],
-            $fileinfosvg['filepath'],
-            $fileinfosvg['filename']
-        );
-        $filepng = $fspng->get_file(
-            $fileinfopng['contextid'],
-            $fileinfopng['component'],
-            $fileinfopng['filearea'],
-            $fileinfopng['itemid'],
-            $fileinfopng['filepath'],
-            $fileinfopng['filename']
-        );
-
+        // Get File.
         $filessvg = $fssvg->get_area_files(\context_block::instance($this->instanceid)->id,
             'block_qrcode', 'customlogosvg', 0, 'sortorder', false);
         $filespng = $fspng->get_area_files(\context_block::instance($this->instanceid)->id,
             'block_qrcode', 'customlogopng', 0, 'sortorder', false);
 
         if ($this->format == 1) {
-            if (count($filessvg) == 1) {
+            if (count($filessvg) == 1 AND get_config('block_qrcode', 'allow_customlogo') == 1) {
                 $filesvg = reset($filessvg);
                 return $filesvg;
             } else {
@@ -343,7 +311,7 @@ class output_image {
                 }
             }
         } else {
-            if (count($filespng) == 1) {
+            if (count($filespng) == 1 AND get_config('block_qrcode', 'allow_customlogo') == 1) {
                 $filepng = reset($filespng);
                 return $filepng;
             } else {

@@ -45,7 +45,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('block_qrcode/allow_customlogo',
         get_string('allow_customlogo', 'block_qrcode'),
         get_string('allow_customlogo_help', 'block_qrcode'),
-        '1'
+        '0'
     ));
 
 }
