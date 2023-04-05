@@ -96,4 +96,5 @@ class output_image_test extends \advanced_testcase {
         $outputimg->create_image();
         $this->assertFileExists($file);
     }
+
 }

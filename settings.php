@@ -41,4 +41,11 @@ if ($ADMIN->fulltree) {
             get_string('logofile_svg', 'block_qrcode'),
             '', 'logo_svg', 0, ['accepted_types' => '.svg']
     ));
+
+    $settings->add(new admin_setting_configcheckbox('block_qrcode/allow_customlogo',
+        get_string('allow_customlogo', 'block_qrcode'),
+        get_string('allow_customlogo_help', 'block_qrcode'),
+        '0'
+    ));
+
 }

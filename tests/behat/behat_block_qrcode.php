@@ -27,6 +27,7 @@
 require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
 
+
 /**
  * Block QR code functionalities for behat-testing.
  *
