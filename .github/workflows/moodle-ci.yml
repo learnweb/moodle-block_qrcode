@@ -11,8 +11,8 @@ jobs:
 
     strategy:
       matrix:
-        php: ['8.0']
-        moodle-branch: ['master'] # To be replaced with MOODLE_401_STABLE.
+        php: ['8.1']
+        moodle-branch: ['MOODLE_402_STABLE']
         database: ['pgsql']
 
     steps:
@@ -27,7 +27,7 @@ jobs:
       - name: Check for test folder
         id: check_tests
         run: |
-          echo "::set-output name=has_tests::${{ hashFiles('plugin/tests') != '' }}"
+          echo "has_tests=${{ hashFiles('plugin/tests') != '' }}" >> $GITHUB_OUTPUT
 
       - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
@@ -115,8 +115,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.0']
-        moodle-branch: ['MOODLE_311_STABLE', 'MOODLE_400_STABLE', 'master'] # To be replaced with MOODLE_401_STABLE.
+        php: ['8.0', '8.1']
+        moodle-branch: ['MOODLE_401_STABLE', 'MOODLE_402_STABLE']
         database: ['mariadb', 'pgsql']
         include:
           - php: '7.4'
@@ -124,6 +124,18 @@ jobs:
             database: 'mariadb'
           - php: '7.4'
             moodle-branch: 'MOODLE_39_STABLE'
+            database: 'pgsql'
+          - php: '8.0'
+            moodle-branch: 'MOODLE_311_STABLE'
+            database: 'mariadb'
+          - php: '8.0'
+            moodle-branch: 'MOODLE_311_STABLE'
+            database: 'pgsql'
+          - php: '8.0'
+            moodle-branch: 'MOODLE_400_STABLE'
+            database: 'mariadb'
+          - php: '8.0'
+            moodle-branch: 'MOODLE_400_STABLE'
             database: 'pgsql'
 
     steps:

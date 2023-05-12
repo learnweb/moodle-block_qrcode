@@ -133,9 +133,10 @@ class PngWriter extends AbstractBaconWriter
             $logoTargetHeight = intval($scale * imagesy($logoImage));
         }
 
-        $logoX = imagesx($sourceImage) / 2 - $logoTargetWidth / 2;
-        $logoY = imagesy($sourceImage) / 2 - $logoTargetHeight / 2;
-        imagecopyresampled($sourceImage, $logoImage, $logoX, $logoY, 0, 0, $logoTargetWidth, $logoTargetHeight, $logoSourceWidth, $logoSourceHeight);
+        $logoX = intval(imagesx($sourceImage) / 2 - $logoTargetWidth / 2);
+        $logoY = intval(imagesy($sourceImage) / 2 - $logoTargetHeight / 2);
+        imagecopyresampled($sourceImage, $logoImage, $logoX, $logoY, 0, 0,
+            intval($logoTargetWidth), intval($logoTargetHeight), intval($logoSourceWidth), intval($logoSourceHeight));
 
         return $sourceImage;
     }
