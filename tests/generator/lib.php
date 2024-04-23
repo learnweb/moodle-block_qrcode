@@ -39,7 +39,7 @@ class block_qrcode_generator extends testing_block_generator {
      */
     public function create_course() {
         $generator = advanced_testcase::getDataGenerator();
-        $data = array();
+        $data = [];
 
         // Create a course.
         $course = $generator->create_course();

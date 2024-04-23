@@ -53,8 +53,8 @@ class block_qrcode_form extends moodleform {
             'select',
             'format',
             get_string('formats', 'block_qrcode'),
-            array(1 => 'svg', 2 => 'png'),
-            array('id' => 'slc_format'));
+            [1 => 'svg', 2 => 'png'],
+            ['id' => 'slc_format']);
         $selectf->setSelected($this->_customdata['format']);
 
         // Select image size.
@@ -62,8 +62,8 @@ class block_qrcode_form extends moodleform {
             'select',
             'size',
             get_string('sizes', 'block_qrcode'),
-            array(150 => '150px', 300 => '300px'),
-            array('id' => 'slc_size', 'disabled' => true));
+            [150 => '150px', 300 => '300px'],
+            ['id' => 'slc_size', 'disabled' => true]);
         $selects->setSelected($this->_customdata['size']);
         $mform->disabledIf('size', 'format', 'eq', 1);
 

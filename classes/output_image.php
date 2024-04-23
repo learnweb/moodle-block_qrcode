@@ -102,7 +102,7 @@ class output_image {
         $file = $CFG->localcachedir . '/block_qrcode/course-' .
             (int)$courseid . '-' . $this->size; // Set file path.
 
-        $instance = $DB->get_record('block_instances', array('id' => $instanceid), '*', MUST_EXIST);
+        $instance = $DB->get_record('block_instances', ['id' => $instanceid], '*', MUST_EXIST);
         $block = block_instance('qrcode', $instance);
 
         if (is_null($block->config)) {
@@ -290,7 +290,7 @@ class output_image {
             'block_qrcode', 'customlogopng', 0, 'sortorder', false);
 
         if ($this->format == 1) {
-            if (count($filessvg) == 1 AND get_config('block_qrcode', 'allow_customlogo') == 1) {
+            if (count($filessvg) == 1 && get_config('block_qrcode', 'allow_customlogo') == 1) {
                 $filesvg = reset($filessvg);
                 return $filesvg;
             } else {
@@ -311,7 +311,7 @@ class output_image {
                 }
             }
         } else {
-            if (count($filespng) == 1 AND get_config('block_qrcode', 'allow_customlogo') == 1) {
+            if (count($filespng) == 1 && get_config('block_qrcode', 'allow_customlogo') == 1) {
                 $filepng = reset($filespng);
                 return $filepng;
             } else {
