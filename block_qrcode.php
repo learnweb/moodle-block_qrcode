@@ -67,7 +67,7 @@ class block_qrcode extends block_base {
             $this->content->text .= $renderer->display_download_section($COURSE->id, $this->instance->id);
         }
 
-        $this->page->requires->js_call_amd('block_qrcode/fullscreenqrcode', 'init', array($qrcode));
+        $this->page->requires->js_call_amd('block_qrcode/fullscreenqrcode', 'init', [$qrcode]);
 
         return $this->content;
     }
@@ -78,7 +78,7 @@ class block_qrcode extends block_base {
      * @return array of applicable formats
      */
     public function applicable_formats() {
-        return array('course-view' => true, 'mod' => false, 'my' => false);
+        return ['course-view' => true, 'mod' => false, 'my' => false];
     }
 
     /**

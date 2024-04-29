@@ -31,7 +31,7 @@ namespace block_qrcode;
  * @copyright 2017 T Gunkel
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class output_image_test extends \advanced_testcase {
+final class output_image_test extends \advanced_testcase {
     /**
      * course object
      * @var object
@@ -48,7 +48,7 @@ class output_image_test extends \advanced_testcase {
      *
      *  Create a course and a block instance.
      */
-    protected function setUp() : void {
+    protected function setUp(): void {
         $generator = $this->getDataGenerator()->get_plugin_generator('block_qrcode');
         $this->course = $generator->create_course()['course'];
         $this->block = $generator->create_instance();
@@ -59,8 +59,9 @@ class output_image_test extends \advanced_testcase {
 
     /**
      * Tests, if the image is created.
+     * @covers \block_qrcode\output_image
      */
-    public function test_create_image() {
+    public function test_create_image(): void {
         global $CFG;
 
         set_config('use_logo', 0, 'block_qrcode');
@@ -80,8 +81,9 @@ class output_image_test extends \advanced_testcase {
     /**
      * Tests, if the QR code is created with the moodle logo if no custom logo was uploaded
      * when no logo is uploaded.
+     * @covers \block_qrcode\output_image
      */
-    public function test_no_logo() {
+    public function test_no_logo(): void {
         global $CFG;
 
         $this->assertEquals('', get_config('block_qrcode', 'logofile_svg'));
