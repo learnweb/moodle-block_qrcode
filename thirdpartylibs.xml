@@ -1,66 +1,23 @@
 <?xml version="1.0" ?>
 <libraries>
     <library>
-        <location>thirdparty/vendor/endroid/qrcode</location>
+        <location>thirdparty/vendor/endroid/qr-code</location>
         <name>QR Code Generator</name>
-        <version>v2.4.0</version>
+        <version>v4.6.1</version>
         <license>MIT</license>
         <licenseversion>1</licenseversion>
     </library>
     <library>
         <location>thirdparty/vendor/bacon/bacon-qr-code</location>
         <name>Bacon QR Code</name>
-        <version>v1.0.3</version>
+        <version>v2.0.8</version>
         <license>BSD-2-Clause</license>
     </library>
     <library>
-        <location>thirdparty/vendor/khanamiryan/qrcode-detector-decoder</location>
-        <name>QR Code Detector Decoder</name>
-        <version>v1.0.0</version>
-        <license>MIT</license>
-        <licenseversion>1</licenseversion>
-    </library>
-    <library>
-        <location>thirdparty/vendor/myclabs/php-enum</location>
-        <name>PHP Enum</name>
-        <version>v1.5.2</version>
-        <license>MIT</license>
-        <licenseversion>1</licenseversion>
-    </library>
-    <library>
-        <location>thirdparty/vendor/paragonie/random_compat</location>
-        <name>Random Compat</name>
-        <version>v2.0.11</version>
-        <license>MIT</license>
-        <licenseversion>1</licenseversion>
-    </library>
-    <library>
-        <location>thirdparty/vendor/symfony/inflector</location>
-        <name>Symfonfy Inflector</name>
-        <version>v3.3.13</version>
-        <license>MIT</license>
-        <licenseversion>1</licenseversion>
-    </library>
-    <library>
-        <location>thirdparty/vendor/symfony/options-resolver</location>
-        <name>Symfonfy OptionsResolver</name>
-        <version>v3.3.13</version>
-        <license>MIT</license>
-        <licenseversion>1</licenseversion>
-    </library>
-    <library>
-        <location>thirdparty/vendor/symfony/polyfill-php70</location>
-        <name>Symfonfy Polyfill php70</name>
-        <version>v1.6.0</version>
-        <license>MIT</license>
-        <licenseversion>1</licenseversion>
-    </library>
-    <library>
-        <location>thirdparty/vendor/symfony/property-access</location>
-        <name>Symfonfy Inflector</name>
-        <version>v3.3.13</version>
-        <license>MIT</license>
-        <licenseversion>1</licenseversion>
+        <location>thirdparty/vendor/dasprid/enum</location>
+        <name>PHP 7.1 enum implementation</name>
+        <version>v1.0.6</version>
+        <license>BSD-2-Clause</license>
     </library>
     <library>
         <location>thirdparty/vendor/composer</location>
