@@ -24,11 +24,14 @@
 
 namespace block_qrcode;
 
+use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\QrCode;
-use Symfony\Component\HttpFoundation\Response;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Writer\SvgWriter;
 use DOMDocument;
-use core\datalib;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -161,35 +164,43 @@ class output_image {
 
         // Set advanced options.
         $qrcode->setMargin(10);
-        $qrcode->setEncoding('UTF-8');
-        $qrcode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
-        $qrcode->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0]);
-        $qrcode->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255]);
+        $qrcode->setEncoding(new Encoding('UTF-8'));
+        $qrcode->setErrorCorrectionLevel(new ErrorCorrectionLevel\ErrorCorrectionLevelHigh());
+        $qrcode->setForegroundColor(new Color(0, 0, 0));
+        $qrcode->setBackgroundColor(new Color(255, 255, 255));
 
         // Png format.
+        $logo = null;
         if ($this->format == 2) {
-            $qrcode->setWriterByName('png');
+            $writer = new PngWriter();
             if ($this->uselogo) {
-                $qrcode->setLogoWidth($this->size * 0.4);
                 if ($this->logofile) {
-                    $qrcode->setLogoPath($this->logofile->copy_content_to_temp());
+                    $logopath = $this->logofile->copy_content_to_temp();
                 } else {
-                    $qrcode->setLogoPath($CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.png');
+                    $logopath = $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.png';
                 }
+                $logo = new Logo(
+                    $logopath,
+                    intval($this->size * 0.4),
+                    null,
+                    false
+                );
             }
-            $qrcode->writeFile($this->file);
         } else {
-            $qrcode->setWriterByName('svg');
+            $writer = new SvgWriter();
             if ($this->uselogo) {
-                $qrcodestring = $qrcode->writeString();
                 $logopath = $this->logofile ? $this->logofile->copy_content_to_temp()
                         : $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.svg';
-                $newqrcode = $this->modify_svg($qrcodestring, $logopath);
-                file_put_contents($this->file, $newqrcode);
-            } else {
-                $qrcode->writeFile($this->file);
+                $logo = new Logo(
+                    $logopath,
+                    intval($this->size * 0.4),
+                    intval($this->size * 0.4 / $this->get_logo_aspect_ratio($logopath)),
+                    false
+                );
             }
         }
+        $result = $writer->write($qrcode, $logo);
+        $result->saveToFile($this->file);
     }
 
     /**
@@ -231,46 +242,20 @@ class output_image {
     }
 
     /**
-     * Inserts logo in the QR code (used for svg QR code).
-     * @param string $svgqrcode QR code
-     * @param string $logopath Path of logo to add
-     * @return string XML representation of the svg image
+     * Gets the aspect ratio (width / height) of a svg.
+     * @param string $logopath path of the svg.
+     * @return float the aspect ratio
      */
-    private function modify_svg($svgqrcode, $logopath) {
-        // Loads QR code.
-        $xmldoc = new DOMDocument();
-        $xmldoc->loadXML($svgqrcode);
-        $viewboxcode = $xmldoc->documentElement->getAttribute('viewBox');
-        $codewidth = explode(' ', $viewboxcode)[2];
-
+    protected function get_logo_aspect_ratio($logopath) {
         // Loads logo.
         $xmllogo = new DOMDocument();
         $xmllogo->load($logopath);
-
-        $logotargetwidth = $codewidth * 0.4;
 
         $viewbox = $xmllogo->documentElement->getAttribute('viewBox');
         $viewboxbounds = explode(' ', $viewbox);
         $logowidth = $viewboxbounds[2];
         $logoheight = $viewboxbounds[3];
-
-        // Calculate logo height from width.
-        $logotargetheight = $logotargetwidth * ($logoheight / $logowidth);
-
-        // Calculate logo coordinates.
-        $logoy = ($codewidth - $logotargetheight) / 2;
-        $logox = ($codewidth - $logotargetwidth) / 2;
-
-        $xmllogo->documentElement->setAttribute('width', $logotargetwidth);
-        $xmllogo->documentElement->setAttribute('height', $logotargetheight);
-        $xmllogo->documentElement->setAttribute('x', $logox);
-        $xmllogo->documentElement->setAttribute('y', $logoy);
-
-        $node = $xmldoc->importNode($xmllogo->documentElement, true);
-
-        $xmldoc->documentElement->appendChild($node);
-
-        return $xmldoc->saveXML();
+        return $logowidth / $logoheight;
     }
 
     /**
