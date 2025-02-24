@@ -22,6 +22,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace block_qrcode\output;
+
 /**
  * Class block_qrcode_renderer
  *
@@ -29,7 +31,7 @@
  * @copyright 2017 T Gunkel
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block_qrcode_renderer extends plugin_renderer_base {
+class renderer extends \plugin_renderer_base {
 
     /**
      * Returns a QR code as html image.
@@ -38,14 +40,16 @@ class block_qrcode_renderer extends plugin_renderer_base {
      * @return string html-string
      */
     public function display_image($courseid, $instanceid) {
-        $link = new moodle_url('/blocks/qrcode/download.php',
-            ['courseid' => $courseid,
-                'download' => false,
-                'format' => 1,
-                'size' => 150,
-                'instance' => $instanceid]);
+        $link = new \moodle_url('/blocks/qrcode/download.php', [
+            'courseid' => $courseid,
+            'download' => false,
+            'format' => 1,
+            'size' => 150,
+            'instance' => $instanceid]);
 
-        return html_writer::img($link, get_string('img_tag_alt', 'block_qrcode'), ['id'  => 'img_qrcode', 'width' => '90%']);
+        return \html_writer::img(
+            $link, get_string('img_tag_alt', 'block_qrcode'),
+            ['id'  => 'img_qrcode', 'width' => '90%']);
     }
 
     /**
@@ -55,12 +59,13 @@ class block_qrcode_renderer extends plugin_renderer_base {
      * @return string html-string
      */
     public function display_download_section($courseid, $instanceid) {
-        $download = new moodle_url('/blocks/qrcode/download.php',
-            ['courseid' => $courseid,
-                'download' => true,
-                'instance' => $instanceid]);
-        $mform = new block_qrcode\block_qrcode_form($download, ['format' => 1, 'size' => 150], 'post',
-                '', ['data-double-submit-protection' => 'off']);
+        $download = new \moodle_url('/blocks/qrcode/download.php', [
+            'courseid' => $courseid,
+            'download' => true,
+            'instance' => $instanceid]);
+        $mform = new \block_qrcode\block_qrcode_form(
+            $download, ['format' => 1, 'size' => 150], 'post', '',
+            ['data-double-submit-protection' => 'off']);
         return $mform->render();
     }
 
