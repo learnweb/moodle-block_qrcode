@@ -16,10 +16,9 @@ Feature: Display the QR code block
       | user | course | role |
       | teacher1 | Crs1 | editingteacher |
       | student1 | Crs1 | student        |
-    And I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I add the "QR code" block
-    And I log out
+    And the following "blocks" exist:
+      | blockname      | contextlevel | reference | pagetypepattern | defaultregion |
+      | qrcode         | Course       | Crs1      | course-view-*   | site-post     |
 
   @javascript
   Scenario: Only enrolled students are able to see the QR code and they don't see the download button

@@ -13,10 +13,9 @@ Feature: Download QR code as .png file
     And the following "course enrolments" exist:
       | user     | course | role           |
       | teacher1 | Crs1   | editingteacher |
-    And I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I add the "QR code" block
-    And I log out
+    And the following "blocks" exist:
+      | blockname      | contextlevel | reference | pagetypepattern | defaultregion |
+      | qrcode         | Course       | Crs1      | course-view-*   | site-post     |
 
   @javascript
   Scenario: Teacher sees the QR code and clicks on the Download button
