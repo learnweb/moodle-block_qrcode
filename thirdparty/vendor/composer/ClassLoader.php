@@ -103,7 +103,7 @@ class ClassLoader
     /**
      * @param string|null $vendorDir
      */
-    public function __construct($vendorDir = null)
+    public function __construct(?string $vendorDir = null)
     {
         $this->vendorDir = $vendorDir;
         self::initializeIncludeClosure();
