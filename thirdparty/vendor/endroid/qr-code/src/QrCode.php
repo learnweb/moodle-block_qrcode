@@ -26,13 +26,13 @@ final class QrCode implements QrCodeInterface
 
     public function __construct(
         string $data,
-        EncodingInterface $encoding = null,
-        ErrorCorrectionLevelInterface $errorCorrectionLevel = null,
+        ?EncodingInterface $encoding = null,
+        ?ErrorCorrectionLevelInterface $errorCorrectionLevel = null,
         int $size = 300,
         int $margin = 10,
-        RoundBlockSizeModeInterface $roundBlockSizeMode = null,
-        ColorInterface $foregroundColor = null,
-        ColorInterface $backgroundColor = null
+        ?RoundBlockSizeModeInterface $roundBlockSizeMode = null,
+        ?ColorInterface $foregroundColor = null,
+        ?ColorInterface $backgroundColor = null
     ) {
         $this->data = $data;
         $this->encoding = $encoding ?? new Encoding('UTF-8');
