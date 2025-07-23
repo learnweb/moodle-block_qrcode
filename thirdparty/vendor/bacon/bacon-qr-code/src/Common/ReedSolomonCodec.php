@@ -221,7 +221,7 @@ final class ReedSolomonCodec
 
     /**
      * Decodes received data.
-     * // TODO: Send this to moodle hq.
+     *
      */
     public function decode(SplFixedArray $data, ?SplFixedArray $erasures = null) : ?int
     {
