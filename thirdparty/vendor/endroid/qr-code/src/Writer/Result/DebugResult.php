@@ -24,8 +24,8 @@ final class DebugResult extends AbstractResult
     public function __construct(
         MatrixInterface $matrix,
         QrCodeInterface $qrCode,
-        LogoInterface $logo = null,
-        LabelInterface $label = null,
+        ?LogoInterface $logo = null,
+        ?LabelInterface $label = null,
         array $options = []
     ) {
         parent::__construct($matrix);
