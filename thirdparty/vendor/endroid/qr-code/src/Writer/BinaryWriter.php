@@ -11,7 +11,7 @@ use Endroid\QrCode\QrCodeInterface;
 use Endroid\QrCode\Writer\Result\BinaryResult;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 
-final class BinaryWriter implements WriterInterface
+final readonly class BinaryWriter implements WriterInterface
 {
     public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface
     {

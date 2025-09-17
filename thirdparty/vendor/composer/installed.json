@@ -2,34 +2,34 @@
         "packages": [
                 {
                         "name": "bacon/bacon-qr-code",
-                        "version": "2.0.8",
-                        "version_normalized": "2.0.8.0",
+                        "version": "v3.0.1",
+                        "version_normalized": "3.0.1.0",
                         "source": {
                                 "type": "git",
                                 "url": "https://github.com/Bacon/BaconQrCode.git",
-                                "reference": "8674e51bb65af933a5ffaf1c308a660387c35c22"
+                                "reference": "f9cc1f52b5a463062251d666761178dbdb6b544f"
                         },
                         "dist": {
                                 "type": "zip",
-                                "url": "https://api.github.com/repos/Bacon/BaconQrCode/zipball/8674e51bb65af933a5ffaf1c308a660387c35c22",
-                                "reference": "8674e51bb65af933a5ffaf1c308a660387c35c22",
+                                "url": "https://api.github.com/repos/Bacon/BaconQrCode/zipball/f9cc1f52b5a463062251d666761178dbdb6b544f",
+                                "reference": "f9cc1f52b5a463062251d666761178dbdb6b544f",
                                 "shasum": ""
                         },
                         "require": {
                                 "dasprid/enum": "^1.0.3",
                                 "ext-iconv": "*",
-                                "php": "^7.1 || ^8.0"
+                                "php": "^8.1"
                         },
                         "require-dev": {
-                                "phly/keep-a-changelog": "^2.1",
-                                "phpunit/phpunit": "^7 | ^8 | ^9",
-                                "spatie/phpunit-snapshot-assertions": "^4.2.9",
-                                "squizlabs/php_codesniffer": "^3.4"
+                                "phly/keep-a-changelog": "^2.12",
+                                "phpunit/phpunit": "^10.5.11 || 11.0.4",
+                                "spatie/phpunit-snapshot-assertions": "^5.1.5",
+                                "squizlabs/php_codesniffer": "^3.9"
                         },
                         "suggest": {
                                 "ext-imagick": "to generate QR code images"
                         },
-                        "time": "2022-12-07T17:46:57+00:00",
+                        "time": "2024-10-01T13:55:55+00:00",
                         "type": "library",
                         "installation-source": "dist",
                         "autoload": {
@@ -53,23 +53,23 @@
                         "homepage": "https://github.com/Bacon/BaconQrCode",
                         "support": {
                                 "issues": "https://github.com/Bacon/BaconQrCode/issues",
-                                "source": "https://github.com/Bacon/BaconQrCode/tree/2.0.8"
+                                "source": "https://github.com/Bacon/BaconQrCode/tree/v3.0.1"
                         },
                         "install-path": "../bacon/bacon-qr-code"
                 },
                 {
                         "name": "dasprid/enum",
-                        "version": "1.0.6",
-                        "version_normalized": "1.0.6.0",
+                        "version": "1.0.7",
+                        "version_normalized": "1.0.7.0",
                         "source": {
                                 "type": "git",
                                 "url": "https://github.com/DASPRiD/Enum.git",
-                                "reference": "8dfd07c6d2cf31c8da90c53b83c026c7696dda90"
+                                "reference": "b5874fa9ed0043116c72162ec7f4fb50e02e7cce"
                         },
                         "dist": {
                                 "type": "zip",
-                                "url": "https://api.github.com/repos/DASPRiD/Enum/zipball/8dfd07c6d2cf31c8da90c53b83c026c7696dda90",
-                                "reference": "8dfd07c6d2cf31c8da90c53b83c026c7696dda90",
+                                "url": "https://api.github.com/repos/DASPRiD/Enum/zipball/b5874fa9ed0043116c72162ec7f4fb50e02e7cce",
+                                "reference": "b5874fa9ed0043116c72162ec7f4fb50e02e7cce",
                                 "shasum": ""
                         },
                         "require": {
@@ -79,7 +79,7 @@
                                 "phpunit/phpunit": "^7 || ^8 || ^9 || ^10 || ^11",
                                 "squizlabs/php_codesniffer": "*"
                         },
-                        "time": "2024-08-09T14:30:48+00:00",
+                        "time": "2025-09-16T12:23:56+00:00",
                         "type": "library",
                         "installation-source": "dist",
                         "autoload": {
@@ -106,33 +106,33 @@
                         ],
                         "support": {
                                 "issues": "https://github.com/DASPRiD/Enum/issues",
-                                "source": "https://github.com/DASPRiD/Enum/tree/1.0.6"
+                                "source": "https://github.com/DASPRiD/Enum/tree/1.0.7"
                         },
                         "install-path": "../dasprid/enum"
                 },
                 {
                         "name": "endroid/qr-code",
-                        "version": "4.6.1",
-                        "version_normalized": "4.6.1.0",
+                        "version": "6.0.0",
+                        "version_normalized": "6.0.0.0",
                         "source": {
                                 "type": "git",
                                 "url": "https://github.com/endroid/qr-code.git",
-                                "reference": "a75c913b0e4d6ad275e49a2c1de1cacffc6c2184"
+                                "reference": "61cc3ef6863936b58e0cbe63a44da79efe3c84cd"
                         },
                         "dist": {
                                 "type": "zip",
-                                "url": "https://api.github.com/repos/endroid/qr-code/zipball/a75c913b0e4d6ad275e49a2c1de1cacffc6c2184",
-                                "reference": "a75c913b0e4d6ad275e49a2c1de1cacffc6c2184",
+                                "url": "https://api.github.com/repos/endroid/qr-code/zipball/61cc3ef6863936b58e0cbe63a44da79efe3c84cd",
+                                "reference": "61cc3ef6863936b58e0cbe63a44da79efe3c84cd",
                                 "shasum": ""
                         },
                         "require": {
-                                "bacon/bacon-qr-code": "^2.0.5",
-                                "php": "^7.4||^8.0"
+                                "bacon/bacon-qr-code": "^3.0",
+                                "php": "^8.2"
                         },
                         "require-dev": {
-                                "endroid/quality": "dev-master",
+                                "endroid/quality": "dev-main",
                                 "ext-gd": "*",
-                                "khanamiryan/qrcode-detector-decoder": "^1.0.4",
+                                "khanamiryan/qrcode-detector-decoder": "^2.0.2",
                                 "setasign/fpdf": "^1.8.2"
                         },
                         "suggest": {
@@ -141,11 +141,11 @@
                                 "roave/security-advisories": "Makes sure package versions with known security issues are not installed",
                                 "setasign/fpdf": "Enables you to use the PDF writer"
                         },
-                        "time": "2022-10-26T08:48:17+00:00",
+                        "time": "2024-10-21T20:26:43+00:00",
                         "type": "library",
                         "extra": {
                                 "branch-alias": {
-                                        "dev-master": "4.x-dev"
+                                        "dev-main": "6.x-dev"
                                 }
                         },
                         "installation-source": "dist",
@@ -175,7 +175,7 @@
                         ],
                         "support": {
                                 "issues": "https://github.com/endroid/qr-code/issues",
-                                "source": "https://github.com/endroid/qr-code/tree/4.6.1"
+                                "source": "https://github.com/endroid/qr-code/tree/6.0.0"
                         },
                         "funding": [
                                 {

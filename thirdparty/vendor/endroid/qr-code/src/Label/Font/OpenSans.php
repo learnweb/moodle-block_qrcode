@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Label\Font;
 
-final class OpenSans implements FontInterface
+final readonly class OpenSans implements FontInterface
 {
-    private int $size;
-
-    public function __construct(int $size = 16)
-    {
-        $this->size = $size;
+    public function __construct(
+        private int $size = 16,
+    ) {
     }
 
     public function getPath(): string

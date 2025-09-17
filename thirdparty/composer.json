@@ -1,5 +1,5 @@
 {
     "require": {
-        "endroid/qr-code": "4.6.1"
+        "endroid/qr-code": "6.0.0"
     }
 }
