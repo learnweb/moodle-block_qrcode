@@ -157,9 +157,14 @@ class output_image {
         }
 
         // Creates the QR code.
-        $url = course_get_url($this->course);
-        $url->param('utm_source', 'block_qrcode');
-        $qrcode = new QrCode($url->out(false));
+        // Check if a custom host should be used.
+        $customhost = get_config('block_qrcode', 'custom_host');
+        if (get_config('block_qrcode', 'use_customhost') == '1' &&  $customhost != '') {
+            $url = $customhost . $this->course->id . '&utm_source=block_qrcode';
+        } else {
+            $url = course_get_url($this->course)->out(false, ['utm_source' => 'block_qrcode']);
+        }
+        $qrcode = new QrCode($url);
         $qrcode->setSize($this->size);
 
         // Set advanced options.
