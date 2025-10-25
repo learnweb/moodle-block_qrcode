@@ -194,7 +194,7 @@ class output_image {
                 }
                 $logo = new Logo(
                     $logopath,
-                    intval($this->size * 0.4),
+                    intval($this->size * 0.25),
                     null,
                     false
                 );
@@ -206,8 +206,8 @@ class output_image {
                         : $CFG->dirroot . '/blocks/qrcode/pix/moodlelogo.svg';
                 $logo = new Logo(
                     $logopath,
-                    intval($this->size * 0.4),
-                    intval($this->size * 0.4 / $this->get_logo_aspect_ratio($logopath)),
+                    intval($this->size * 0.25),
+                    intval($this->size * 0.25 / $this->get_logo_aspect_ratio($logopath)),
                     false
                 );
             }

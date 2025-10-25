@@ -43,7 +43,7 @@ class renderer extends \plugin_renderer_base {
             'courseid' => $courseid,
             'download' => false,
             'format' => 1,
-            'size' => 150,
+            'size' => 300,
             'instance' => $instanceid]);
 
         return \html_writer::img(
@@ -66,7 +66,7 @@ class renderer extends \plugin_renderer_base {
             'instance' => $instanceid]);
         $mform = new \block_qrcode\block_qrcode_form(
             $download,
-            ['format' => 1, 'size' => 150],
+            ['format' => 1, 'size' => 300],
             'post',
             '',
             ['data-double-submit-protection' => 'off']
