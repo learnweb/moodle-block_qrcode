@@ -18,7 +18,7 @@
     >
   <testsuites>
     <testsuite name="block_qrcode_testsuite">
-      <directory suffix="_test.php">blocks/qrcode/tests</directory>
+      <directory suffix="_test.php">tests</directory>
     </testsuite>
   </testsuites>
   <source restrictDeprecations="true"
