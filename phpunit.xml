@@ -3,12 +3,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="lib/phpunit/phpunit.xsd"
     bootstrap="../../lib/phpunit/bootstrap.php"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
     processIsolation="false"
     backupGlobals="false"
-    backupStaticAttributes="false"
     cacheResult="false"
     stopOnError="false"
     stopOnFailure="false"
@@ -22,9 +18,13 @@
       <directory suffix="_test.php">tests</directory>
     </testsuite>
   </testsuites>
-  <source restrictDeprecations="true"
+  <source ignoreIndirectDeprecations="true"
           restrictNotices="true"
           restrictWarnings="true">
+    <include>
+      <directory suffix=".php">classes</directory>
+      <directory suffix=".php">tests/generator</directory>
+    </include>
     <exclude>
       <directory>thirdparty</directory>
     </exclude>
