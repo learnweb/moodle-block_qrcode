@@ -27,21 +27,21 @@ defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
 
     // Get the moodle host of the moodle instance.
-    $settings->add(new admin_setting_configcheckbox('block_qrcode/use_customhost',
-        get_string('use_customhost', 'block_qrcode'),
-        get_string('use_customhost_desc', 'block_qrcode'),
+    $settings->add(new admin_setting_configcheckbox('block_qrcode/use_customwwwroot',
+        get_string('use_customwwwroot', 'block_qrcode'),
+        get_string('use_customwwwroot_desc', 'block_qrcode'),
         0
     ));
 
     $settings->add(new admin_setting_configtext(
-        'block_qrcode/custom_host',
-        get_string('customhost', 'block_qrcode'),
-        get_string('customhost_desc', 'block_qrcode') . $CFG->wwwroot,
+        'block_qrcode/custom_wwwroot',
+        get_string('customwwwroot', 'block_qrcode'),
+        get_string('customwwwroot_desc', 'block_qrcode') . $CFG->wwwroot,
         $CFG->wwwroot,
         PARAM_URL,
 
     ));
-    $settings->hide_if('block_qrcode/custom_host', 'block_qrcode/use_customhost', 'eq', '0');
+    $settings->hide_if('block_qrcode/custom_wwwroot', 'block_qrcode/use_customwwwroot', 'eq', '0');
 
     $settings->add(new admin_setting_configcheckbox('block_qrcode/use_logo',
             get_string('use_logo', 'block_qrcode'),

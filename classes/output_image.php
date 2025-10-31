@@ -158,9 +158,9 @@ class output_image {
 
         // Creates the QR code.
         // Check if a custom host should be used.
-        $customhost = get_config('block_qrcode', 'custom_host');
-        if (get_config('block_qrcode', 'use_customhost') == '1' &&  $customhost != '') {
-            $url = $customhost . $this->course->id . '&utm_source=block_qrcode';
+        $customwwwroot = get_config('block_qrcode', 'custom_wwwroot');
+        if (get_config('block_qrcode', 'use_customwwwroot') == '1' &&  $customwwwroot != '') {
+            $url = $customwwwroot . $this->course->id . '&utm_source=block_qrcode';
         } else {
             $url = course_get_url($this->course)->out(false, ['utm_source' => 'block_qrcode']);
         }
