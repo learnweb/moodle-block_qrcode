@@ -40,7 +40,6 @@ require_once($CFG->libdir . '/formslib.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_qrcode_form extends moodleform {
-
     /**
      * Form definition.
      * Displays dropdown menus (format & size) and an action button (Download).
@@ -54,7 +53,8 @@ class block_qrcode_form extends moodleform {
             'format',
             get_string('formats', 'block_qrcode'),
             [1 => 'svg', 2 => 'png'],
-            ['id' => 'slc_format']);
+            ['id' => 'slc_format']
+        );
         $selectf->setSelected($this->_customdata['format']);
 
         // Select image size.
@@ -63,7 +63,8 @@ class block_qrcode_form extends moodleform {
             'size',
             get_string('sizes', 'block_qrcode'),
             [150 => '150px', 300 => '300px'],
-            ['id' => 'slc_size', 'disabled' => true]);
+            ['id' => 'slc_size', 'disabled' => true]
+        );
         $selects->setSelected($this->_customdata['size']);
         $mform->disabledIf('size', 'format', 'eq', 1);
 

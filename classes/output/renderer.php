@@ -32,7 +32,6 @@ namespace block_qrcode\output;
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends \plugin_renderer_base {
-
     /**
      * Returns a QR code as html image.
      * @param int $courseid course id
@@ -48,8 +47,10 @@ class renderer extends \plugin_renderer_base {
             'instance' => $instanceid]);
 
         return \html_writer::img(
-            $link, get_string('img_tag_alt', 'block_qrcode'),
-            ['id'  => 'img_qrcode', 'width' => '90%']);
+            $link,
+            get_string('img_tag_alt', 'block_qrcode'),
+            ['id'  => 'img_qrcode', 'width' => '90%']
+        );
     }
 
     /**
@@ -64,9 +65,12 @@ class renderer extends \plugin_renderer_base {
             'download' => true,
             'instance' => $instanceid]);
         $mform = new \block_qrcode\block_qrcode_form(
-            $download, ['format' => 1, 'size' => 150], 'post', '',
-            ['data-double-submit-protection' => 'off']);
+            $download,
+            ['format' => 1, 'size' => 150],
+            'post',
+            '',
+            ['data-double-submit-protection' => 'off']
+        );
         return $mform->render();
     }
-
 }

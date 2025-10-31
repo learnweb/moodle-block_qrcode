@@ -274,10 +274,22 @@ class output_image {
         $fspng = get_file_storage();
 
         // Get File.
-        $filessvg = $fssvg->get_area_files(\context_block::instance($this->instanceid)->id,
-            'block_qrcode', 'customlogosvg', 0, 'sortorder', false);
-        $filespng = $fspng->get_area_files(\context_block::instance($this->instanceid)->id,
-            'block_qrcode', 'customlogopng', 0, 'sortorder', false);
+        $filessvg = $fssvg->get_area_files(
+            \context_block::instance($this->instanceid)->id,
+            'block_qrcode',
+            'customlogosvg',
+            0,
+            'sortorder',
+            false
+        );
+        $filespng = $fspng->get_area_files(
+            \context_block::instance($this->instanceid)->id,
+            'block_qrcode',
+            'customlogopng',
+            0,
+            'sortorder',
+            false
+        );
 
         if ($this->format == 1) {
             if (count($filessvg) == 1 && get_config('block_qrcode', 'allow_customlogo') == 1) {
@@ -290,12 +302,14 @@ class output_image {
                 $fs = get_file_storage();
                 $filepath = pathinfo($completepath, PATHINFO_DIRNAME);
                 $filename = pathinfo($completepath, PATHINFO_BASENAME);
-                $file = $fs->get_file(\context_system::instance()->id,
+                $file = $fs->get_file(
+                    \context_system::instance()->id,
                     'block_qrcode',
                     $filearea,
                     0,
                     $filepath,
-                    $filename);
+                    $filename
+                );
                 if ($file) {
                     return $file;
                 }
@@ -311,12 +325,14 @@ class output_image {
                 $fs = get_file_storage();
                 $filepath = pathinfo($completepath, PATHINFO_DIRNAME);
                 $filename = pathinfo($completepath, PATHINFO_BASENAME);
-                $file = $fs->get_file(\context_system::instance()->id,
+                $file = $fs->get_file(
+                    \context_system::instance()->id,
                     'block_qrcode',
                     $filearea,
                     0,
                     $filepath,
-                    $filename);
+                    $filename
+                );
                 if ($file) {
                     return $file;
                 }

@@ -52,7 +52,7 @@ class block_qrcode extends block_base {
         // Record the current course and page.
         global $COURSE;
 
-        $this->content = new stdClass;
+        $this->content = new stdClass();
         $this->content->text = '';
 
         // Displays the block.
@@ -108,7 +108,6 @@ class block_qrcode extends block_base {
                 0,
                 ['subdirs' => 0, 'maxfiles' => 1]
             );
-
         }
         if (isset($data->customlogopng)) {
             // Saves files from the customlogopng filearea.
@@ -120,7 +119,6 @@ class block_qrcode extends block_base {
                 0,
                 ['subdirs' => 0, 'maxfiles' => 1]
             );
-
         }
         return parent::instance_config_save($data, $nolongerused);
     }

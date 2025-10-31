@@ -32,7 +32,6 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_qrcode_edit_form extends block_edit_form {
-
     /**
      * Form definition
      * @param object $mform moodleform
@@ -53,9 +52,11 @@ class block_qrcode_edit_form extends block_edit_form {
 
         // If the admin settings don't allow a customlogo, the upload option should be disabled.
         if (get_config('block_qrcode', 'allow_customlogo') == 1) {
-
             // File Area for Customlogo as svg.
-            $mform->addElement('filemanager', 'config_customlogosvg', get_string('customfilesvg', 'block_qrcode'),
+            $mform->addElement(
+                'filemanager',
+                'config_customlogosvg',
+                get_string('customfilesvg', 'block_qrcode'),
                 null,
                 [
                     'subdirs' => 0,
@@ -68,7 +69,10 @@ class block_qrcode_edit_form extends block_edit_form {
             $mform->addElement('checkbox', 'uploadpng', get_string('uploadpng', 'block_qrcode'));
 
             // File Area for Customlogo as png.
-            $mform->addElement('filemanager', 'config_customlogopng', get_string('customfilepng', 'block_qrcode'),
+            $mform->addElement(
+                'filemanager',
+                'config_customlogopng',
+                get_string('customfilepng', 'block_qrcode'),
                 null,
                 [
                     'subdirs' => 0,
@@ -82,9 +86,7 @@ class block_qrcode_edit_form extends block_edit_form {
             // Therefore, the file area for .png is hidden until the checkbox is checked,
             // in order to discourage uploading only a .png file.
             $mform->hideIf('config_customlogopng', 'uploadpng', 'notchecked');
-
         }
-
     }
 
     /**

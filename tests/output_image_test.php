@@ -70,12 +70,13 @@ final class output_image_test extends \advanced_testcase {
         $this->assertEquals(0, get_config('block_qrcode', 'use_logo'));
 
         $size = 150;
-        $file = $CFG->localcachedir.'/block_qrcode/course-'.$this->course->id. '-'.$size.'-0.svg';
+        $file = $CFG->localcachedir . '/block_qrcode/course-' . $this->course->id . '-' . $size . '-0.svg';
         $outputimg = new output_image(
             1,
             $size,
             $this->course->id,
-            $this->block->id);
+            $this->block->id
+        );
         $outputimg->create_image();
         $this->assertFileExists($file);
     }
@@ -91,14 +92,14 @@ final class output_image_test extends \advanced_testcase {
         $this->assertEquals('', get_config('block_qrcode', 'logofile_svg'));
 
         $size = 150;
-        $file = $CFG->localcachedir.'/block_qrcode/course-'.$this->course->id. '-'.$size.'-default.svg';
+        $file = $CFG->localcachedir . '/block_qrcode/course-' . $this->course->id . '-' . $size . '-default.svg';
         $outputimg = new output_image(
             1,
             $size,
             $this->course->id,
-            $this->block->id);
+            $this->block->id
+        );
         $outputimg->create_image();
         $this->assertFileExists($file);
     }
-
 }

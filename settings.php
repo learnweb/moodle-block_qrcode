@@ -25,9 +25,9 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-
     // Get the moodle host of the moodle instance.
-    $settings->add(new admin_setting_configcheckbox('block_qrcode/use_customwwwroot',
+    $settings->add(new admin_setting_configcheckbox(
+        'block_qrcode/use_customwwwroot',
         get_string('use_customwwwroot', 'block_qrcode'),
         get_string('use_customwwwroot_desc', 'block_qrcode'),
         0
@@ -39,30 +39,38 @@ if ($ADMIN->fulltree) {
         get_string('customwwwroot_desc', 'block_qrcode') . $CFG->wwwroot,
         $CFG->wwwroot,
         PARAM_URL,
-
     ));
     $settings->hide_if('block_qrcode/custom_wwwroot', 'block_qrcode/use_customwwwroot', 'eq', '0');
 
-    $settings->add(new admin_setting_configcheckbox('block_qrcode/use_logo',
-            get_string('use_logo', 'block_qrcode'),
-            get_string('use_logo_help', 'block_qrcode'),
-            '1'
+    $settings->add(new admin_setting_configcheckbox(
+        'block_qrcode/use_logo',
+        get_string('use_logo', 'block_qrcode'),
+        get_string('use_logo_help', 'block_qrcode'),
+        '1'
     ));
 
-    $settings->add(new admin_setting_configstoredfile('block_qrcode/logofile_png',
-            get_string('logofile_png', 'block_qrcode'),
-            '', 'logo_png', 0, ['accepted_types' => '.png']
+    $settings->add(new admin_setting_configstoredfile(
+        'block_qrcode/logofile_png',
+        get_string('logofile_png', 'block_qrcode'),
+        '',
+        'logo_png',
+        0,
+        ['accepted_types' => '.png']
     ));
 
-    $settings->add(new admin_setting_configstoredfile('block_qrcode/logofile_svg',
-            get_string('logofile_svg', 'block_qrcode'),
-            '', 'logo_svg', 0, ['accepted_types' => '.svg']
+    $settings->add(new admin_setting_configstoredfile(
+        'block_qrcode/logofile_svg',
+        get_string('logofile_svg', 'block_qrcode'),
+        '',
+        'logo_svg',
+        0,
+        ['accepted_types' => '.svg']
     ));
 
-    $settings->add(new admin_setting_configcheckbox('block_qrcode/allow_customlogo',
+    $settings->add(new admin_setting_configcheckbox(
+        'block_qrcode/allow_customlogo',
         get_string('allow_customlogo', 'block_qrcode'),
         get_string('allow_customlogo_help', 'block_qrcode'),
         '0'
     ));
-
 }
