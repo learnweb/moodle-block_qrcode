@@ -35,8 +35,8 @@ if ($ADMIN->fulltree) {
 
     $settings->add(new admin_setting_configtext(
         'block_qrcode/custom_wwwroot',
-        get_string('customwwwroot', 'block_qrcode'),
-        get_string('customwwwroot_desc', 'block_qrcode') . $CFG->wwwroot,
+        new lang_string('customwwwroot', 'block_qrcode'),
+        new lang_string('customwwwroot_desc', 'block_qrcode') . $CFG->wwwroot,
         $CFG->wwwroot,
         PARAM_URL,
     ));
@@ -44,8 +44,8 @@ if ($ADMIN->fulltree) {
 
     $settings->add(new admin_setting_configcheckbox(
         'block_qrcode/use_logo',
-        get_string('use_logo', 'block_qrcode'),
-        get_string('use_logo_help', 'block_qrcode'),
+        new lang_string('use_logo', 'block_qrcode'),
+        new lang_string('use_logo_help', 'block_qrcode'),
         '1'
     ));
 
