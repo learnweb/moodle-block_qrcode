@@ -36,7 +36,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext(
         'block_qrcode/custom_wwwroot',
         new lang_string('customwwwroot', 'block_qrcode'),
-        new lang_string('customwwwroot_desc', 'block_qrcode') . $CFG->wwwroot,
+        new lang_string('customwwwroot_desc', 'block_qrcode', $CFG->wwwroot),
         $CFG->wwwroot,
         PARAM_URL,
     ));

@@ -29,7 +29,7 @@ $string['cachedef_qrcodes'] = 'Cache for the QR codes';
 $string['customfilepng'] = 'Custom File .png';
 $string['customfilesvg'] = 'Custom File .svg';
 $string['customwwwroot'] = 'Custom wwwroot';
-$string['customwwwroot_desc'] = 'Define a custom wwwroot that will replace the entire value of $CFG->wwwroot in the qr-codes course link (e.g., https://host/moodle/course/view.php?id=...). Note that the entire value of $CFG->wwwroot needs to be covered, or the link wont work otherwise! Your current CFG->wwwroot is: ';
+$string['customwwwroot_desc'] = 'Define a custom wwwroot that will replace the entire value of $CFG->wwwroot in the qr-codes course link (e.g., https://host/moodle/course/view.php?id=...). Note that the entire value of $CFG->wwwroot needs to be covered, or the link wont work otherwise! Your current CFG->wwwroot is: {$a}';
 $string['editblock'] = 'Edit QR code block';
 $string['filename'] = 'course';
 $string['formats'] = 'Format';
