@@ -172,15 +172,11 @@ class output_image {
         }
 
         // Creates the QR code.
-        $qrcode = new QrCode($this->course_link_url()->out(false));
-        $qrcode->setSize($this->size);
-
-        // Set advanced options.
-        $qrcode->setMargin(10);
-        $qrcode->setEncoding(new Encoding('UTF-8'));
-        $qrcode->setErrorCorrectionLevel(new ErrorCorrectionLevel\ErrorCorrectionLevelHigh());
-        $qrcode->setForegroundColor(new Color(0, 0, 0));
-        $qrcode->setBackgroundColor(new Color(255, 255, 255));
+        $qrcode = new QrCode(
+            data: $this->course_link_url()->out(false),
+            size: $this->size,
+            errorCorrectionLevel: ErrorCorrectionLevel::High,
+        );
 
         // Png format.
         $logo = null;
