@@ -27,7 +27,16 @@
 require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
 
-error_reporting(error_reporting() & ~E_USER_DEPRECATED);
+
+set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+    // Check if the error is a deprecation warning
+    if ($errno === E_DEPRECATED && strpos($errfile, 'thirdparty/vendor') !== false) {
+        // Ignore this warning and return true
+        return true;
+    }
+    // For other errors, use the default error handler
+    return false;
+});
 
 /**
  * Block QR code functionalities for behat-testing.
