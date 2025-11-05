@@ -24,6 +24,8 @@
 
 namespace block_qrcode;
 
+use core\url;
+
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\Encoding\Encoding;
@@ -140,6 +142,19 @@ class output_image {
     }
 
     /**
+     * Return the course link url to be included into the QR code.
+     * @return url the course link
+     */
+    public function course_link_url(): url {
+        $customwwwroot = get_config('block_qrcode', 'custom_wwwroot');
+
+        return new url("{$customwwwroot}/course/view.php", [
+            'id' => $this->course->id,
+            'utm_source' => 'block_qrcode',
+        ]);
+    }
+
+    /**
      * Creates the QR code if it doesn't exist.
      */
     public function create_image() {
@@ -157,14 +172,7 @@ class output_image {
         }
 
         // Creates the QR code.
-        // Check if a custom host should be used.
-        $customwwwroot = get_config('block_qrcode', 'custom_wwwroot');
-        if (get_config('block_qrcode', 'use_customwwwroot') == '1' &&  $customwwwroot != '') {
-            $url = $customwwwroot . $this->course->id . '&utm_source=block_qrcode';
-        } else {
-            $url = course_get_url($this->course)->out(false, ['utm_source' => 'block_qrcode']);
-        }
-        $qrcode = new QrCode($url);
+        $qrcode = new QrCode($this->course_link_url()->out(false));
         $qrcode->setSize($this->size);
 
         // Set advanced options.
