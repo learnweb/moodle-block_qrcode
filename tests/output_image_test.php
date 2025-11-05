@@ -26,8 +26,6 @@ namespace block_qrcode;
 
 use core\url;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-
 /**
  * PHPUnit output image testcase
  * @package block_qrcode
@@ -64,17 +62,28 @@ final class output_image_test extends \advanced_testcase {
     }
 
     /**
-     * Data provider for the custom_wwwroot admin setting.
+     * Data provider for {@see self::test_that_the_course_link_generation_respects_the_custom_wwwroot_setting}
+     *
+     * @return \Generator
      */
-    public static function wwwroot_provider(): array {
-        return [[''], ['https://www.example.de'], ['https://www.example.org/moodle']];
+    public static function wwwroot_provider(): \Generator {
+        yield 'Empty admin setting' => [
+            'wwwroot' => '',
+        ];
+        yield 'Custom wwwroot without path part' => [
+            'wwwroot' => 'https://www.example.de',
+        ];
+        yield 'Custom wwwroot with path part' => [
+            'wwwroot' => 'https://www.example.org/moodle',
+        ];
     }
 
     /**
      * The course link generation respects the custom wwwroot setting.
+     * @dataProvider wwwroot_provider
+     * @param string $wwwroot the value of the custom wwwroot admin setting
      * @covers \block_qrcode\output_image
      */
-    #[DataProvider('wwwroot_provider')]
     public function test_that_the_course_link_generation_respects_the_custom_wwwroot_setting(string $wwwroot): void {
         set_config('custom_wwwroot', $wwwroot, 'block_qrcode');
         $image = new output_image(1, 150, $this->course->id, $this->block->id);
