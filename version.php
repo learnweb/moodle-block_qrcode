@@ -23,8 +23,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'block_qrcode'; // Full name of the plugin.
+$plugin->component = 'block_qrcode';
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = 'v4.5-r1';
-$plugin->version = 2025110400; // The current plugin version (Date: YYYMMDDXX).
+$plugin->release   = 'v5.0.0';
+$plugin->version = 2025110600;
 $plugin->requires = 2025041400.00; // Require Moodle 5.0.
