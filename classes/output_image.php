@@ -25,7 +25,6 @@
 namespace block_qrcode;
 
 use core\url;
-
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\Encoding\Encoding;
