@@ -1,5 +1,5 @@
 # Block: QR Code 
-[![Build Status](https://travis-ci.org/learnweb/moodle-block_qrcode.svg?branch=master)](https://travis-ci.org/learnweb/moodle-block_qrcode)
+[![Moodle Plugin CI](https://github.com/learnweb/moodle-block_qrcode/actions/workflows/moodle-ci.yml/badge.svg)](https://github.com/learnweb/moodle-block_qrcode/actions/workflows/moodle-ci.yml)
 
 A moodle block to display a QR code link that leads to the course page. The QR code can be downloaded by teachers, e.g. to put them into introductory slides.
 Teachers can download the QR code as svg or png files. 
