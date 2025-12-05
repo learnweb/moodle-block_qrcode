@@ -36,7 +36,7 @@ use DOMDocument;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/blocks/qrcode/thirdparty/vendor/autoload.php');
+require_once($CFG->dirroot . '/blocks/qrcode/vendor/autoload.php');
 require_once($CFG->dirroot . '/course/lib.php');
 
 /**
