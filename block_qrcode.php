@@ -58,13 +58,16 @@ class block_qrcode extends block_base {
         // Displays the block.
         /** @var block_qrcode_renderer $renderer */
         $renderer = $this->page->get_renderer('block_qrcode');
-        $qrcode = $renderer->display_image($COURSE->id, $this->instance->id);
+
+        // Check if we're on an activity page.
+        $modulecontextid = $this->page->cm ? $this->page->cm->id : null;
+        $qrcode = $renderer->display_image($COURSE->id, $this->instance->id, $modulecontextid);
         $this->content->text .= $qrcode;
 
         // Students can't see the download button.
         if (has_capability('block/qrcode:download', $this->context)) {
             $this->content->text .= '<br><br>';
-            $this->content->text .= $renderer->display_download_section($COURSE->id, $this->instance->id);
+            $this->content->text .= $renderer->display_download_section($COURSE->id, $this->instance->id, $modulecontextid);
         }
 
         $this->page->requires->js_call_amd('block_qrcode/fullscreenqrcode', 'init', [$qrcode]);
@@ -73,12 +76,12 @@ class block_qrcode extends block_base {
     }
 
     /**
-     * The block is only available at course-view pages.
+     * The block is available at course-view and activity pages.
      *
      * @return array of applicable formats
      */
     public function applicable_formats() {
-        return ['course-view' => true, 'mod' => false, 'my' => false];
+        return ['course-view' => true, 'mod' => true, 'my' => false];
     }
 
     /**

@@ -139,4 +139,121 @@ final class output_image_test extends \advanced_testcase {
         $outputimg->create_image();
         $this->assertFileExists($file);
     }
+
+    /**
+     * The course link generation without modulecontextid returns course URL.
+     * @covers \block_qrcode\output_image::course_link_url
+     */
+    public function test_course_link_url_without_activity(): void {
+        set_config('custom_wwwroot', '', 'block_qrcode');
+        $image = new output_image(1, 150, $this->course->id, $this->block->id);
+
+        $expectedurl = new url('/course/view.php', [
+            'id' => $this->course->id,
+            'utm_source' => 'block_qrcode',
+        ]);
+
+        $this->assertEquals($expectedurl, $image->course_link_url());
+    }
+
+    /**
+     * The course link generation with valid modulecontextid returns activity URL.
+     * @covers \block_qrcode\output_image::course_link_url
+     */
+    public function test_course_link_url_with_activity(): void {
+        global $DB;
+
+        set_config('custom_wwwroot', '', 'block_qrcode');
+
+        // Create a forum activity.
+        $forum = $this->getDataGenerator()->create_module('forum', ['course' => $this->course->id]);
+        $cm = $DB->get_record('course_modules', ['course' => $this->course->id, 'instance' => $forum->id]);
+
+        $image = new output_image(1, 150, $this->course->id, $this->block->id, $cm->id);
+        $url = $image->course_link_url();
+
+        $this->assertStringContainsString('/mod/forum/view.php', $url->out(false));
+        $this->assertStringContainsString('id=' . $cm->id, $url->out(false));
+        $this->assertStringContainsString('utm_source=block_qrcode', $url->out(false));
+    }
+
+    /**
+     * The course link generation with activity falls back to course URL if module not found.
+     * @covers \block_qrcode\output_image::course_link_url
+     */
+    public function test_course_link_url_with_invalid_activity(): void {
+        set_config('custom_wwwroot', '', 'block_qrcode');
+
+        // Use a non-existent modulecontextid.
+        $image = new output_image(1, 150, $this->course->id, $this->block->id, 99999);
+
+        $expectedurl = new url('/course/view.php', [
+            'id' => $this->course->id,
+            'utm_source' => 'block_qrcode',
+        ]);
+
+        // Should fall back to course URL.
+        $this->assertEquals($expectedurl, $image->course_link_url());
+    }
+
+    /**
+     * The course link generation respects custom wwwroot with activity URL.
+     * @covers \block_qrcode\output_image::course_link_url
+     */
+    public function test_course_link_url_with_activity_and_custom_wwwroot(): void {
+        global $DB;
+
+        $customwwwroot = 'https://moodle.example.de';
+        set_config('custom_wwwroot', $customwwwroot, 'block_qrcode');
+
+        // Create a quiz activity.
+        $quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
+        $cm = $DB->get_record('course_modules', ['course' => $this->course->id, 'instance' => $quiz->id]);
+
+        $image = new output_image(1, 150, $this->course->id, $this->block->id, $cm->id);
+        $url = $image->course_link_url();
+
+        $this->assertStringContainsString($customwwwroot . '/mod/quiz/view.php', $url->out(false));
+        $this->assertStringContainsString('id=' . $cm->id, $url->out(false));
+    }
+
+    /**
+     * The output_image constructor accepts optional modulecontextid parameter.
+     * @covers \block_qrcode\output_image::__construct
+     */
+    public function test_output_image_constructor_with_modulecontextid(): void {
+        global $DB;
+
+        // Create an assignment activity.
+        $assign = $this->getDataGenerator()->create_module('assign', ['course' => $this->course->id]);
+        $cm = $DB->get_record('course_modules', ['course' => $this->course->id, 'instance' => $assign->id]);
+
+        // Should not throw any exceptions.
+        $image = new output_image(1, 150, $this->course->id, $this->block->id, $cm->id);
+        $this->assertInstanceOf(output_image::class, $image);
+    }
+
+    /**
+     * Different activity types generate correct module URLs.
+     * @covers \block_qrcode\output_image::course_link_url
+     */
+    public function test_course_link_url_with_different_activity_types(): void {
+        global $DB;
+
+        set_config('custom_wwwroot', '', 'block_qrcode');
+
+        // Test with different activity types.
+        $activitytypes = ['forum', 'quiz', 'assign'];
+
+        foreach ($activitytypes as $type) {
+            $activity = $this->getDataGenerator()->create_module($type, ['course' => $this->course->id]);
+            $cm = $DB->get_record('course_modules', ['course' => $this->course->id, 'instance' => $activity->id]);
+
+            $image = new output_image(1, 150, $this->course->id, $this->block->id, $cm->id);
+            $url = $image->course_link_url()->out(false);
+
+            $this->assertStringContainsString("/mod/{$type}/view.php", $url);
+            $this->assertStringContainsString('id=' . $cm->id, $url);
+        }
+    }
 }

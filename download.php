@@ -30,10 +30,11 @@ $download = required_param('download', PARAM_BOOL);
 $format = required_param('format', PARAM_TEXT);
 $instanceid = required_param('instance', PARAM_INT);
 $size = optional_param('size', 300, PARAM_INT);
+$modulecontextid = optional_param('modulecontextid', null, PARAM_INT);
 
 if ($download) {
     require_capability('block/qrcode:download', context_course::instance($courseid));
 }
 
-$outputimg = new block_qrcode\output_image($format, $size, $courseid, $instanceid);
+$outputimg = new block_qrcode\output_image($format, $size, $courseid, $instanceid, $modulecontextid);
 $outputimg->output_image($download);

@@ -90,21 +90,28 @@ class output_image {
      * @var int
      */
     protected $instanceid;
+
+    /**
+     * Course module ID for activity pages.
+     * @var int|null
+     */
+    protected $modulecontextid;
+
     /**
      * output_image constructor.
      * @param int $format file type
      * @param int $size image size
      * @param int $courseid course for which the qrcode is created
      * @param int $instanceid
+     * @param int|null $modulecontextid course module id for activity pages
      */
-    public function __construct($format, $size, $courseid, $instanceid) {
+    public function __construct($format, $size, $courseid, $instanceid, $modulecontextid = null) {
         global $CFG, $DB;
         $this->format = $format;
         $this->size = (int)$size;
         $this->course = get_course($courseid);
         $this->instanceid = $instanceid;
-        $file = $CFG->localcachedir . '/block_qrcode/course-' .
-            (int)$courseid . '-' . $this->size; // Set file path.
+        $this->modulecontextid = $modulecontextid;
 
         $instance = $DB->get_record('block_instances', ['id' => $instanceid], '*', MUST_EXIST);
         $block = block_instance('qrcode', $instance);
@@ -116,6 +123,13 @@ class output_image {
 
         $this->uselogo = ($block->config->usedefault && get_config('block_qrcode', 'use_logo') == 1) ||
                 (!$block->config->usedefault && $block->config->instc_uselogo);
+
+        $file = "{$CFG->localcachedir}/block_qrcode/";
+        if ($modulecontextid) {
+            $file .= "module-{$modulecontextid}-{$this->size}";
+        } else {
+            $file .= "course-{$courseid}-{$this->size}";
+        }
 
         // Set custom logo path.
         if ($this->uselogo) {
@@ -142,10 +156,26 @@ class output_image {
 
     /**
      * Return the course link url to be included into the QR code.
-     * @return url the course link
+     * @return url the course link or activity link
      */
     public function course_link_url(): url {
         $customwwwroot = get_config('block_qrcode', 'custom_wwwroot');
+
+        // If we're on an activity page, link to the activity instead of the course.
+        if (!is_null($this->modulecontextid)) {
+            global $DB;
+            $cm = $DB->get_record('course_modules', ['id' => $this->modulecontextid], 'id, module, instance');
+            if ($cm) {
+                // Get module info.
+                $module = $DB->get_record('modules', ['id' => $cm->module], 'name');
+                if ($module) {
+                    return new url("{$customwwwroot}/mod/{$module->name}/view.php", [
+                        'id' => $cm->id,
+                        'utm_source' => 'block_qrcode',
+                    ]);
+                }
+            }
+        }
 
         return new url("{$customwwwroot}/course/view.php", [
             'id' => $this->course->id,
