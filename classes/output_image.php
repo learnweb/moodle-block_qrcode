@@ -285,15 +285,44 @@ class output_image {
      * @return float the aspect ratio
      */
     protected function get_logo_aspect_ratio($logopath) {
-        // Loads logo.
         $xmllogo = new DOMDocument();
         $xmllogo->load($logopath);
+        $svg = $xmllogo->documentElement;
 
-        $viewbox = $xmllogo->documentElement->getAttribute('viewBox');
-        $viewboxbounds = explode(' ', $viewbox);
-        $logowidth = $viewboxbounds[2];
-        $logoheight = $viewboxbounds[3];
-        return $logowidth / $logoheight;
+        // First try to get aspect ratio from viewBox attribute.
+        $viewbox = $svg->getAttribute('viewBox');
+        if ($viewbox !== '') {
+            $bounds = preg_split('/[\s,]+/', trim($viewbox));
+            if (isset($bounds[2], $bounds[3]) && (float)$bounds[3] > 0) {
+                return (float)$bounds[2] / (float)$bounds[3];
+            }
+        }
+
+        // Fall back to width/height attributes.
+        $width  = $this->parse_svg_length($svg->getAttribute('width'));
+        $height = $this->parse_svg_length($svg->getAttribute('height'));
+        if ($width > 0 && $height > 0) {
+            return $width / $height;
+        }
+
+        // Final fallback: square.
+        return 1.0;
+    }
+
+    /**
+     * Parses an SVG length value.
+     *
+     * Accepts values like "200", "200px", "12.5mm", or "100pt".
+     *
+     * @param string $value
+     * @return float
+     */
+    private function parse_svg_length($value) {
+        if (preg_match('/^\s*([0-9]+(?:\.[0-9]+)?)/', $value, $matches)) {
+            return (float) $matches[1];
+        }
+
+        return 0.0;
     }
 
     /**
