@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Common;
 
@@ -40,8 +55,7 @@ class BitMatrix
     /**
      * @throws InvalidArgumentException if a dimension is smaller than zero
      */
-    public function __construct(int $width, ?int $height = null)
-    {
+    public function __construct(int $width, ?int $height = null) {
         if (null === $height) {
             $height = $width;
         }
@@ -59,8 +73,7 @@ class BitMatrix
     /**
      * Gets the requested bit, where true means black.
      */
-    public function get(int $x, int $y) : bool
-    {
+    public function get(int $x, int $y): bool {
         $offset = $y * $this->rowSize + ($x >> 5);
         return 0 !== (BitUtils::unsignedRightShift($this->bits[$offset], ($x & 0x1f)) & 1);
     }
@@ -68,8 +81,7 @@ class BitMatrix
     /**
      * Sets the given bit to true.
      */
-    public function set(int $x, int $y) : void
-    {
+    public function set(int $x, int $y): void {
         $offset = $y * $this->rowSize + ($x >> 5);
         $this->bits[$offset] = $this->bits[$offset] | (1 << ($x & 0x1f));
     }
@@ -77,8 +89,7 @@ class BitMatrix
     /**
      * Flips the given bit.
      */
-    public function flip(int $x, int $y) : void
-    {
+    public function flip(int $x, int $y): void {
         $offset = $y * $this->rowSize + ($x >> 5);
         $this->bits[$offset] = $this->bits[$offset] ^ (1 << ($x & 0x1f));
     }
@@ -86,8 +97,7 @@ class BitMatrix
     /**
      * Clears all bits (set to false).
      */
-    public function clear() : void
-    {
+    public function clear(): void {
         $max = count($this->bits);
 
         for ($i = 0; $i < $max; ++$i) {
@@ -102,8 +112,7 @@ class BitMatrix
      * @throws InvalidArgumentException if width or height are smaller than 1
      * @throws InvalidArgumentException if region does not fit into the matix
      */
-    public function setRegion(int $left, int $top, int $width, int $height) : void
-    {
+    public function setRegion(int $left, int $top, int $width, int $height): void {
         if ($top < 0 || $left < 0) {
             throw new InvalidArgumentException('Left and top must be non-negative');
         }
@@ -132,8 +141,7 @@ class BitMatrix
     /**
      * A fast method to retrieve one row of data from the matrix as a BitArray.
      */
-    public function getRow(int $y, ?BitArray $row = null) : BitArray
-    {
+    public function getRow(int $y, ?BitArray $row = null): BitArray {
         if (null === $row || $row->getSize() < $this->width) {
             $row = new BitArray($this->width);
         }
@@ -150,8 +158,7 @@ class BitMatrix
     /**
      * Sets a row of data from a BitArray.
      */
-    public function setRow(int $y, BitArray $row) : void
-    {
+    public function setRow(int $y, BitArray $row): void {
         $bits = $row->getBitArray();
 
         for ($i = 0; $i < $this->rowSize; ++$i) {
@@ -164,8 +171,7 @@ class BitMatrix
      *
      * @return int[]|null
      */
-    public function getEnclosingRectangle() : ?array
-    {
+    public function getEnclosingRectangle(): ?array {
         $left = $this->width;
         $top = $this->height;
         $right = -1;
@@ -228,8 +234,7 @@ class BitMatrix
      *
      * @return int[]|null
      */
-    public function getTopLeftOnBit() : ?array
-    {
+    public function getTopLeftOnBit(): ?array {
         $bitsOffset = 0;
 
         while ($bitsOffset < count($this->bits) && 0 === $this->bits[$bitsOffset]) {
@@ -262,8 +267,7 @@ class BitMatrix
      *
      * @return int[]|null
      */
-    public function getBottomRightOnBit() : ?array
-    {
+    public function getBottomRightOnBit(): ?array {
         $bitsOffset = count($this->bits) - 1;
 
         while ($bitsOffset >= 0 && 0 === $this->bits[$bitsOffset]) {
@@ -292,16 +296,14 @@ class BitMatrix
     /**
      * Gets the width of the matrix,
      */
-    public function getWidth() : int
-    {
+    public function getWidth(): int {
         return $this->width;
     }
 
     /**
      * Gets the height of the matrix.
      */
-    public function getHeight() : int
-    {
+    public function getHeight(): int {
         return $this->height;
     }
 }

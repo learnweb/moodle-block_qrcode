@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Common;
 
@@ -37,20 +52,19 @@ final class Mode extends AbstractEnum
      */
     protected function __construct(
         private readonly array $characterCountBitsForVersions,
-        private readonly int   $bits
+        private readonly int $bits
     ) {
     }
 
     /**
      * Returns the number of bits used in a specific QR code version.
      */
-    public function getCharacterCountBits(Version $version) : int
-    {
+    public function getCharacterCountBits(Version $version): int {
         $number = $version->getVersionNumber();
 
         if ($number <= 9) {
             $offset = 0;
-        } elseif ($number <= 26) {
+        } else if ($number <= 26) {
             $offset = 1;
         } else {
             $offset = 2;
@@ -62,8 +76,7 @@ final class Mode extends AbstractEnum
     /**
      * Returns the four bits used to encode this mode.
      */
-    public function getBits() : int
-    {
+    public function getBits(): int {
         return $this->bits;
     }
 }

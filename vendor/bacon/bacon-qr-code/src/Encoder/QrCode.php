@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Encoder;
 
@@ -28,11 +43,11 @@ final class QrCode
     private ByteMatrix $matrix;
 
     public function __construct(
-        private readonly Mode                 $mode,
+        private readonly Mode $mode,
         private readonly ErrorCorrectionLevel $errorCorrectionLevel,
-        private readonly Version              $version,
-        int                                   $maskPattern,
-        ByteMatrix                            $matrix
+        private readonly Version $version,
+        int $maskPattern,
+        ByteMatrix $matrix
     ) {
         $this->maskPattern = $maskPattern;
         $this->matrix = $matrix;
@@ -41,53 +56,46 @@ final class QrCode
     /**
      * Gets the mode.
      */
-    public function getMode() : Mode
-    {
+    public function getMode(): Mode {
         return $this->mode;
     }
 
     /**
      * Gets the EC level.
      */
-    public function getErrorCorrectionLevel() : ErrorCorrectionLevel
-    {
+    public function getErrorCorrectionLevel(): ErrorCorrectionLevel {
         return $this->errorCorrectionLevel;
     }
 
     /**
      * Gets the version.
      */
-    public function getVersion() : Version
-    {
+    public function getVersion(): Version {
         return $this->version;
     }
 
     /**
      * Gets the mask pattern.
      */
-    public function getMaskPattern() : int
-    {
+    public function getMaskPattern(): int {
         return $this->maskPattern;
     }
 
-    public function getMatrix(): ByteMatrix
-    {
+    public function getMatrix(): ByteMatrix {
         return $this->matrix;
     }
 
     /**
      * Validates whether a mask pattern is valid.
      */
-    public static function isValidMaskPattern(int $maskPattern) : bool
-    {
+    public static function isValidMaskPattern(int $maskPattern): bool {
         return $maskPattern > 0 && $maskPattern < self::NUM_MASK_PATTERNS;
     }
 
     /**
      * Returns a string representation of the QR code.
      */
-    public function __toString() : string
-    {
+    public function __toString(): string {
         $result = "<<\n"
                 . ' mode: ' . $this->mode . "\n"
                 . ' ecLevel: ' . $this->errorCorrectionLevel . "\n"

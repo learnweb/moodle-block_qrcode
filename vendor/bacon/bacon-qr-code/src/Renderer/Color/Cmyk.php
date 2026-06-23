@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Color;
 
@@ -36,28 +51,23 @@ final class Cmyk implements ColorInterface
         }
     }
 
-    public function getCyan() : int
-    {
+    public function getCyan(): int {
         return $this->cyan;
     }
 
-    public function getMagenta() : int
-    {
+    public function getMagenta(): int {
         return $this->magenta;
     }
 
-    public function getYellow() : int
-    {
+    public function getYellow(): int {
         return $this->yellow;
     }
 
-    public function getBlack() : int
-    {
+    public function getBlack(): int {
         return $this->black;
     }
 
-    public function toRgb() : Rgb
-    {
+    public function toRgb(): Rgb {
         $k = $this->black / 100;
         $c = (-$k * $this->cyan + $k * 100 + $this->cyan) / 100;
         $m = (-$k * $this->magenta + $k * 100 + $this->magenta) / 100;
@@ -70,13 +80,11 @@ final class Cmyk implements ColorInterface
         );
     }
 
-    public function toCmyk() : Cmyk
-    {
+    public function toCmyk(): Cmyk {
         return $this;
     }
 
-    public function toGray() : Gray
-    {
+    public function toGray(): Gray {
         return $this->toRgb()->toGray();
     }
 }

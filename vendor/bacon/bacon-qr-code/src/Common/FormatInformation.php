@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
  * BaconQrCode
  *
@@ -73,8 +88,7 @@ class FormatInformation
 
     private int $dataMask;
 
-    protected function __construct(int $formatInfo)
-    {
+    protected function __construct(int $formatInfo) {
         $this->ecLevel = ErrorCorrectionLevel::forBits(($formatInfo >> 3) & 0x3);
         $this->dataMask = $formatInfo & 0x7;
     }
@@ -82,8 +96,7 @@ class FormatInformation
     /**
      * Checks how many bits are different between two integers.
      */
-    public static function numBitsDiffering(int $a, int $b) : int
-    {
+    public static function numBitsDiffering(int $a, int $b): int {
         $a ^= $b;
 
         return (
@@ -101,8 +114,7 @@ class FormatInformation
     /**
      * Decodes format information.
      */
-    public static function decodeFormatInformation(int $maskedFormatInfo1, int $maskedFormatInfo2) : ?self
-    {
+    public static function decodeFormatInformation(int $maskedFormatInfo1, int $maskedFormatInfo2): ?self {
         $formatInfo = self::doDecodeFormatInformation($maskedFormatInfo1, $maskedFormatInfo2);
 
         if (null !== $formatInfo) {
@@ -120,8 +132,7 @@ class FormatInformation
     /**
      * Internal method for decoding format information.
      */
-    private static function doDecodeFormatInformation(int $maskedFormatInfo1, int $maskedFormatInfo2) : ?self
-    {
+    private static function doDecodeFormatInformation(int $maskedFormatInfo1, int $maskedFormatInfo2): ?self {
         $bestDifference = PHP_INT_MAX;
         $bestFormatInfo = 0;
 
@@ -162,32 +173,28 @@ class FormatInformation
     /**
      * Returns the error correction level.
      */
-    public function getErrorCorrectionLevel() : ErrorCorrectionLevel
-    {
+    public function getErrorCorrectionLevel(): ErrorCorrectionLevel {
         return $this->ecLevel;
     }
 
     /**
      * Returns the data mask.
      */
-    public function getDataMask() : int
-    {
+    public function getDataMask(): int {
         return $this->dataMask;
     }
 
     /**
      * Hashes the code of the EC level.
      */
-    public function hashCode() : int
-    {
+    public function hashCode(): int {
         return ($this->ecLevel->getBits() << 3) | $this->dataMask;
     }
 
     /**
      * Verifies if this instance equals another one.
      */
-    public function equals(self $other) : bool
-    {
+    public function equals(self $other): bool {
         return (
             $this->ecLevel === $other->ecLevel
             && $this->dataMask === $other->dataMask

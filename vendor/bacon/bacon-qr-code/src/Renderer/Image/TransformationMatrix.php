@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Image;
 
@@ -10,13 +25,11 @@ final class TransformationMatrix
      */
     private array $values;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->values = [1, 0, 0, 1, 0, 0];
     }
 
-    public function multiply(self $other) : self
-    {
+    public function multiply(self $other): self {
         $matrix = new self();
         $matrix->values[0] = $this->values[0] * $other->values[0] + $this->values[2] * $other->values[1];
         $matrix->values[1] = $this->values[1] * $other->values[0] + $this->values[3] * $other->values[1];
@@ -30,22 +43,19 @@ final class TransformationMatrix
         return $matrix;
     }
 
-    public static function scale(float $size) : self
-    {
+    public static function scale(float $size): self {
         $matrix = new self();
         $matrix->values = [$size, 0, 0, $size, 0, 0];
         return $matrix;
     }
 
-    public static function translate(float $x, float $y) : self
-    {
+    public static function translate(float $x, float $y): self {
         $matrix = new self();
         $matrix->values = [1, 0, 0, 1, $x, $y];
         return $matrix;
     }
 
-    public static function rotate(int $degrees) : self
-    {
+    public static function rotate(int $degrees): self {
         $matrix = new self();
         $rad = deg2rad($degrees);
         $matrix->values = [cos($rad), sin($rad), -sin($rad), cos($rad), 0, 0];
@@ -58,8 +68,7 @@ final class TransformationMatrix
      *
      * @return float[]
      */
-    public function apply(float $x, float $y) : array
-    {
+    public function apply(float $x, float $y): array {
         return [
             $x * $this->values[0] + $y * $this->values[2] + $this->values[4],
             $x * $this->values[1] + $y * $this->values[3] + $this->values[5],

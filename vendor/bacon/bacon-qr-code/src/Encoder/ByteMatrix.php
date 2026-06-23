@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Encoder;
 
@@ -18,8 +33,7 @@ final class ByteMatrix
      */
     private SplFixedArray $bytes;
 
-    public function __construct(private readonly int $width, private readonly int $height)
-    {
+    public function __construct(private readonly int $width, private readonly int $height) {
         $this->bytes = new SplFixedArray($height);
 
         for ($y = 0; $y < $height; ++$y) {
@@ -30,16 +44,14 @@ final class ByteMatrix
     /**
      * Gets the width of the matrix.
      */
-    public function getWidth() : int
-    {
+    public function getWidth(): int {
         return $this->width;
     }
 
     /**
      * Gets the height of the matrix.
      */
-    public function getHeight() : int
-    {
+    public function getHeight(): int {
         return $this->height;
     }
 
@@ -48,16 +60,14 @@ final class ByteMatrix
      *
      * @return SplFixedArray<SplFixedArray<int>>
      */
-    public function getArray() : SplFixedArray
-    {
+    public function getArray(): SplFixedArray {
         return $this->bytes;
     }
 
     /**
      * @return Traversable<int>
      */
-    public function getBytes() : Traversable
-    {
+    public function getBytes(): Traversable {
         foreach ($this->bytes as $row) {
             foreach ($row as $byte) {
                 yield $byte;
@@ -68,24 +78,21 @@ final class ByteMatrix
     /**
      * Gets the byte for a specific position.
      */
-    public function get(int $x, int $y) : int
-    {
+    public function get(int $x, int $y): int {
         return $this->bytes[$y][$x];
     }
 
     /**
      * Sets the byte for a specific position.
      */
-    public function set(int $x, int $y, int $value) : void
-    {
+    public function set(int $x, int $y, int $value): void {
         $this->bytes[$y][$x] = $value;
     }
 
     /**
      * Clears the matrix with a specific value.
      */
-    public function clear(int $value) : void
-    {
+    public function clear(int $value): void {
         for ($y = 0; $y < $this->height; ++$y) {
             for ($x = 0; $x < $this->width; ++$x) {
                 $this->bytes[$y][$x] = $value;
@@ -93,8 +100,7 @@ final class ByteMatrix
         }
     }
 
-    public function __clone()
-    {
+    public function __clone() {
         $this->bytes = clone $this->bytes;
 
         foreach ($this->bytes as $index => $row) {
@@ -105,8 +111,7 @@ final class ByteMatrix
     /**
      * Returns a string representation of the matrix.
      */
-    public function __toString() : string
-    {
+    public function __toString(): string {
         $result = '';
 
         for ($y = 0; $y < $this->height; $y++) {

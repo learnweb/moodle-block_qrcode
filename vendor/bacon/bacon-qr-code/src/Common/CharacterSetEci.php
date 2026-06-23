@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Common;
 
@@ -87,16 +102,14 @@ final class CharacterSetEci extends AbstractEnum
     /**
      * @param int[] $values
      */
-    public function __construct(private readonly array $values, string ...$otherEncodingNames)
-    {
+    public function __construct(private readonly array $values, string ...$otherEncodingNames) {
         $this->otherEncodingNames = $otherEncodingNames;
     }
 
     /**
      * Returns the primary value.
      */
-    public function getValue() : int
-    {
+    public function getValue(): int {
         return $this->values[0];
     }
 
@@ -107,8 +120,7 @@ final class CharacterSetEci extends AbstractEnum
      *
      * @throws InvalidArgumentException if value is not between 0 and 900
      */
-    public static function getCharacterSetEciByValue(int $value) : ?self
-    {
+    public static function getCharacterSetEciByValue(int $value): ?self {
         if ($value < 0 || $value >= 900) {
             throw new InvalidArgumentException('Value must be between 0 and 900');
         }
@@ -127,8 +139,7 @@ final class CharacterSetEci extends AbstractEnum
      *
      * Returns the representing ECI of a given name, or null if it is legal but unsupported
      */
-    public static function getCharacterSetEciByName(string $name) : ?self
-    {
+    public static function getCharacterSetEciByName(string $name): ?self {
         $nameToEci = self::nameToEci();
         $name = strtolower($name);
 
@@ -139,8 +150,7 @@ final class CharacterSetEci extends AbstractEnum
         return $nameToEci[$name];
     }
 
-    private static function valueToEci() : array
-    {
+    private static function valueToEci(): array {
         if (null !== self::$valueToEci) {
             return self::$valueToEci;
         }
@@ -156,8 +166,7 @@ final class CharacterSetEci extends AbstractEnum
         return self::$valueToEci;
     }
 
-    private static function nameToEci() : array
-    {
+    private static function nameToEci(): array {
         if (null !== self::$nameToEci) {
             return self::$nameToEci;
         }

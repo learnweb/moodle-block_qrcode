@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Renderer;
 
@@ -14,7 +29,7 @@ use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 final class ImageRenderer implements RendererInterface
 {
     public function __construct(
-        private readonly RendererStyle         $rendererStyle,
+        private readonly RendererStyle $rendererStyle,
         private readonly ImageBackEndInterface $imageBackEnd
     ) {
     }
@@ -22,8 +37,7 @@ final class ImageRenderer implements RendererInterface
     /**
      * @throws InvalidArgumentException if matrix width doesn't match height
      */
-    public function render(QrCode $qrCode) : string
-    {
+    public function render(QrCode $qrCode): string {
         $size = $this->rendererStyle->getSize();
         $margin = $this->rendererStyle->getMargin();
         $matrix = $qrCode->getMatrix();
@@ -62,8 +76,7 @@ final class ImageRenderer implements RendererInterface
         return $this->imageBackEnd->done();
     }
 
-    private function drawEyes(int $matrixSize, Path $modulePath) : Path
-    {
+    private function drawEyes(int $matrixSize, Path $modulePath): Path {
         $fill = $this->rendererStyle->getFill();
 
         $eye = $this->rendererStyle->getEye();
@@ -109,7 +122,7 @@ final class ImageRenderer implements RendererInterface
         float $yTranslation,
         int $rotation,
         Path $modulePath
-    ) : Path {
+    ): Path {
         if ($fill->inheritsBothColors()) {
             return $modulePath
                 ->append(

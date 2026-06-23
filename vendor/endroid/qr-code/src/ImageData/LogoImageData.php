@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -18,8 +32,7 @@ final readonly class LogoImageData
     ) {
     }
 
-    public static function createForLogo(LogoInterface $logo): self
-    {
+    public static function createForLogo(LogoInterface $logo): self {
         error_clear_last();
         $data = @file_get_contents($logo->getPath());
 
@@ -75,13 +88,11 @@ final readonly class LogoImageData
         return new self($data, $image, $mimeType, imagesx($image), imagesy($image), $logo->getPunchoutBackground());
     }
 
-    public function getData(): string
-    {
+    public function getData(): string {
         return $this->data;
     }
 
-    public function getImage(): \GdImage
-    {
+    public function getImage(): \GdImage {
         if (!$this->image instanceof \GdImage) {
             throw new \Exception('SVG Images have no image resource');
         }
@@ -89,33 +100,27 @@ final readonly class LogoImageData
         return $this->image;
     }
 
-    public function getMimeType(): string
-    {
+    public function getMimeType(): string {
         return $this->mimeType;
     }
 
-    public function getWidth(): int
-    {
+    public function getWidth(): int {
         return $this->width;
     }
 
-    public function getHeight(): int
-    {
+    public function getHeight(): int {
         return $this->height;
     }
 
-    public function getPunchoutBackground(): bool
-    {
+    public function getPunchoutBackground(): bool {
         return $this->punchoutBackground;
     }
 
-    public function createDataUri(): string
-    {
-        return 'data:'.$this->mimeType.';base64,'.base64_encode($this->data);
+    public function createDataUri(): string {
+        return 'data:' . $this->mimeType . ';base64,' . base64_encode($this->data);
     }
 
-    private static function detectMimeTypeFromUrl(string $url): string
-    {
+    private static function detectMimeTypeFromUrl(string $url): string {
         $headers = get_headers($url, true);
 
         if (!is_array($headers)) {
@@ -131,8 +136,7 @@ final readonly class LogoImageData
         return is_array($headers['content-type']) ? $headers['content-type'][1] : $headers['content-type'];
     }
 
-    private static function detectMimeTypeFromPath(string $path): string
-    {
+    private static function detectMimeTypeFromPath(string $path): string {
         if (!function_exists('mime_content_type')) {
             throw new \Exception('You need the ext-fileinfo extension to determine logo mime type');
         }

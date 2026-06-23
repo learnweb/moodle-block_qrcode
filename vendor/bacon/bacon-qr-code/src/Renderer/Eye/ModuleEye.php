@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Eye;
 
@@ -12,12 +27,10 @@ use BaconQrCode\Renderer\Path\Path;
  */
 final class ModuleEye implements EyeInterface
 {
-    public function __construct(private readonly ModuleInterface $module)
-    {
+    public function __construct(private readonly ModuleInterface $module) {
     }
 
-    public function getExternalPath() : Path
-    {
+    public function getExternalPath(): Path {
         $matrix = new ByteMatrix(7, 7);
 
         for ($x = 0; $x < 7; ++$x) {
@@ -33,8 +46,7 @@ final class ModuleEye implements EyeInterface
         return $this->module->createPath($matrix)->translate(-3.5, -3.5);
     }
 
-    public function getInternalPath() : Path
-    {
+    public function getInternalPath(): Path {
         $matrix = new ByteMatrix(3, 3);
 
         for ($x = 0; $x < 3; ++$x) {

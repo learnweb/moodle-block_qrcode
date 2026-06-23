@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Module\EdgeIterator;
 
@@ -23,8 +38,7 @@ final class EdgeIterator implements IteratorAggregate
 
     private int $height;
 
-    public function __construct(ByteMatrix $matrix)
-    {
+    public function __construct(ByteMatrix $matrix) {
         $this->bytes = iterator_to_array($matrix->getBytes());
         $this->size = count($this->bytes);
         $this->width = $matrix->getWidth();
@@ -34,8 +48,7 @@ final class EdgeIterator implements IteratorAggregate
     /**
      * @return Traversable<Edge>
      */
-    public function getIterator() : Traversable
-    {
+    public function getIterator(): Traversable {
         $originalBytes = $this->bytes;
         $point = $this->findNext(0, 0);
 
@@ -54,8 +67,7 @@ final class EdgeIterator implements IteratorAggregate
     /**
      * @return int[]|null
      */
-    private function findNext(int $x, int $y) : ?array
-    {
+    private function findNext(int $x, int $y): ?array {
         $i = $this->width * $y + $x;
 
         while ($i < $this->size && 1 !== $this->bytes[$i]) {
@@ -69,8 +81,7 @@ final class EdgeIterator implements IteratorAggregate
         return null;
     }
 
-    private function findEdge(int $x, int $y) : Edge
-    {
+    private function findEdge(int $x, int $y): Edge {
         $edge = new Edge($this->isSet($x, $y));
         $startX = $x;
         $startY = $y;
@@ -93,11 +104,11 @@ final class EdgeIterator implements IteratorAggregate
                 $tmp = $dirX;
                 $dirX = -$dirY;
                 $dirY = $tmp;
-            } elseif ($right) {
+            } else if ($right) {
                 $tmp = $dirX;
                 $dirX = -$dirY;
                 $dirY = $tmp;
-            } elseif (! $left) {
+            } else if (! $left) {
                 $tmp = $dirX;
                 $dirX = $dirY;
                 $dirY = -$tmp;
@@ -107,8 +118,7 @@ final class EdgeIterator implements IteratorAggregate
         return $edge;
     }
 
-    private function xorEdge(Edge $path) : void
-    {
+    private function xorEdge(Edge $path): void {
         $points = $path->getPoints();
         $y1 = $points[0][1];
         $length = count($points);
@@ -132,8 +142,7 @@ final class EdgeIterator implements IteratorAggregate
         }
     }
 
-    private function isSet(int $x, int $y) : bool
-    {
+    private function isSet(int $x, int $y): bool {
         return (
             $x >= 0
             && $x < $this->width
@@ -145,14 +154,12 @@ final class EdgeIterator implements IteratorAggregate
     /**
      * @return int[]
      */
-    private function pointOf(int $i) : array
-    {
+    private function pointOf(int $i): array {
         $y = intdiv($i, $this->width);
         return [$i - $y * $this->width, $y];
     }
 
-    private function flip(int $x, int $y) : void
-    {
+    private function flip(int $x, int $y): void {
         $this->bytes[$this->width * $y + $x] = (
             $this->isSet($x, $y) ? 0 : 1
         );

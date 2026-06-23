@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Image;
 
@@ -30,15 +45,13 @@ final class SvgImageBackEnd implements ImageBackEndInterface
 
     private ?int $gradientCount;
 
-    public function __construct()
-    {
+    public function __construct() {
         if (! class_exists(XMLWriter::class)) {
             throw new RuntimeException('You need to install the libxml extension to use this back end');
         }
     }
 
-    public function new(int $size, ColorInterface $backgroundColor) : void
-    {
+    public function new(int $size, ColorInterface $backgroundColor): void {
         $this->xmlWriter = new XMLWriter();
         $this->xmlWriter->openMemory();
 
@@ -48,7 +61,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->writeAttribute('version', '1.1');
         $this->xmlWriter->writeAttribute('width', (string) $size);
         $this->xmlWriter->writeAttribute('height', (string) $size);
-        $this->xmlWriter->writeAttribute('viewBox', '0 0 '. $size . ' ' . $size);
+        $this->xmlWriter->writeAttribute('viewBox', '0 0 ' . $size . ' ' . $size);
 
         $this->gradientCount = 0;
         $this->currentStack = 0;
@@ -78,8 +91,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->endElement();
     }
 
-    public function scale(float $size) : void
-    {
+    public function scale(float $size): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
         }
@@ -92,8 +104,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         ++$this->stack[$this->currentStack];
     }
 
-    public function translate(float $x, float $y) : void
-    {
+    public function translate(float $x, float $y): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
         }
@@ -106,8 +117,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         ++$this->stack[$this->currentStack];
     }
 
-    public function rotate(int $degrees) : void
-    {
+    public function rotate(int $degrees): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
         }
@@ -117,8 +127,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         ++$this->stack[$this->currentStack];
     }
 
-    public function push() : void
-    {
+    public function push(): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
         }
@@ -128,8 +137,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         ++$this->currentStack;
     }
 
-    public function pop() : void
-    {
+    public function pop(): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
         }
@@ -142,8 +150,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         --$this->currentStack;
     }
 
-    public function drawPathWithColor(Path $path, ColorInterface $color) : void
-    {
+    public function drawPathWithColor(Path $path, ColorInterface $color): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
         }
@@ -171,7 +178,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         float $y,
         float $width,
         float $height
-    ) : void {
+    ): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
         }
@@ -182,8 +189,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->endElement();
     }
 
-    public function done() : string
-    {
+    public function done(): string {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
         }
@@ -204,8 +210,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         return $blob;
     }
 
-    private function startPathElement(Path $path) : void
-    {
+    private function startPathElement(Path $path): void {
         $pathData = [];
 
         foreach ($path as $op) {
@@ -265,8 +270,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->writeAttribute('d', implode('', $pathData));
     }
 
-    private function createGradientFill(Gradient $gradient, float $x, float $y, float $width, float $height) : string
-    {
+    private function createGradientFill(Gradient $gradient, float $x, float $y, float $width, float $height): string {
         $this->xmlWriter->startElement('defs');
 
         $startColor = $gradient->getStartColor();
@@ -349,8 +353,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         return $id;
     }
 
-    private function getColorString(ColorInterface $color) : string
-    {
+    private function getColorString(ColorInterface $color): string {
         $color = $color->toRgb();
 
         return sprintf(

@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -54,38 +68,31 @@ final readonly class Matrix implements MatrixInterface
         $this->marginRight = $this->outerSize - $this->innerSize - $this->marginLeft;
     }
 
-    public function getBlockValue(int $rowIndex, int $columnIndex): int
-    {
+    public function getBlockValue(int $rowIndex, int $columnIndex): int {
         return $this->blockValues[$rowIndex][$columnIndex];
     }
 
-    public function getBlockCount(): int
-    {
+    public function getBlockCount(): int {
         return count($this->blockValues[0]);
     }
 
-    public function getBlockSize(): float
-    {
+    public function getBlockSize(): float {
         return $this->blockSize;
     }
 
-    public function getInnerSize(): int
-    {
+    public function getInnerSize(): int {
         return $this->innerSize;
     }
 
-    public function getOuterSize(): int
-    {
+    public function getOuterSize(): int {
         return $this->outerSize;
     }
 
-    public function getMarginLeft(): int
-    {
+    public function getMarginLeft(): int {
         return $this->marginLeft;
     }
 
-    public function getMarginRight(): int
-    {
+    public function getMarginRight(): int {
         return $this->marginRight;
     }
 }

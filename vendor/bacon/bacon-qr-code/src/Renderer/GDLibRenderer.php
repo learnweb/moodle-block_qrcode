@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -46,8 +60,7 @@ final class GDLibRenderer implements RendererInterface
     /**
      * @throws InvalidArgumentException if matrix width doesn't match height
      */
-    public function render(QrCode $qrCode): string
-    {
+    public function render(QrCode $qrCode): string {
         $matrix = $qrCode->getMatrix();
         $matrixSize = $matrix->getWidth();
 
@@ -62,8 +75,7 @@ final class GDLibRenderer implements RendererInterface
         return $this->renderImage();
     }
 
-    private function newImage(): void
-    {
+    private function newImage(): void {
         $img = imagecreatetruecolor($this->size, $this->size);
         if ($img === false) {
             throw new RuntimeException('Failed to create image of that size');
@@ -73,14 +85,12 @@ final class GDLibRenderer implements RendererInterface
         imagealphablending($this->image, false);
         imagesavealpha($this->image, true);
 
-
         $bg = $this->getColor($this->fill->getBackgroundColor());
         imagefilledrectangle($this->image, 0, 0, $this->size, $this->size, $bg);
         imagealphablending($this->image, true);
     }
 
-    private function draw(ByteMatrix $matrix): void
-    {
+    private function draw(ByteMatrix $matrix): void {
         $matrixSize = $matrix->getWidth();
 
         $pointsOnSide = $matrix->getWidth() + $this->margin * 2;
@@ -109,8 +119,7 @@ final class GDLibRenderer implements RendererInterface
         }
     }
 
-    private function drawEye(int $xOffset, int $yOffset, float $pointInPx, EyeFill $eyeFill): void
-    {
+    private function drawEye(int $xOffset, int $yOffset, float $pointInPx, EyeFill $eyeFill): void {
         $internalColor = $this->getColor($eyeFill->inheritsInternalColor()
             ? $this->fill->getForegroundColor()
             : $eyeFill->getInternalColor());
@@ -145,8 +154,7 @@ final class GDLibRenderer implements RendererInterface
      * Normalize points will trim right and bottom line by 1 pixel.
      * Otherwise pixels of neighbors are overlapping which leads to issue with transparency and small QR codes.
      */
-    private function normalizePoints(array $points): array
-    {
+    private function normalizePoints(array $points): array {
         $maxX = $maxY = 0;
         for ($i = 0; $i < count($points); $i += 2) {
             // Do manual round as GD just removes decimal part
@@ -167,8 +175,7 @@ final class GDLibRenderer implements RendererInterface
         return $points;
     }
 
-    private function renderImage(): string
-    {
+    private function renderImage(): string {
         ob_start();
         $quality = $this->compressionQuality;
         switch ($this->imageFormat) {
@@ -204,8 +211,7 @@ final class GDLibRenderer implements RendererInterface
         return ob_get_clean();
     }
 
-    private function getColor(ColorInterface $color): int
-    {
+    private function getColor(ColorInterface $color): int {
         $alpha = 100;
 
         if ($color instanceof Alpha) {

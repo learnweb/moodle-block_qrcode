@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Path;
 
@@ -15,41 +30,34 @@ final class Curve implements OperationInterface
     ) {
     }
 
-    public function getX1() : float
-    {
+    public function getX1(): float {
         return $this->x1;
     }
 
-    public function getY1() : float
-    {
+    public function getY1(): float {
         return $this->y1;
     }
 
-    public function getX2() : float
-    {
+    public function getX2(): float {
         return $this->x2;
     }
 
-    public function getY2() : float
-    {
+    public function getY2(): float {
         return $this->y2;
     }
 
-    public function getX3() : float
-    {
+    public function getX3(): float {
         return $this->x3;
     }
 
-    public function getY3() : float
-    {
+    public function getY3(): float {
         return $this->y3;
     }
 
     /**
      * @return self
      */
-    public function translate(float $x, float $y) : OperationInterface
-    {
+    public function translate(float $x, float $y): OperationInterface {
         return new self(
             $this->x1 + $x,
             $this->y1 + $y,
@@ -63,8 +71,7 @@ final class Curve implements OperationInterface
     /**
      * @return self
      */
-    public function rotate(int $degrees) : OperationInterface
-    {
+    public function rotate(int $degrees): OperationInterface {
         $radians = deg2rad($degrees);
         $sin = sin($radians);
         $cos = cos($radians);

@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 declare(strict_types=1);
 
@@ -18,17 +32,14 @@ use Endroid\QrCode\Writer\Result\GdResult;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 use Zxing\QrReader;
 
-abstract readonly class AbstractGdWriter implements WriterInterface, ValidatingWriterInterface
-{
-    protected function getMatrix(QrCodeInterface $qrCode): MatrixInterface
-    {
+abstract readonly class AbstractGdWriter implements ValidatingWriterInterface, WriterInterface {
+    protected function getMatrix(QrCodeInterface $qrCode): MatrixInterface {
         $matrixFactory = new MatrixFactory();
 
         return $matrixFactory->create($qrCode);
     }
 
-    public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface
-    {
+    public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface {
         if (!extension_loaded('gd')) {
             throw new \Exception('Unable to generate image: please check if the GD extension is enabled and configured correctly');
         }
@@ -126,8 +137,7 @@ abstract readonly class AbstractGdWriter implements WriterInterface, ValidatingW
         return $result;
     }
 
-    private function addLogo(LogoInterface $logo, GdResult $result): GdResult
-    {
+    private function addLogo(LogoInterface $logo, GdResult $result): GdResult {
         $logoImageData = LogoImageData::createForLogo($logo);
 
         if ('image/svg+xml' === $logoImageData->getMimeType()) {
@@ -166,8 +176,7 @@ abstract readonly class AbstractGdWriter implements WriterInterface, ValidatingW
         return new GdResult($matrix, $targetImage);
     }
 
-    private function addLabel(LabelInterface $label, GdResult $result): GdResult
-    {
+    private function addLabel(LabelInterface $label, GdResult $result): GdResult {
         $targetImage = $result->getImage();
 
         $labelImageData = LabelImageData::createForLabel($label);
@@ -186,7 +195,7 @@ abstract readonly class AbstractGdWriter implements WriterInterface, ValidatingW
 
         if (LabelAlignment::Left === $label->getAlignment()) {
             $x = $label->getMargin()->getLeft();
-        } elseif (LabelAlignment::Right === $label->getAlignment()) {
+        } else if (LabelAlignment::Right === $label->getAlignment()) {
             $x = imagesx($targetImage) - $labelImageData->getWidth() - $label->getMargin()->getRight();
         }
 
@@ -195,8 +204,7 @@ abstract readonly class AbstractGdWriter implements WriterInterface, ValidatingW
         return new GdResult($result->getMatrix(), $targetImage);
     }
 
-    public function validateResult(ResultInterface $result, string $expectedData): void
-    {
+    public function validateResult(ResultInterface $result, string $expectedData): void {
         $string = $result->getString();
 
         if (!class_exists(QrReader::class)) {

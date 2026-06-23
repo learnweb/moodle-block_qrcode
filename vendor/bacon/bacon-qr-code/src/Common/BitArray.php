@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Common;
 
@@ -21,32 +36,28 @@ final class BitArray
     /**
      * Creates a new bit array with a given size.
      */
-    public function __construct(private int $size = 0)
-    {
+    public function __construct(private int $size = 0) {
         $this->bits = SplFixedArray::fromArray(array_fill(0, ($this->size + 31) >> 3, 0));
     }
 
     /**
      * Gets the size in bits.
      */
-    public function getSize() : int
-    {
+    public function getSize(): int {
         return $this->size;
     }
 
     /**
      * Gets the size in bytes.
      */
-    public function getSizeInBytes() : int
-    {
+    public function getSizeInBytes(): int {
         return ($this->size + 7) >> 3;
     }
 
     /**
      * Ensures that the array has a minimum capacity.
      */
-    public function ensureCapacity(int $size) : void
-    {
+    public function ensureCapacity(int $size): void {
         if ($size > count($this->bits) << 5) {
             $this->bits->setSize(($size + 31) >> 5);
         }
@@ -55,32 +66,28 @@ final class BitArray
     /**
      * Gets a specific bit.
      */
-    public function get(int $i) : bool
-    {
+    public function get(int $i): bool {
         return 0 !== ($this->bits[$i >> 5] & (1 << ($i & 0x1f)));
     }
 
     /**
      * Sets a specific bit.
      */
-    public function set(int $i) : void
-    {
+    public function set(int $i): void {
         $this->bits[$i >> 5] = $this->bits[$i >> 5] | 1 << ($i & 0x1f);
     }
 
     /**
      * Flips a specific bit.
      */
-    public function flip(int $i) : void
-    {
+    public function flip(int $i): void {
         $this->bits[$i >> 5] ^= 1 << ($i & 0x1f);
     }
 
     /**
      * Gets the next set bit position from a given position.
      */
-    public function getNextSet(int $from) : int
-    {
+    public function getNextSet(int $from): int {
         if ($from >= $this->size) {
             return $this->size;
         }
@@ -105,8 +112,7 @@ final class BitArray
     /**
      * Gets the next unset bit position from a given position.
      */
-    public function getNextUnset(int $from) : int
-    {
+    public function getNextUnset(int $from): int {
         if ($from >= $this->size) {
             return $this->size;
         }
@@ -131,8 +137,7 @@ final class BitArray
     /**
      * Sets a bulk of bits.
      */
-    public function setBulk(int $i, int $newBits) : void
-    {
+    public function setBulk(int $i, int $newBits): void {
         $this->bits[$i >> 5] = $newBits;
     }
 
@@ -141,8 +146,7 @@ final class BitArray
      *
      * @throws InvalidArgumentException if end is smaller than start
      */
-    public function setRange(int $start, int $end) : void
-    {
+    public function setRange(int $start, int $end): void {
         if ($end < $start) {
             throw new InvalidArgumentException('End must be greater or equal to start');
         }
@@ -177,8 +181,7 @@ final class BitArray
     /**
      * Clears the bit array, unsetting every bit.
      */
-    public function clear() : void
-    {
+    public function clear(): void {
         $bitsLength = count($this->bits);
 
         for ($i = 0; $i < $bitsLength; ++$i) {
@@ -191,8 +194,7 @@ final class BitArray
 
      * @throws InvalidArgumentException if end is smaller than start
      */
-    public function isRange(int $start, int $end, bool $value) : bool
-    {
+    public function isRange(int $start, int $end, bool $value): bool {
         if ($end < $start) {
             throw new InvalidArgumentException('End must be greater or equal to start');
         }
@@ -231,8 +233,7 @@ final class BitArray
     /**
      * Appends a bit to the array.
      */
-    public function appendBit(bool $bit) : void
-    {
+    public function appendBit(bool $bit): void {
         $this->ensureCapacity($this->size + 1);
 
         if ($bit) {
@@ -247,8 +248,7 @@ final class BitArray
 
      * @throws InvalidArgumentException if num bits is not between 0 and 32
      */
-    public function appendBits(int $value, int $numBits) : void
-    {
+    public function appendBits(int $value, int $numBits): void {
         if ($numBits < 0 || $numBits > 32) {
             throw new InvalidArgumentException('Num bits must be between 0 and 32');
         }
@@ -263,8 +263,7 @@ final class BitArray
     /**
      * Appends another bit array to this array.
      */
-    public function appendBitArray(self $other) : void
-    {
+    public function appendBitArray(self $other): void {
         $otherSize = $other->getSize();
         $this->ensureCapacity($this->size + $other->getSize());
 
@@ -278,8 +277,7 @@ final class BitArray
      *
      * @throws InvalidArgumentException if sizes don't match
      */
-    public function xorBits(self $other) : void
-    {
+    public function xorBits(self $other): void {
         $bitsLength = count($this->bits);
         $otherBits  = $other->getBitArray();
 
@@ -297,8 +295,7 @@ final class BitArray
      *
      * @return SplFixedArray<int>
      */
-    public function toBytes(int $bitOffset, int $numBytes) : SplFixedArray
-    {
+    public function toBytes(int $bitOffset, int $numBytes): SplFixedArray {
         $bytes = new SplFixedArray($numBytes);
 
         for ($i = 0; $i < $numBytes; ++$i) {
@@ -323,16 +320,14 @@ final class BitArray
      *
      * @return SplFixedArray<int>
      */
-    public function getBitArray() : SplFixedArray
-    {
+    public function getBitArray(): SplFixedArray {
         return $this->bits;
     }
 
     /**
      * Reverses the array.
      */
-    public function reverse() : void
-    {
+    public function reverse(): void {
         $newBits = new SplFixedArray(count($this->bits));
 
         for ($i = 0; $i < $this->size; ++$i) {
@@ -347,8 +342,7 @@ final class BitArray
     /**
      * Returns a string representation of the bit array.
      */
-    public function __toString() : string
-    {
+    public function __toString(): string {
         $result = '';
 
         for ($i = 0; $i < $this->size; ++$i) {

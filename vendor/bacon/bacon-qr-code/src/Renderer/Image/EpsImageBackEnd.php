@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Image;
 
@@ -24,8 +39,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
     private ?string $eps;
 
-    public function new(int $size, ColorInterface $backgroundColor) : void
-    {
+    public function new(int $size, ColorInterface $backgroundColor): void {
         $this->eps = "%!PS-Adobe-3.0 EPSF-3.0\n"
             . "%%Creator: BaconQrCode\n"
             . sprintf("%%%%BoundingBox: 0 0 %d %d \n", $size, $size)
@@ -60,14 +74,13 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             . sprintf(' %s %s l', (string) $size, (string) $size)
             . sprintf(' 0 %s l', (string) $size)
             . ' z'
-            . ' ' .$this->getColorSetString($backgroundColor) . " f\n",
+            . ' ' . $this->getColorSetString($backgroundColor) . " f\n",
             75,
             "\n "
         );
     }
 
-    public function scale(float $size) : void
-    {
+    public function scale(float $size): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
         }
@@ -75,8 +88,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= sprintf("%1\$s %1\$s s\n", round($size, self::PRECISION));
     }
 
-    public function translate(float $x, float $y) : void
-    {
+    public function translate(float $x, float $y): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
         }
@@ -84,8 +96,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= sprintf("%s %s t\n", round($x, self::PRECISION), round($y, self::PRECISION));
     }
 
-    public function rotate(int $degrees) : void
-    {
+    public function rotate(int $degrees): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
         }
@@ -93,8 +104,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= sprintf("%d r\n", $degrees);
     }
 
-    public function push() : void
-    {
+    public function push(): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
         }
@@ -102,8 +112,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= "q\n";
     }
 
-    public function pop() : void
-    {
+    public function pop(): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
         }
@@ -111,8 +120,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= "Q\n";
     }
 
-    public function drawPathWithColor(Path $path, ColorInterface $color) : void
-    {
+    public function drawPathWithColor(Path $path, ColorInterface $color): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
         }
@@ -135,7 +143,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         float $y,
         float $width,
         float $height
-    ) : void {
+    ): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
         }
@@ -151,8 +159,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->createGradientFill($gradient, $x, $y, $width, $height);
     }
 
-    public function done() : string
-    {
+    public function done(): string {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
         }
@@ -164,8 +171,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         return $blob;
     }
 
-    private function drawPathOperations(Iterable $ops, &$fromX, &$fromY) : string
-    {
+    private function drawPathOperations(iterable $ops, &$fromX, &$fromY): string {
         $pathData = [];
 
         foreach ($ops as $op) {
@@ -208,8 +214,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         return implode(' ', $pathData);
     }
 
-    private function createGradientFill(Gradient $gradient, float $x, float $y, float $width, float $height) : void
-    {
+    private function createGradientFill(Gradient $gradient, float $x, float $y, float $width, float $height): void {
         $startColor = $gradient->getStartColor();
         $endColor = $gradient->getEndColor();
 
@@ -331,8 +336,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             . " >>\n>>\nshfill\nQ\n";
     }
 
-    private function getColorSetString(ColorInterface $color) : string
-    {
+    private function getColorSetString(ColorInterface $color): string {
         if ($color instanceof Rgb) {
             return $this->getColorString($color) . ' rgb';
         }
@@ -348,8 +352,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         return $this->getColorSetString($color->toCmyk());
     }
 
-    private function getColorString(ColorInterface $color) : string
-    {
+    private function getColorString(ColorInterface $color): string {
         if ($color instanceof Rgb) {
             return sprintf('%s %s %s', $color->getRed() / 255, $color->getGreen() / 255, $color->getBlue() / 255);
         }

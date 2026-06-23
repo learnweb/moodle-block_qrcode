@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Common;
 
@@ -104,8 +119,7 @@ final class Version
     /**
      * Returns the version number.
      */
-    public function getVersionNumber() : int
-    {
+    public function getVersionNumber(): int {
         return $this->versionNumber;
     }
 
@@ -114,32 +128,28 @@ final class Version
      *
      * @return int[]
      */
-    public function getAlignmentPatternCenters() : array
-    {
+    public function getAlignmentPatternCenters(): array {
         return $this->alignmentPatternCenters;
     }
 
     /**
      * Returns the total number of codewords.
      */
-    public function getTotalCodewords() : int
-    {
+    public function getTotalCodewords(): int {
         return $this->totalCodewords;
     }
 
     /**
      * Calculates the dimension for the current version.
      */
-    public function getDimensionForVersion() : int
-    {
+    public function getDimensionForVersion(): int {
         return 17 + 4 * $this->versionNumber;
     }
 
     /**
      * Returns the number of EC blocks for a specific EC level.
      */
-    public function getEcBlocksForLevel(ErrorCorrectionLevel $ecLevel) : EcBlocks
-    {
+    public function getEcBlocksForLevel(ErrorCorrectionLevel $ecLevel): EcBlocks {
         return $this->ecBlocks[$ecLevel->ordinal()];
     }
 
@@ -148,8 +158,7 @@ final class Version
      *
      * @throws InvalidArgumentException if dimension is not 1 mod 4
      */
-    public static function getProvisionalVersionForDimension(int $dimension) : self
-    {
+    public static function getProvisionalVersionForDimension(int $dimension): self {
         if (1 !== $dimension % 4) {
             throw new InvalidArgumentException('Dimension is not 1 mod 4');
         }
@@ -162,8 +171,7 @@ final class Version
      *
      * @throws InvalidArgumentException if version number is out of range
      */
-    public static function getVersionForNumber(int $versionNumber) : self
-    {
+    public static function getVersionForNumber(int $versionNumber): self {
         if ($versionNumber < 1 || $versionNumber > 40) {
             throw new InvalidArgumentException('Version number must be between 1 and 40');
         }
@@ -174,8 +182,7 @@ final class Version
     /**
      * Decodes version information from an integer and returns the version.
      */
-    public static function decodeVersionInformation(int $versionBits) : ?self
-    {
+    public static function decodeVersionInformation(int $versionBits): ?self {
         $bestDifference = PHP_INT_MAX;
         $bestVersion = 0;
 
@@ -202,8 +209,7 @@ final class Version
     /**
      * Builds the function pattern for the current version.
      */
-    public function buildFunctionPattern() : BitMatrix
-    {
+    public function buildFunctionPattern(): BitMatrix {
         $dimension = $this->getDimensionForVersion();
         $bitMatrix = new BitMatrix($dimension);
 
@@ -248,8 +254,7 @@ final class Version
     /**
      * Returns a string representation for the version.
      */
-    public function __toString() : string
-    {
+    public function __toString(): string {
         return (string) $this->versionNumber;
     }
 
@@ -260,8 +265,7 @@ final class Version
      *
      * @return array<int, self>
      */
-    private static function versions() : array
-    {
+    private static function versions(): array {
         if (null !== self::$versions) {
             return self::$versions;
         }

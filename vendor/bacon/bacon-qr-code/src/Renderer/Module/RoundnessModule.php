@@ -1,5 +1,20 @@
 <?php
-declare(strict_types = 1);
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Module;
 
@@ -17,8 +32,7 @@ final class RoundnessModule implements ModuleInterface
     public const MEDIUM = .5;
     public const SOFT = .25;
 
-    public function __construct(private float $intensity)
-    {
+    public function __construct(private float $intensity) {
         if ($intensity <= 0 || $intensity > 1) {
             throw new InvalidArgumentException('Intensity must between 0 (exclusive) and 1 (inclusive)');
         }
@@ -26,8 +40,7 @@ final class RoundnessModule implements ModuleInterface
         $this->intensity = $intensity / 2;
     }
 
-    public function createPath(ByteMatrix $matrix) : Path
-    {
+    public function createPath(ByteMatrix $matrix): Path {
         $path = new Path();
 
         foreach (new EdgeIterator($matrix) as $edge) {
@@ -70,7 +83,8 @@ final class RoundnessModule implements ModuleInterface
                     $up = $nextPoint[1] < $currentPoint[1];
                     $sweep = ($up xor $right);
 
-                    if ($this->intensity < 0.5
+                    if (
+                        $this->intensity < 0.5
                         || ($right && $previousPoint[0] !== $currentPoint[0] - 1)
                         || (! $right && $previousPoint[0] - 1 !== $currentPoint[0])
                     ) {
@@ -94,7 +108,8 @@ final class RoundnessModule implements ModuleInterface
                     $right = $nextPoint[0] > $currentPoint[0];
                     $sweep = ! ($up xor $right);
 
-                    if ($this->intensity < 0.5
+                    if (
+                        $this->intensity < 0.5
                         || ($up && $previousPoint[1] !== $currentPoint[1] + 1)
                         || (! $up && $previousPoint[0] + 1 !== $currentPoint[0])
                     ) {
