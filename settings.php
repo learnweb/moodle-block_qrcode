@@ -23,15 +23,20 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot . '/blocks/qrcode/lib.php');
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtext(
+    $setting = new admin_setting_configtext(
         'block_qrcode/custom_wwwroot',
         new lang_string('customwwwroot', 'block_qrcode'),
         new lang_string('customwwwroot_desc', 'block_qrcode', $CFG->wwwroot),
         '',
-        PARAM_URL,
-    ));
+        PARAM_URL
+    );
+
+    $setting->set_updatedcallback('block_qrcode_clear_cache');
+
+    $settings->add($setting);
 
     $settings->add(new admin_setting_configcheckbox(
         'block_qrcode/use_logo',
