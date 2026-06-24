@@ -226,7 +226,7 @@ final class MatrixUtil
      * Embeds version information if required.
      */
     private static function maybeEmbedVersionInfo(Version $version, ByteMatrix $matrix): void {
-        if ($version->getVersionNumber() < 7) {
+        if ($version->getversionnumber() < 7) {
             return;
         }
 
@@ -252,9 +252,9 @@ final class MatrixUtil
      * @throws RuntimeException if bit array resulted in invalid size
      */
     private static function makeVersionInfoBits(Version $version, BitArray $bits): void {
-        $bits->appendBits($version->getVersionNumber(), 6);
+        $bits->appendBits($version->getversionnumber(), 6);
 
-        $bchCode = self::calculateBchCode($version->getVersionNumber(), self::VERSION_INFO_POLY);
+        $bchCode = self::calculateBchCode($version->getversionnumber(), self::VERSION_INFO_POLY);
         $bits->appendBits($bchCode, 12);
 
         if (18 !== $bits->getSize()) {
@@ -389,11 +389,11 @@ final class MatrixUtil
      * Embeds position adjustment patterns if required.
      */
     private static function maybeEmbedPositionAdjustmentPatterns(Version $version, ByteMatrix $matrix): void {
-        if ($version->getVersionNumber() < 2) {
+        if ($version->getversionnumber() < 2) {
             return;
         }
 
-        $index = $version->getVersionNumber() - 1;
+        $index = $version->getversionnumber() - 1;
 
         $coordinates = self::POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[$index];
         $numCoordinates = count($coordinates);

@@ -18,6 +18,12 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Exception;
 
+/**
+ * InvalidArgumentException class for handling invalid argument exceptions.
+ *
+ * @copyright 2024 J. Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
 {
 }

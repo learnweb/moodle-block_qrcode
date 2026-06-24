@@ -18,6 +18,12 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Exception;
 
+/**
+ * OutOfBoundsException class for handling out of bounds exceptions.
+ *
+ * @copyright 2024 J. Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class OutOfBoundsException extends \OutOfBoundsException implements ExceptionInterface
 {
 }

@@ -60,7 +60,7 @@ final class Mode extends AbstractEnum
      * Returns the number of bits used in a specific QR code version.
      */
     public function getCharacterCountBits(Version $version): int {
-        $number = $version->getVersionNumber();
+        $number = $version->getversionnumber();
 
         if ($number <= 9) {
             $offset = 0;

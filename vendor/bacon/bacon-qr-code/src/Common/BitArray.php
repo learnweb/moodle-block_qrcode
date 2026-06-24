@@ -105,7 +105,7 @@ final class BitArray
             $currentBits = $this->bits[$bitsOffset];
         }
 
-        $result = ($bitsOffset << 5) + BitUtils::numberOfTrailingZeros($currentBits);
+        $result = ($bitsOffset << 5) + BitUtils::numberoftrailingzeros($currentBits);
         return min($result, $this->size);
     }
 
@@ -130,7 +130,7 @@ final class BitArray
             $currentBits = ~$this->bits[$bitsOffset];
         }
 
-        $result = ($bitsOffset << 5) + BitUtils::numberOfTrailingZeros($currentBits);
+        $result = ($bitsOffset << 5) + BitUtils::numberoftrailingzeros($currentBits);
         return min($result, $this->size);
     }
 

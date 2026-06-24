@@ -20,6 +20,12 @@ namespace BaconQrCode\Exception;
 
 use Throwable;
 
+/**
+ * ExceptionInterface for handling exceptions in the BaconQrCode library.
+ *
+ * @copyright 2024 J. Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface ExceptionInterface extends Throwable
 {
 }

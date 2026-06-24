@@ -18,6 +18,12 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Exception;
 
+/**
+ * WriterException class for handling exceptions from QR code writers.
+ *
+ * @copyright 2024 J. Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class WriterException extends \RuntimeException implements ExceptionInterface
 {
 }

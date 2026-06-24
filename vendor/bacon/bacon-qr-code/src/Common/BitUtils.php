@@ -23,9 +23,15 @@ namespace BaconQrCode\Common;
  *
  * All utility methods are based on 32-bit integers and also work on 64-bit
  * systems.
+ *
+ * @copyright 2017 T. Gunkel
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class BitUtils
 {
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private function __construct() {
     }
 
@@ -35,7 +41,7 @@ final class BitUtils
      * This is the same as the unsigned right shift operator ">>>" in other
      * languages.
      */
-    public static function unsignedRightShift(int $a, int $b): int {
+    public static function unsignedrightshift(int $a, int $b): int {
         return (
             $a >= 0
             ? $a >> $b
@@ -46,8 +52,8 @@ final class BitUtils
     /**
      * Gets the number of trailing zeros.
      */
-    public static function numberOfTrailingZeros(int $i): int {
-        $lastPos = strrpos(str_pad(decbin($i), 32, '0', STR_PAD_LEFT), '1');
-        return $lastPos === false ? 32 : 31 - $lastPos;
+    public static function numberoftrailingzeros(int $i): int {
+        $lastpos = strrpos(str_pad(decbin($i), 32, '0', STR_PAD_LEFT), '1');
+        return $lastpos === false ? 32 : 31 - $lastpos;
     }
 }

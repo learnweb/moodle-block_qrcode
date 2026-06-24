@@ -27,23 +27,32 @@ use SplFixedArray;
  * Represents a 2D matrix of bits. In function arguments below, and throughout
  * the common module, x is the column position, and y is the row position. The
  * ordering is always x, y. The origin is at the top-left.
+ *
+ * @copyright 2017 T. Gunkel
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class BitMatrix
 {
     /**
      * Width of the bit matrix.
+     *
+     * @var int
      */
     private int $width;
 
     /**
      * Height of the bit matrix.
+     *
+     * @var int|null
      */
     private ?int $height;
 
     /**
      * Size in bits of each individual row.
+     *
+     * @var int
      */
-    private int $rowSize;
+    private int $rowsize;
 
     /**
      * Bits representation.
@@ -53,6 +62,7 @@ class BitMatrix
     private SplFixedArray $bits;
 
     /**
+     * Creates a square bit matrix with the given width.
      * @throws InvalidArgumentException if a dimension is smaller than zero
      */
     public function __construct(int $width, ?int $height = null) {
@@ -66,23 +76,23 @@ class BitMatrix
 
         $this->width = $width;
         $this->height = $height;
-        $this->rowSize = ($width + 31) >> 5;
-        $this->bits = SplFixedArray::fromArray(array_fill(0, $this->rowSize * $height, 0));
+        $this->rowsize = ($width + 31) >> 5;
+        $this->bits = SplFixedArray::fromArray(array_fill(0, $this->rowsize * $height, 0));
     }
 
     /**
      * Gets the requested bit, where true means black.
      */
     public function get(int $x, int $y): bool {
-        $offset = $y * $this->rowSize + ($x >> 5);
-        return 0 !== (BitUtils::unsignedRightShift($this->bits[$offset], ($x & 0x1f)) & 1);
+        $offset = $y * $this->rowsize + ($x >> 5);
+        return 0 !== (BitUtils::unsignedrightshift($this->bits[$offset], ($x & 0x1f)) & 1);
     }
 
     /**
      * Sets the given bit to true.
      */
     public function set(int $x, int $y): void {
-        $offset = $y * $this->rowSize + ($x >> 5);
+        $offset = $y * $this->rowsize + ($x >> 5);
         $this->bits[$offset] = $this->bits[$offset] | (1 << ($x & 0x1f));
     }
 
@@ -90,7 +100,7 @@ class BitMatrix
      * Flips the given bit.
      */
     public function flip(int $x, int $y): void {
-        $offset = $y * $this->rowSize + ($x >> 5);
+        $offset = $y * $this->rowsize + ($x >> 5);
         $this->bits[$offset] = $this->bits[$offset] ^ (1 << ($x & 0x1f));
     }
 
@@ -112,7 +122,7 @@ class BitMatrix
      * @throws InvalidArgumentException if width or height are smaller than 1
      * @throws InvalidArgumentException if region does not fit into the matix
      */
-    public function setRegion(int $left, int $top, int $width, int $height): void {
+    public function setregion(int $left, int $top, int $width, int $height): void {
         if ($top < 0 || $left < 0) {
             throw new InvalidArgumentException('Left and top must be non-negative');
         }
@@ -129,7 +139,7 @@ class BitMatrix
         }
 
         for ($y = $top; $y < $bottom; ++$y) {
-            $offset = $y * $this->rowSize;
+            $offset = $y * $this->rowsize;
 
             for ($x = $left; $x < $right; ++$x) {
                 $index = $offset + ($x >> 5);
@@ -141,14 +151,14 @@ class BitMatrix
     /**
      * A fast method to retrieve one row of data from the matrix as a BitArray.
      */
-    public function getRow(int $y, ?BitArray $row = null): BitArray {
+    public function getrow(int $y, ?BitArray $row = null): BitArray {
         if (null === $row || $row->getSize() < $this->width) {
             $row = new BitArray($this->width);
         }
 
-        $offset = $y * $this->rowSize;
+        $offset = $y * $this->rowsize;
 
-        for ($x = 0; $x < $this->rowSize; ++$x) {
+        for ($x = 0; $x < $this->rowsize; ++$x) {
             $row->setBulk($x << 5, $this->bits[$offset + $x]);
         }
 
@@ -158,11 +168,11 @@ class BitMatrix
     /**
      * Sets a row of data from a BitArray.
      */
-    public function setRow(int $y, BitArray $row): void {
+    public function setrow(int $y, BitArray $row): void {
         $bits = $row->getBitArray();
 
-        for ($i = 0; $i < $this->rowSize; ++$i) {
-            $this->bits[$y * $this->rowSize + $i] = $bits[$i];
+        for ($i = 0; $i < $this->rowsize; ++$i) {
+            $this->bits[$y * $this->rowsize + $i] = $bits[$i];
         }
     }
 
@@ -171,15 +181,15 @@ class BitMatrix
      *
      * @return int[]|null
      */
-    public function getEnclosingRectangle(): ?array {
+    public function getenclosingrectangle(): ?array {
         $left = $this->width;
         $top = $this->height;
         $right = -1;
         $bottom = -1;
 
         for ($y = 0; $y < $this->height; ++$y) {
-            for ($x32 = 0; $x32 < $this->rowSize; ++$x32) {
-                $bits = $this->bits[$y * $this->rowSize + $x32];
+            for ($x32 = 0; $x32 < $this->rowsize; ++$x32) {
+                $bits = $this->bits[$y * $this->rowsize + $x32];
 
                 if (0 !== $bits) {
                     if ($y < $top) {
@@ -206,7 +216,7 @@ class BitMatrix
                 if ($x32 * 32 + 31 > $right) {
                     $bit = 31;
 
-                    while (0 === BitUtils::unsignedRightShift($bits, $bit)) {
+                    while (0 === BitUtils::unsignedrightshift($bits, $bit)) {
                         --$bit;
                     }
 
@@ -234,21 +244,21 @@ class BitMatrix
      *
      * @return int[]|null
      */
-    public function getTopLeftOnBit(): ?array {
-        $bitsOffset = 0;
+    public function gettopleftonbit(): ?array {
+        $bitsoffset = 0;
 
-        while ($bitsOffset < count($this->bits) && 0 === $this->bits[$bitsOffset]) {
-            ++$bitsOffset;
+        while ($bitsoffset < count($this->bits) && 0 === $this->bits[$bitsoffset]) {
+            ++$bitsoffset;
         }
 
-        if (count($this->bits) === $bitsOffset) {
+        if (count($this->bits) === $bitsoffset) {
             return null;
         }
 
-        $x = intdiv($bitsOffset, $this->rowSize);
-        $y = ($bitsOffset % $this->rowSize) << 5;
+        $x = intdiv($bitsoffset, $this->rowsize);
+        $y = ($bitsoffset % $this->rowsize) << 5;
 
-        $bits = $this->bits[$bitsOffset];
+        $bits = $this->bits[$bitsoffset];
         $bit = 0;
 
         while (0 === ($bits << (31 - $bit))) {
@@ -267,24 +277,24 @@ class BitMatrix
      *
      * @return int[]|null
      */
-    public function getBottomRightOnBit(): ?array {
-        $bitsOffset = count($this->bits) - 1;
+    public function getbottomrightonbit(): ?array {
+        $bitsoffset = count($this->bits) - 1;
 
-        while ($bitsOffset >= 0 && 0 === $this->bits[$bitsOffset]) {
-            --$bitsOffset;
+        while ($bitsoffset >= 0 && 0 === $this->bits[$bitsoffset]) {
+            --$bitsoffset;
         }
 
-        if ($bitsOffset < 0) {
+        if ($bitsoffset < 0) {
             return null;
         }
 
-        $x = intdiv($bitsOffset, $this->rowSize);
-        $y = ($bitsOffset % $this->rowSize) << 5;
+        $x = intdiv($bitsoffset, $this->rowsize);
+        $y = ($bitsoffset % $this->rowsize) << 5;
 
-        $bits = $this->bits[$bitsOffset];
+        $bits = $this->bits[$bitsoffset];
         $bit  = 0;
 
-        while (0 === BitUtils::unsignedRightShift($bits, $bit)) {
+        while (0 === BitUtils::unsignedrightshift($bits, $bit)) {
             --$bit;
         }
 
@@ -296,14 +306,14 @@ class BitMatrix
     /**
      * Gets the width of the matrix,
      */
-    public function getWidth(): int {
+    public function getwidth(): int {
         return $this->width;
     }
 
     /**
      * Gets the height of the matrix.
      */
-    public function getHeight(): int {
+    public function getheight(): int {
         return $this->height;
     }
 }

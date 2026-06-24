@@ -101,13 +101,13 @@ class FormatInformation
 
         return (
             self::BITS_SET_IN_HALF_BYTE[$a & 0xf]
-            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedRightShift($a, 4) & 0xf)]
-            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedRightShift($a, 8) & 0xf)]
-            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedRightShift($a, 12) & 0xf)]
-            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedRightShift($a, 16) & 0xf)]
-            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedRightShift($a, 20) & 0xf)]
-            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedRightShift($a, 24) & 0xf)]
-            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedRightShift($a, 28) & 0xf)]
+            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedrightshift($a, 4) & 0xf)]
+            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedrightshift($a, 8) & 0xf)]
+            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedrightshift($a, 12) & 0xf)]
+            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedrightshift($a, 16) & 0xf)]
+            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedrightshift($a, 20) & 0xf)]
+            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedrightshift($a, 24) & 0xf)]
+            + self::BITS_SET_IN_HALF_BYTE[(BitUtils::unsignedrightshift($a, 28) & 0xf)]
         );
     }
 

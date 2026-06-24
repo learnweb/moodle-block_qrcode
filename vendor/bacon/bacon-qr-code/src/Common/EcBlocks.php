@@ -32,27 +32,34 @@ final class EcBlocks
      *
      * @var EcBlock[]
      */
-    private array $ecBlocks;
+    private array $ecblocks;
 
-    public function __construct(private readonly int $ecCodewordsPerBlock, EcBlock ...$ecBlocks) {
-        $this->ecBlocks = $ecBlocks;
+    /**
+     * The number of error-correction codewords per block.
+     *
+     * @var int
+     */
+    private readonly int $eccodewordsperblock;
+
+    public function __construct(int $eccodewordsperblock, EcBlock ...$ecblocks) {
+        $this->ecblocks = $ecblocks;
     }
 
     /**
      * Returns the number of EC codewords per block.
      */
-    public function getEcCodewordsPerBlock(): int {
-        return $this->ecCodewordsPerBlock;
+    public function geteccodewordsperblock(): int {
+        return $this->eccodewordsperblock;
     }
 
     /**
      * Returns the total number of EC block appearances.
      */
-    public function getNumBlocks(): int {
+    public function getnumblocks(): int {
         $total = 0;
 
-        foreach ($this->ecBlocks as $ecBlock) {
-            $total += $ecBlock->getCount();
+        foreach ($this->ecblocks as $ecBlock) {
+            $total += $ecBlock->getcount();
         }
 
         return $total;
@@ -61,8 +68,8 @@ final class EcBlocks
     /**
      * Returns the total count of EC codewords.
      */
-    public function getTotalEcCodewords(): int {
-        return $this->ecCodewordsPerBlock * $this->getNumBlocks();
+    public function gettotaleccodewords(): int {
+        return $this->eccodewordsperblock * $this->getnumblocks();
     }
 
     /**
@@ -70,7 +77,7 @@ final class EcBlocks
      *
      * @return EcBlock[]
      */
-    public function getEcBlocks(): array {
-        return $this->ecBlocks;
+    public function getecblocks(): array {
+        return $this->ecblocks;
     }
 }

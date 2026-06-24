@@ -100,7 +100,7 @@ final class Encoder
         // But need to know how many bits it takes to know version. First we
         // take a guess at version by assuming version will be the minimum, 1:
         $provisionalBitsNeeded = $headerBits->getSize()
-            + $mode->getCharacterCountBits(Version::getVersionForNumber(1))
+            + $mode->getCharacterCountBits(Version::getversionfornumber(1))
             + $dataBits->getSize();
         $provisionalVersion = self::chooseVersion($provisionalBitsNeeded, $ecLevel);
 
@@ -113,15 +113,15 @@ final class Encoder
 
         if (null !== $forcedVersion) {
             // Forced version check
-            if ($version->getVersionNumber() <= $forcedVersion->getVersionNumber()) {
+            if ($version->getversionnumber() <= $forcedVersion->getversionnumber()) {
                 // Calculated minimum version is same or equal as forced version
                 $version = $forcedVersion;
             } else {
                 throw new WriterException(
                     'Invalid version! Calculated version: '
-                    . $version->getVersionNumber()
+                    . $version->getversionnumber()
                     . ', requested version: '
-                    . $forcedVersion->getVersionNumber()
+                    . $forcedVersion->getversionnumber()
                 );
             }
         }
@@ -135,8 +135,8 @@ final class Encoder
 
         // Put data together into the overall payload.
         $headerAndDataBits->appendBitArray($dataBits);
-        $ecBlocks = $version->getEcBlocksForLevel($ecLevel);
-        $numDataBytes = $version->getTotalCodewords() - $ecBlocks->getTotalEcCodewords();
+        $ecBlocks = $version->getecblocksforlevel($ecLevel);
+        $numDataBytes = $version->gettotalcodewords() - $ecBlocks->gettotaleccodewords();
 
         // Terminate the bits properly.
         self::terminateBits($numDataBytes, $headerAndDataBits);
@@ -144,13 +144,13 @@ final class Encoder
         // Interleave data bits with error correction code.
         $finalBits = self::interleaveWithEcBytes(
             $headerAndDataBits,
-            $version->getTotalCodewords(),
+            $version->gettotalcodewords(),
             $numDataBytes,
-            $ecBlocks->getNumBlocks()
+            $ecBlocks->getnumblocks()
         );
 
         // Choose the mask pattern.
-        $dimension = $version->getDimensionForVersion();
+        $dimension = $version->getdimensionforversion();
         $matrix = new ByteMatrix($dimension, $dimension);
         $maskPattern = self::chooseMaskPattern($finalBits, $ecLevel, $version, $matrix);
 
@@ -275,11 +275,11 @@ final class Encoder
      */
     private static function chooseVersion(int $numInputBits, ErrorCorrectionLevel $ecLevel): Version {
         for ($versionNum = 1; $versionNum <= 40; ++$versionNum) {
-            $version = Version::getVersionForNumber($versionNum);
-            $numBytes = $version->getTotalCodewords();
+            $version = Version::getversionfornumber($versionNum);
+            $numBytes = $version->gettotalcodewords();
 
-            $ecBlocks = $version->getEcBlocksForLevel($ecLevel);
-            $numEcBytes = $ecBlocks->getTotalEcCodewords();
+            $ecBlocks = $version->getecblocksforlevel($ecLevel);
+            $numEcBytes = $ecBlocks->gettotaleccodewords();
 
             $numDataBytes = $numBytes - $numEcBytes;
             $totalInputBytes = intdiv($numInputBits + 8, 8);

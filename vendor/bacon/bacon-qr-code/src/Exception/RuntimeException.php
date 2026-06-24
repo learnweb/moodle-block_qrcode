@@ -18,6 +18,12 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Exception;
 
+/**
+ * RuntimeException class for handling runtime exceptions.
+ *
+ * @copyright 2024 J. Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class RuntimeException extends \RuntimeException implements ExceptionInterface
 {
 }

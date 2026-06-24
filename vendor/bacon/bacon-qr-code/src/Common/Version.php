@@ -23,9 +23,17 @@ use SplFixedArray;
 
 /**
  * Version representation.
+ *
+ * @copyright 2024 J. Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class Version
 {
+    /**
+     * Version decode information.
+     *
+     * @var array<int, int>
+     */
     private const VERSION_DECODE_INFO = [
         0x07c94,
         0x085bc,
@@ -65,27 +73,29 @@ final class Version
 
     /**
      * Version number of this version.
+     *
+     * @var int
      */
-    private int $versionNumber;
+    private int $versionnumber;
 
     /**
      * Alignment pattern centers.
      *
      * @var SplFixedArray|array
      */
-    private SplFixedArray|array $alignmentPatternCenters;
+    private SplFixedArray|array $alignmentpatterncenters;
 
     /**
      * Error correction blocks.
      *
      * @var EcBlocks[]
      */
-    private array $ecBlocks;
+    private array $ecblocks;
 
     /**
      * Total number of codewords.
      */
-    private null|int|float $totalCodewords;
+    private null|int|float $totalcodewords;
 
     /**
      * Cached version instances.
@@ -95,32 +105,32 @@ final class Version
     private static ?array $versions = null;
 
     /**
-     * @param int[] $alignmentPatternCenters
+     * @param int[] $alignmentpatterncenters
      */
     private function __construct(
-        int $versionNumber,
-        array $alignmentPatternCenters,
-        EcBlocks ...$ecBlocks
+        int $versionnumber,
+        array $alignmentpatterncenters,
+        EcBlocks ...$ecblocks
     ) {
-        $this->versionNumber = $versionNumber;
-        $this->alignmentPatternCenters = $alignmentPatternCenters;
-        $this->ecBlocks = $ecBlocks;
+        $this->versionnumber = $versionnumber;
+        $this->alignmentpatterncenters = $alignmentpatterncenters;
+        $this->ecblocks = $ecblocks;
 
         $totalCodewords = 0;
-        $ecCodewords = $ecBlocks[0]->getEcCodewordsPerBlock();
+        $ecCodewords = $ecblocks[0]->geteccodewordsperblock();
 
-        foreach ($ecBlocks[0]->getEcBlocks() as $ecBlock) {
-            $totalCodewords += $ecBlock->getCount() * ($ecBlock->getDataCodewords() + $ecCodewords);
+        foreach ($ecblocks[0]->getecblocks() as $ecBlock) {
+            $totalCodewords += $ecBlock->getcount() * ($ecBlock->getdatacodewords() + $ecCodewords);
         }
 
-        $this->totalCodewords = $totalCodewords;
+        $this->totalcodewords = $totalCodewords;
     }
 
     /**
      * Returns the version number.
      */
-    public function getVersionNumber(): int {
-        return $this->versionNumber;
+    public function getversionnumber(): int {
+        return $this->versionnumber;
     }
 
     /**
@@ -128,29 +138,29 @@ final class Version
      *
      * @return int[]
      */
-    public function getAlignmentPatternCenters(): array {
+    public function getalignmentpatterncenters(): array {
         return $this->alignmentPatternCenters;
     }
 
     /**
      * Returns the total number of codewords.
      */
-    public function getTotalCodewords(): int {
-        return $this->totalCodewords;
+    public function gettotalcodewords(): int {
+        return $this->totalcodewords;
     }
 
     /**
      * Calculates the dimension for the current version.
      */
-    public function getDimensionForVersion(): int {
-        return 17 + 4 * $this->versionNumber;
+    public function getdimensionforversion(): int {
+        return 17 + 4 * $this->versionnumber;
     }
 
     /**
      * Returns the number of EC blocks for a specific EC level.
      */
-    public function getEcBlocksForLevel(ErrorCorrectionLevel $ecLevel): EcBlocks {
-        return $this->ecBlocks[$ecLevel->ordinal()];
+    public function getecblocksforlevel(ErrorCorrectionLevel $ecLevel): EcBlocks {
+        return $this->ecblocks[$ecLevel->ordinal()];
     }
 
     /**
@@ -158,12 +168,12 @@ final class Version
      *
      * @throws InvalidArgumentException if dimension is not 1 mod 4
      */
-    public static function getProvisionalVersionForDimension(int $dimension): self {
+    public static function getprovisionalversionfordimension(int $dimension): self {
         if (1 !== $dimension % 4) {
             throw new InvalidArgumentException('Dimension is not 1 mod 4');
         }
 
-        return self::getVersionForNumber(intdiv($dimension - 17, 4));
+        return self::getversionfornumber(intdiv($dimension - 17, 4));
     }
 
     /**
@@ -171,12 +181,12 @@ final class Version
      *
      * @throws InvalidArgumentException if version number is out of range
      */
-    public static function getVersionForNumber(int $versionNumber): self {
-        if ($versionNumber < 1 || $versionNumber > 40) {
+    public static function getversionfornumber(int $versionnumber): self {
+        if ($versionnumber < 1 || $versionnumber > 40) {
             throw new InvalidArgumentException('Version number must be between 1 and 40');
         }
 
-        return self::versions()[$versionNumber - 1];
+        return self::versions()[$versionnumber - 1];
     }
 
     /**
@@ -188,7 +198,7 @@ final class Version
 
         foreach (self::VERSION_DECODE_INFO as $i => $targetVersion) {
             if ($targetVersion === $versionBits) {
-                return self::getVersionForNumber($i + 7);
+                return self::getversionfornumber($i + 7);
             }
 
             $bitsDifference = FormatInformation::numBitsDiffering($versionBits, $targetVersion);
@@ -200,7 +210,7 @@ final class Version
         }
 
         if ($bestDifference <= 3) {
-            return self::getVersionForNumber($bestVersion);
+            return self::getversionfornumber($bestVersion);
         }
 
         return null;
@@ -210,21 +220,21 @@ final class Version
      * Builds the function pattern for the current version.
      */
     public function buildFunctionPattern(): BitMatrix {
-        $dimension = $this->getDimensionForVersion();
+        $dimension = $this->getdimensionforversion();
         $bitMatrix = new BitMatrix($dimension);
 
         // Top left finder pattern + separator + format
-        $bitMatrix->setRegion(0, 0, 9, 9);
+        $bitMatrix->setregion(0, 0, 9, 9);
         // Top right finder pattern + separator + format
-        $bitMatrix->setRegion($dimension - 8, 0, 8, 9);
+        $bitMatrix->setregion($dimension - 8, 0, 8, 9);
         // Bottom left finder pattern + separator + format
-        $bitMatrix->setRegion(0, $dimension - 8, 9, 8);
+        $bitMatrix->setregion(0, $dimension - 8, 9, 8);
 
         // Alignment patterns
-        $max = count($this->alignmentPatternCenters);
+        $max = count($this->alignmentpatterncenters);
 
         for ($x = 0; $x < $max; ++$x) {
-            $i = $this->alignmentPatternCenters[$x] - 2;
+            $i = $this->alignmentpatterncenters[$x] - 2;
 
             for ($y = 0; $y < $max; ++$y) {
                 if (($x === 0 && ($y === 0 || $y === $max - 1)) || ($x === $max - 1 && $y === 0)) {
@@ -232,20 +242,20 @@ final class Version
                     continue;
                 }
 
-                $bitMatrix->setRegion($this->alignmentPatternCenters[$y] - 2, $i, 5, 5);
+                $bitMatrix->setregion($this->alignmentpatterncenters[$y] - 2, $i, 5, 5);
             }
         }
 
         // Vertical timing pattern
-        $bitMatrix->setRegion(6, 9, 1, $dimension - 17);
+        $bitMatrix->setregion(6, 9, 1, $dimension - 17);
         // Horizontal timing pattern
-        $bitMatrix->setRegion(9, 6, $dimension - 17, 1);
+        $bitMatrix->setregion(9, 6, $dimension - 17, 1);
 
-        if ($this->versionNumber > 6) {
+        if ($this->versionnumber > 6) {
             // Version info, top right
-            $bitMatrix->setRegion($dimension - 11, 0, 3, 6);
+            $bitMatrix->setregion($dimension - 11, 0, 3, 6);
             // Version info, bottom left
-            $bitMatrix->setRegion(0, $dimension - 11, 6, 3);
+            $bitMatrix->setregion(0, $dimension - 11, 6, 3);
         }
 
         return $bitMatrix;
@@ -255,7 +265,7 @@ final class Version
      * Returns a string representation for the version.
      */
     public function __toString(): string {
-        return (string) $this->versionNumber;
+        return (string) $this->versionnumber;
     }
 
     /**

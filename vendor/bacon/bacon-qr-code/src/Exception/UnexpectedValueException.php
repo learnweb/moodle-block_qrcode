@@ -18,6 +18,12 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Exception;
 
+/**
+ * UnexpectedValueException class for handling unexpected value exceptions.
+ *
+ * @copyright 2024 J. Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class UnexpectedValueException extends \UnexpectedValueException implements ExceptionInterface
 {
 }
