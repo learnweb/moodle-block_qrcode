@@ -94,6 +94,8 @@ final class Version
 
     /**
      * Total number of codewords.
+     *
+     * @var int|null|float
      */
     private null|int|float $totalcodewords;
 
@@ -105,6 +107,8 @@ final class Version
     private static ?array $versions = null;
 
     /**
+     * Creates a new version instance.
+     *
      * @param int[] $alignmentpatterncenters
      */
     private function __construct(
@@ -116,14 +120,14 @@ final class Version
         $this->alignmentpatterncenters = $alignmentpatterncenters;
         $this->ecblocks = $ecblocks;
 
-        $totalCodewords = 0;
-        $ecCodewords = $ecblocks[0]->geteccodewordsperblock();
+        $totalcodewords = 0;
+        $eccodewords = $ecblocks[0]->geteccodewordsperblock();
 
-        foreach ($ecblocks[0]->getecblocks() as $ecBlock) {
-            $totalCodewords += $ecBlock->getcount() * ($ecBlock->getdatacodewords() + $ecCodewords);
+        foreach ($ecblocks[0]->getecblocks() as $ecblock) {
+            $totalcodewords += $ecblock->getcount() * ($ecblock->getdatacodewords() + $eccodewords);
         }
 
-        $this->totalcodewords = $totalCodewords;
+        $this->totalcodewords = $totalcodewords;
     }
 
     /**
@@ -159,8 +163,8 @@ final class Version
     /**
      * Returns the number of EC blocks for a specific EC level.
      */
-    public function getecblocksforlevel(ErrorCorrectionLevel $ecLevel): EcBlocks {
-        return $this->ecblocks[$ecLevel->ordinal()];
+    public function getecblocksforlevel(ErrorCorrectionLevel $eclevel): EcBlocks {
+        return $this->ecblocks[$eclevel->ordinal()];
     }
 
     /**
@@ -192,25 +196,25 @@ final class Version
     /**
      * Decodes version information from an integer and returns the version.
      */
-    public static function decodeVersionInformation(int $versionBits): ?self {
-        $bestDifference = PHP_INT_MAX;
-        $bestVersion = 0;
+    public static function decodeversioninformation(int $versionbits): ?self {
+        $bestdifference = PHP_INT_MAX;
+        $bestversion = 0;
 
-        foreach (self::VERSION_DECODE_INFO as $i => $targetVersion) {
-            if ($targetVersion === $versionBits) {
+        foreach (self::VERSION_DECODE_INFO as $i => $targetversion) {
+            if ($targetversion === $versionbits) {
                 return self::getversionfornumber($i + 7);
             }
 
-            $bitsDifference = FormatInformation::numBitsDiffering($versionBits, $targetVersion);
+            $bitsdifference = FormatInformation::numBitsDiffering($versionbits, $targetversion);
 
-            if ($bitsDifference < $bestDifference) {
-                $bestVersion = $i + 7;
-                $bestDifference = $bitsDifference;
+            if ($bitsdifference < $bestdifference) {
+                $bestversion = $i + 7;
+                $bestdifference = $bitsdifference;
             }
         }
 
-        if ($bestDifference <= 3) {
-            return self::getversionfornumber($bestVersion);
+        if ($bestdifference <= 3) {
+            return self::getversionfornumber($bestversion);
         }
 
         return null;
@@ -219,18 +223,18 @@ final class Version
     /**
      * Builds the function pattern for the current version.
      */
-    public function buildFunctionPattern(): BitMatrix {
+    public function buildfunctionpattern(): BitMatrix {
         $dimension = $this->getdimensionforversion();
-        $bitMatrix = new BitMatrix($dimension);
+        $bitmatrix = new BitMatrix($dimension);
 
-        // Top left finder pattern + separator + format
-        $bitMatrix->setregion(0, 0, 9, 9);
-        // Top right finder pattern + separator + format
-        $bitMatrix->setregion($dimension - 8, 0, 8, 9);
-        // Bottom left finder pattern + separator + format
-        $bitMatrix->setregion(0, $dimension - 8, 9, 8);
+        // Top left finder pattern + separator + format.
+        $bitmatrix->setregion(0, 0, 9, 9);
+        // Top right finder pattern + separator + format.
+        $bitmatrix->setregion($dimension - 8, 0, 8, 9);
+        // Bottom left finder pattern + separator + format.
+        $bitmatrix->setregion(0, $dimension - 8, 9, 8);
 
-        // Alignment patterns
+        // Alignment patterns.
         $max = count($this->alignmentpatterncenters);
 
         for ($x = 0; $x < $max; ++$x) {
@@ -238,27 +242,27 @@ final class Version
 
             for ($y = 0; $y < $max; ++$y) {
                 if (($x === 0 && ($y === 0 || $y === $max - 1)) || ($x === $max - 1 && $y === 0)) {
-                    // No alignment patterns near the three finder paterns
+                    // No alignment patterns near the three finder patterns.
                     continue;
                 }
 
-                $bitMatrix->setregion($this->alignmentpatterncenters[$y] - 2, $i, 5, 5);
+                $bitmatrix->setregion($this->alignmentpatterncenters[$y] - 2, $i, 5, 5);
             }
         }
 
-        // Vertical timing pattern
-        $bitMatrix->setregion(6, 9, 1, $dimension - 17);
-        // Horizontal timing pattern
-        $bitMatrix->setregion(9, 6, $dimension - 17, 1);
+        // Vertical timing pattern.
+        $bitmatrix->setregion(6, 9, 1, $dimension - 17);
+        // Horizontal timing pattern.
+        $bitmatrix->setregion(9, 6, $dimension - 17, 1);
 
         if ($this->versionnumber > 6) {
-            // Version info, top right
-            $bitMatrix->setregion($dimension - 11, 0, 3, 6);
-            // Version info, bottom left
-            $bitMatrix->setregion(0, $dimension - 11, 6, 3);
+            // Version info, top right.
+            $bitmatrix->setregion($dimension - 11, 0, 3, 6);
+            // Version info, bottom left.
+            $bitmatrix->setregion(0, $dimension - 11, 6, 3);
         }
 
-        return $bitMatrix;
+        return $bitmatrix;
     }
 
     /**
