@@ -81,7 +81,7 @@ final class Encoder
 
         // Append ECI segment if applicable
         if ($prefixEci && Mode::BYTE() === $mode && self::DEFAULT_BYTE_MODE_ENCODING !== $encoding) {
-            $eci = CharacterSetEci::getCharacterSetEciByName($encoding);
+            $eci = CharacterSetEci::getcharactersetecibyname($encoding);
 
             if (null !== $eci) {
                 self::appendEci($eci, $headerBits);
@@ -674,6 +674,6 @@ final class Encoder
     private static function appendEci(CharacterSetEci $eci, BitArray $bits): void {
         $mode = Mode::ECI();
         $bits->appendbits($mode->getBits(), 4);
-        $bits->appendbits($eci->getValue(), 8);
+        $bits->appendbits($eci->getvalue(), 8);
     }
 }
