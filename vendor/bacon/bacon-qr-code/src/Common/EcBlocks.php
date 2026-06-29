@@ -24,6 +24,9 @@ namespace BaconQrCode\Common;
  * Most versions will use blocks of differing sizes within one version, so, this encapsulates the parameters for each
  * set of blocks. It also holds the number of error-correction codewords per block since it will be the same across all
  * blocks within one version.
+ *
+ * @copyright 2024 J. Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class EcBlocks
 {
@@ -41,6 +44,12 @@ final class EcBlocks
      */
     private readonly int $eccodewordsperblock;
 
+    /**
+     * Constructor.
+     *
+     * @param int $eccodewordsperblock
+     * @param EcBlock ...$ecblocks
+     */
     public function __construct(int $eccodewordsperblock, EcBlock ...$ecblocks) {
         $this->ecblocks = $ecblocks;
     }
@@ -58,8 +67,8 @@ final class EcBlocks
     public function getnumblocks(): int {
         $total = 0;
 
-        foreach ($this->ecblocks as $ecBlock) {
-            $total += $ecBlock->getcount();
+        foreach ($this->ecblocks as $ecblock) {
+            $total += $ecblock->getcount();
         }
 
         return $total;
