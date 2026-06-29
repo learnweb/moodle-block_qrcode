@@ -24,25 +24,51 @@ use DASPRiD\Enum\AbstractEnum;
 /**
  * Enum representing the four error correction levels.
  *
- * @method static self L() ~7% correction
- * @method static self M() ~15% correction
- * @method static self Q() ~25% correction
- * @method static self H() ~30% correction
+ * @copyright 2024 J. Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class ErrorCorrectionLevel extends AbstractEnum
 {
+    /**
+     * Low error correction level, approximately 7% correction.
+     */
     protected const L = [0x01];
+    /**
+     * Medium error correction level, approximately 15% correction.
+     */
     protected const M = [0x00];
+    /**
+     * Quartile error correction level, approximately 25% correction.
+     */
     protected const Q = [0x03];
+    /**
+     * High error correction level, approximately 30% correction.
+     */
     protected const H = [0x02];
 
-    protected function __construct(private readonly int $bits) {
+    /**
+     * The two bits used to encode this error correction level.
+     *
+     * @var int
+     */
+    private readonly int $bits;
+
+    /**
+     * Constructor.
+     *
+     * @param int $bits the two bits used to encode this error correction level
+     */
+    protected function __construct(int $bits) {
     }
 
     /**
-     * @throws OutOfBoundsException if number of bits is invalid
+     * Creates an error correction level from the given bit value.
+     *
+     * @param int $bits the bit value to decode
+     * @return self the matching error correction level
+     * @throws OutOfBoundsException if the number of bits is invalid
      */
-    public static function forBits(int $bits): self {
+    public static function forbits(int $bits): self {
         switch ($bits) {
             case 0:
                 return self::M();
@@ -62,8 +88,10 @@ final class ErrorCorrectionLevel extends AbstractEnum
 
     /**
      * Returns the two bits used to encode this error correction level.
+     *
+     * @return int the two bits used to encode this error correction level
      */
-    public function getBits(): int {
+    public function getbits(): int {
         return $this->bits;
     }
 }

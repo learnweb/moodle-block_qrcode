@@ -89,7 +89,7 @@ class FormatInformation
     private int $dataMask;
 
     protected function __construct(int $formatInfo) {
-        $this->ecLevel = ErrorCorrectionLevel::forBits(($formatInfo >> 3) & 0x3);
+        $this->ecLevel = ErrorCorrectionLevel::forbits(($formatInfo >> 3) & 0x3);
         $this->dataMask = $formatInfo & 0x7;
     }
 
@@ -188,7 +188,7 @@ class FormatInformation
      * Hashes the code of the EC level.
      */
     public function hashCode(): int {
-        return ($this->ecLevel->getBits() << 3) | $this->dataMask;
+        return ($this->ecLevel->getbits() << 3) | $this->dataMask;
     }
 
     /**
