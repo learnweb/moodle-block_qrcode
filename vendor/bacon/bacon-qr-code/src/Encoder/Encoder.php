@@ -99,16 +99,16 @@ final class Encoder
         // Hard part: need to know version to know how many bits length takes.
         // But need to know how many bits it takes to know version. First we
         // take a guess at version by assuming version will be the minimum, 1:
-        $provisionalBitsNeeded = $headerBits->getSize()
+        $provisionalBitsNeeded = $headerBits->getsize()
             + $mode->getCharacterCountBits(Version::getversionfornumber(1))
-            + $dataBits->getSize();
+            + $dataBits->getsize();
         $provisionalVersion = self::chooseVersion($provisionalBitsNeeded, $ecLevel);
 
         // Use that guess to calculate the right version. I am still not sure
         // this works in 100% of cases.
-        $bitsNeeded = $headerBits->getSize()
+        $bitsNeeded = $headerBits->getsize()
             + $mode->getCharacterCountBits($provisionalVersion)
-            + $dataBits->getSize();
+            + $dataBits->getsize();
         $version = self::chooseVersion($bitsNeeded, $ecLevel);
 
         if (null !== $forcedVersion) {
@@ -127,14 +127,14 @@ final class Encoder
         }
 
         $headerAndDataBits = new BitArray();
-        $headerAndDataBits->appendBitArray($headerBits);
+        $headerAndDataBits->appendbitarray($headerBits);
 
         // Find "length" of main segment and write it.
-        $numLetters = (Mode::BYTE() === $mode ? $dataBits->getSizeInBytes() : strlen($content));
+        $numLetters = (Mode::BYTE() === $mode ? $dataBits->getsizeinbytes() : strlen($content));
         self::appendLengthInfo($numLetters, $version, $mode, $headerAndDataBits);
 
         // Put data together into the overall payload.
-        $headerAndDataBits->appendBitArray($dataBits);
+        $headerAndDataBits->appendbitarray($dataBits);
         $ecBlocks = $version->getecblocksforlevel($ecLevel);
         $numDataBytes = $version->gettotalcodewords() - $ecBlocks->gettotaleccodewords();
 
@@ -301,29 +301,29 @@ final class Encoder
     private static function terminateBits(int $numDataBytes, BitArray $bits): void {
         $capacity = $numDataBytes << 3;
 
-        if ($bits->getSize() > $capacity) {
+        if ($bits->getsize() > $capacity) {
             throw new WriterException('Data bits cannot fit in the QR code');
         }
 
-        for ($i = 0; $i < 4 && $bits->getSize() < $capacity; ++$i) {
-            $bits->appendBit(false);
+        for ($i = 0; $i < 4 && $bits->getsize() < $capacity; ++$i) {
+            $bits->appendbit(false);
         }
 
-        $numBitsInLastByte = $bits->getSize() & 0x7;
+        $numBitsInLastByte = $bits->getsize() & 0x7;
 
         if ($numBitsInLastByte > 0) {
             for ($i = $numBitsInLastByte; $i < 8; ++$i) {
-                $bits->appendBit(false);
+                $bits->appendbit(false);
             }
         }
 
-        $numPaddingBytes = $numDataBytes - $bits->getSizeInBytes();
+        $numPaddingBytes = $numDataBytes - $bits->getsizeinbytes();
 
         for ($i = 0; $i < $numPaddingBytes; ++$i) {
-            $bits->appendBits(0 === ($i & 0x1) ? 0xec : 0x11, 8);
+            $bits->appendbits(0 === ($i & 0x1) ? 0xec : 0x11, 8);
         }
 
-        if ($bits->getSize() !== $capacity) {
+        if ($bits->getsize() !== $capacity) {
             throw new WriterException('Bits size does not equal capacity');
         }
     }
@@ -392,7 +392,7 @@ final class Encoder
         int $numDataBytes,
         int $numRsBlocks
     ): BitArray {
-        if ($bits->getSizeInBytes() !== $numDataBytes) {
+        if ($bits->getsizeinbytes() !== $numDataBytes) {
             throw new WriterException('Number of bits and data bytes does not match');
         }
 
@@ -411,7 +411,7 @@ final class Encoder
             );
 
             $size = $numDataBytesInBlock;
-            $dataBytes = $bits->toBytes(8 * $dataBytesOffset, $size);
+            $dataBytes = $bits->tobytes(8 * $dataBytesOffset, $size);
             $ecBytes = self::generateEcBytes($dataBytes, $numEcBytesInBlock);
             $blocks[$i] = new BlockPair($dataBytes, $ecBytes);
 
@@ -431,7 +431,7 @@ final class Encoder
                 $dataBytes = $block->getDataBytes();
 
                 if ($i < count($dataBytes)) {
-                    $result->appendBits($dataBytes[$i], 8);
+                    $result->appendbits($dataBytes[$i], 8);
                 }
             }
         }
@@ -441,14 +441,14 @@ final class Encoder
                 $ecBytes = $block->getErrorCorrectionBytes();
 
                 if ($i < count($ecBytes)) {
-                    $result->appendBits($ecBytes[$i], 8);
+                    $result->appendbits($ecBytes[$i], 8);
                 }
             }
         }
 
-        if ($numTotalBytes !== $result->getSizeInBytes()) {
+        if ($numTotalBytes !== $result->getsizeinbytes()) {
             throw new WriterException(
-                'Interleaving error: ' . $numTotalBytes . ' and ' . $result->getSizeInBytes() . ' differ'
+                'Interleaving error: ' . $numTotalBytes . ' and ' . $result->getsizeinbytes() . ' differ'
             );
         }
 
@@ -500,7 +500,7 @@ final class Encoder
      * Appends mode information to a bit array.
      */
     private static function appendModeInfo(Mode $mode, BitArray $bits): void {
-        $bits->appendBits($mode->getBits(), 4);
+        $bits->appendbits($mode->getBits(), 4);
     }
 
     /**
@@ -515,7 +515,7 @@ final class Encoder
             throw new WriterException($numLetters . ' is bigger than ' . ((1 << $numBits) - 1));
         }
 
-        $bits->appendBits($numLetters, $numBits);
+        $bits->appendbits($numLetters, $numBits);
     }
 
     /**
@@ -560,16 +560,16 @@ final class Encoder
                 // Encode three numeric letters in ten bits.
                 $num2 = (int) $content[$i + 1];
                 $num3 = (int) $content[$i + 2];
-                $bits->appendBits($num1 * 100 + $num2 * 10 + $num3, 10);
+                $bits->appendbits($num1 * 100 + $num2 * 10 + $num3, 10);
                 $i += 3;
             } else if ($i + 1 < $length) {
                 // Encode two numeric letters in seven bits.
                 $num2 = (int) $content[$i + 1];
-                $bits->appendBits($num1 * 10 + $num2, 7);
+                $bits->appendbits($num1 * 10 + $num2, 7);
                 $i += 2;
             } else {
                 // Encode one numeric letter in four bits.
-                $bits->appendBits($num1, 4);
+                $bits->appendbits($num1, 4);
                 ++$i;
             }
         }
@@ -599,11 +599,11 @@ final class Encoder
                 }
 
                 // Encode two alphanumeric letters in 11 bits.
-                $bits->appendBits($code1 * 45 + $code2, 11);
+                $bits->appendbits($code1 * 45 + $code2, 11);
                 $i += 2;
             } else {
                 // Encode one alphanumeric letter in six bits.
-                $bits->appendBits($code1, 6);
+                $bits->appendbits($code1, 6);
                 ++$i;
             }
         }
@@ -624,7 +624,7 @@ final class Encoder
         $length = strlen($bytes);
 
         for ($i = 0; $i < $length; $i++) {
-            $bits->appendBits(ord($bytes[$i]), 8);
+            $bits->appendbits(ord($bytes[$i]), 8);
         }
     }
 
@@ -664,7 +664,7 @@ final class Encoder
 
             $encoded = (($subtracted >> 8) * 0xc0) + ($subtracted & 0xff);
 
-            $bits->appendBits($encoded, 13);
+            $bits->appendbits($encoded, 13);
         }
     }
 
@@ -673,7 +673,7 @@ final class Encoder
      */
     private static function appendEci(CharacterSetEci $eci, BitArray $bits): void {
         $mode = Mode::ECI();
-        $bits->appendBits($mode->getBits(), 4);
-        $bits->appendBits($eci->getValue(), 8);
+        $bits->appendbits($mode->getBits(), 4);
+        $bits->appendbits($eci->getValue(), 8);
     }
 }

@@ -179,7 +179,7 @@ final class MatrixUtil
         $typeInfoBits = new BitArray();
         self::makeTypeInfoBits($level, $maskPattern, $typeInfoBits);
 
-        $typeInfoBitsSize = $typeInfoBits->getSize();
+        $typeInfoBitsSize = $typeInfoBits->getsize();
 
         for ($i = 0; $i < $typeInfoBitsSize; ++$i) {
             $bit = $typeInfoBits->get($typeInfoBitsSize - 1 - $i);
@@ -208,17 +208,17 @@ final class MatrixUtil
      */
     private static function makeTypeInfoBits(ErrorCorrectionLevel $level, int $maskPattern, BitArray $bits): void {
         $typeInfo = ($level->getbits() << 3) | $maskPattern;
-        $bits->appendBits($typeInfo, 5);
+        $bits->appendbits($typeInfo, 5);
 
         $bchCode = self::calculateBchCode($typeInfo, self::TYPE_INFO_POLY);
-        $bits->appendBits($bchCode, 10);
+        $bits->appendbits($bchCode, 10);
 
         $maskBits = new BitArray();
-        $maskBits->appendBits(self::TYPE_INFO_MASK_PATTERN, 15);
-        $bits->xorBits($maskBits);
+        $maskBits->appendbits(self::TYPE_INFO_MASK_PATTERN, 15);
+        $bits->xorbits($maskBits);
 
-        if (15 !== $bits->getSize()) {
-            throw new RuntimeException('Bit array resulted in invalid size: ' . $bits->getSize());
+        if (15 !== $bits->getsize()) {
+            throw new RuntimeException('Bit array resulted in invalid size: ' . $bits->getsize());
         }
     }
 
@@ -252,13 +252,13 @@ final class MatrixUtil
      * @throws RuntimeException if bit array resulted in invalid size
      */
     private static function makeVersionInfoBits(Version $version, BitArray $bits): void {
-        $bits->appendBits($version->getversionnumber(), 6);
+        $bits->appendbits($version->getversionnumber(), 6);
 
         $bchCode = self::calculateBchCode($version->getversionnumber(), self::VERSION_INFO_POLY);
-        $bits->appendBits($bchCode, 12);
+        $bits->appendbits($bchCode, 12);
 
-        if (18 !== $bits->getSize()) {
-            throw new RuntimeException('Bit array resulted in invalid size: ' . $bits->getSize());
+        if (18 !== $bits->getsize()) {
+            throw new RuntimeException('Bit array resulted in invalid size: ' . $bits->getsize());
         }
     }
 
@@ -475,7 +475,7 @@ final class MatrixUtil
                         continue;
                     }
 
-                    if ($bitIndex < $dataBits->getSize()) {
+                    if ($bitIndex < $dataBits->getsize()) {
                         $bit = $dataBits->get($bitIndex);
                         ++$bitIndex;
                     } else {
@@ -502,8 +502,8 @@ final class MatrixUtil
         }
 
         // All bits should be consumed
-        if ($dataBits->getSize() !== $bitIndex) {
-            throw new WriterException('Not all bits consumed (' . $bitIndex . ' out of ' . $dataBits->getSize() . ')');
+        if ($dataBits->getsize() !== $bitIndex) {
+            throw new WriterException('Not all bits consumed (' . $bitIndex . ' out of ' . $dataBits->getsize() . ')');
         }
     }
 }

@@ -152,14 +152,14 @@ class BitMatrix
      * A fast method to retrieve one row of data from the matrix as a BitArray.
      */
     public function getrow(int $y, ?BitArray $row = null): BitArray {
-        if (null === $row || $row->getSize() < $this->width) {
+        if (null === $row || $row->getsize() < $this->width) {
             $row = new BitArray($this->width);
         }
 
         $offset = $y * $this->rowsize;
 
         for ($x = 0; $x < $this->rowsize; ++$x) {
-            $row->setBulk($x << 5, $this->bits[$offset + $x]);
+            $row->setbulk($x << 5, $this->bits[$offset + $x]);
         }
 
         return $row;
@@ -169,7 +169,7 @@ class BitMatrix
      * Sets a row of data from a BitArray.
      */
     public function setrow(int $y, BitArray $row): void {
-        $bits = $row->getBitArray();
+        $bits = $row->getbitarray();
 
         for ($i = 0; $i < $this->rowsize; ++$i) {
             $this->bits[$y * $this->rowsize + $i] = $bits[$i];
