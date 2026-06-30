@@ -23,14 +23,32 @@ use BaconQrCode\Renderer\Eye\ModuleEye;
 use BaconQrCode\Renderer\Module\ModuleInterface;
 use BaconQrCode\Renderer\Module\SquareModule;
 
+/**
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class RendererStyle
 {
+    /**
+     * @var ModuleInterface|SquareModule
+     */
     private ModuleInterface $module;
-
+    /**
+     * @var EyeInterface|ModuleEye|null
+     */
     private EyeInterface|null $eye;
-
+    /**
+     * @var Fill
+     */
     private Fill $fill;
 
+    /**
+     * @param int $size
+     * @param int $margin
+     * @param ModuleInterface|null $module
+     * @param EyeInterface|null $eye
+     * @param Fill|null $fill
+     */
     public function __construct(
         private int $size,
         private int $margin = 4,
@@ -43,35 +61,58 @@ final class RendererStyle
         $this->fill = $fill ?: Fill::default();
     }
 
-    public function withSize(int $size): self {
+    /**
+     * @param int $size
+     * @return $this
+     */
+    public function with_size(int $size): self {
         $style = clone $this;
         $style->size = $size;
         return $style;
     }
 
-    public function withMargin(int $margin): self {
+    /**
+     * @param int $margin
+     * @return $this
+     */
+    public function with_margin(int $margin): self {
         $style = clone $this;
         $style->margin = $margin;
         return $style;
     }
 
-    public function getSize(): int {
+    /**
+     * @return int
+     */
+    public function get_size(): int {
         return $this->size;
     }
 
-    public function getMargin(): int {
+    /**
+     * @return int
+     */
+    public function get_margin(): int {
         return $this->margin;
     }
 
-    public function getModule(): ModuleInterface {
+    /**
+     * @return ModuleInterface
+     */
+    public function get_module(): ModuleInterface {
         return $this->module;
     }
 
-    public function getEye(): EyeInterface {
+    /**
+     * @return EyeInterface
+     */
+    public function get_eye(): EyeInterface {
         return $this->eye;
     }
 
-    public function getFill(): Fill {
+    /**
+     * @return Fill
+     */
+    public function get_fill(): Fill {
         return $this->fill;
     }
 }

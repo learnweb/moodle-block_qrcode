@@ -23,6 +23,9 @@ use Traversable;
 
 /**
  * Byte matrix.
+ *
+ * @copyright 2017 Tamara Gunkel
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class ByteMatrix
 {
@@ -33,7 +36,22 @@ final class ByteMatrix
      */
     private SplFixedArray $bytes;
 
-    public function __construct(private readonly int $width, private readonly int $height) {
+    /**
+     * @var int
+     */
+    private readonly int $width;
+
+    /**
+     * @var int
+     */
+    private readonly int $height;
+
+    /**
+     * Constructor.
+     * @param int $width
+     * @param int $height
+     */
+    public function __construct($width, $height) {
         $this->bytes = new SplFixedArray($height);
 
         for ($y = 0; $y < $height; ++$y) {
@@ -44,14 +62,14 @@ final class ByteMatrix
     /**
      * Gets the width of the matrix.
      */
-    public function getWidth(): int {
+    public function get_width(): int {
         return $this->width;
     }
 
     /**
      * Gets the height of the matrix.
      */
-    public function getHeight(): int {
+    public function get_height(): int {
         return $this->height;
     }
 
@@ -60,14 +78,14 @@ final class ByteMatrix
      *
      * @return SplFixedArray<SplFixedArray<int>>
      */
-    public function getArray(): SplFixedArray {
+    public function get_array(): SplFixedArray {
         return $this->bytes;
     }
 
     /**
      * @return Traversable<int>
      */
-    public function getBytes(): Traversable {
+    public function get_bytes(): Traversable {
         foreach ($this->bytes as $row) {
             foreach ($row as $byte) {
                 yield $byte;
@@ -100,6 +118,10 @@ final class ByteMatrix
         }
     }
 
+    /**
+     *
+     * @return void
+     */
     public function __clone() {
         $this->bytes = clone $this->bytes;
 

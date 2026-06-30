@@ -39,10 +39,10 @@ final class EdgeIterator implements IteratorAggregate
     private int $height;
 
     public function __construct(ByteMatrix $matrix) {
-        $this->bytes = iterator_to_array($matrix->getBytes());
+        $this->bytes = iterator_to_array($matrix->get_bytes());
         $this->size = count($this->bytes);
-        $this->width = $matrix->getWidth();
-        $this->height = $matrix->getHeight();
+        $this->width = $matrix->get_width();
+        $this->height = $matrix->get_height();
     }
 
     /**

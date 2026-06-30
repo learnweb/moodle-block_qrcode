@@ -17,6 +17,7 @@ slow in PHP, it was exchanged with the implementation by Phil Karn.
 
 
 ## Example usage
+
 ```php
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
@@ -28,7 +29,7 @@ $renderer = new ImageRenderer(
     new ImagickImageBackEnd()
 );
 $writer = new Writer($renderer);
-$writer->writeFile('Hello World!', 'qrcode.png');
+$writer->write_file('Hello World!', 'qrcode.png');
 ```
 
 ## Available image renderer back ends
@@ -53,5 +54,5 @@ use BaconQrCode\Writer;
 
 $renderer = new GDLibRenderer(400);
 $writer = new Writer($renderer);
-$writer->writeFile('Hello World!', 'qrcode.png');
+$writer->write_file('Hello World!', 'qrcode.png');
 ```

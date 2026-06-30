@@ -50,14 +50,14 @@ final class PlainTextRenderer implements RendererInterface
      * @throws InvalidArgumentException if matrix width doesn't match height
      */
     public function render(QrCode $qrCode): string {
-        $matrix = $qrCode->getMatrix();
-        $matrixSize = $matrix->getWidth();
+        $matrix = $qrCode->get_matrix();
+        $matrixSize = $matrix->get_width();
 
-        if ($matrixSize !== $matrix->getHeight()) {
+        if ($matrixSize !== $matrix->get_height()) {
             throw new InvalidArgumentException('Matrix must have the same width and height');
         }
 
-        $rows = $matrix->getArray()->toArray();
+        $rows = $matrix->get_array()->toArray();
 
         if (0 !== $matrixSize % 2) {
             $rows[] = array_fill(0, $matrixSize, 0);

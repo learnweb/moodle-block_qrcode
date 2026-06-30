@@ -75,9 +75,9 @@ final class MaskUtil
      */
     public static function apply_mask_penalty_rule_2(ByteMatrix $matrix): int {
         $penalty = 0;
-        $array = $matrix->getArray();
-        $width = $matrix->getWidth();
-        $height = $matrix->getHeight();
+        $array = $matrix->get_array();
+        $width = $matrix->get_width();
+        $height = $matrix->get_height();
 
         for ($y = 0; $y < $height - 1; ++$y) {
             for ($x = 0; $x < $width - 1; ++$x) {
@@ -105,9 +105,9 @@ final class MaskUtil
      */
     public static function apply_mask_penalty_rule_3(ByteMatrix $matrix): int {
         $penalty = 0;
-        $array = $matrix->getArray();
-        $width = $matrix->getWidth();
-        $height = $matrix->getHeight();
+        $array = $matrix->get_array();
+        $width = $matrix->get_width();
+        $height = $matrix->get_height();
 
         for ($y = 0; $y < $height; ++$y) {
             for ($x = 0; $x < $width; ++$x) {
@@ -182,9 +182,9 @@ final class MaskUtil
     public static function apply_mask_penalty_rule_4(ByteMatrix $matrix): int {
         $numdarkcells = 0;
 
-        $array = $matrix->getArray();
-        $width = $matrix->getWidth();
-        $height = $matrix->getHeight();
+        $array = $matrix->get_array();
+        $width = $matrix->get_width();
+        $height = $matrix->get_height();
 
         for ($y = 0; $y < $height; ++$y) {
             $arrayy = $array[$y];
@@ -262,9 +262,9 @@ final class MaskUtil
      */
     private static function apply_mask_penalty_rule_1_internal(ByteMatrix $matrix, bool $ishorizontal): int {
         $penalty = 0;
-        $ilimit = $ishorizontal ? $matrix->getHeight() : $matrix->getWidth();
-        $jlimit = $ishorizontal ? $matrix->getWidth() : $matrix->getHeight();
-        $array = $matrix->getArray();
+        $ilimit = $ishorizontal ? $matrix->get_height() : $matrix->get_width();
+        $jlimit = $ishorizontal ? $matrix->get_width() : $matrix->get_height();
+        $array = $matrix->get_array();
 
         for ($i = 0; $i < $ilimit; ++$i) {
             $numsamebitcells = 0;

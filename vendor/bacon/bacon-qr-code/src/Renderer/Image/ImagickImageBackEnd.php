@@ -36,103 +36,171 @@ use Imagick;
 use ImagickDraw;
 use ImagickPixel;
 
+/**
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class ImagickImageBackEnd implements ImageBackEndInterface
 {
-    private string $imageFormat;
-
-    private int $compressionQuality;
-
+    /**
+     * @var string
+     */
+    private string $imageformat;
+    /**
+     * @var int
+     */
+    private int $compressionquality;
+    /**
+     * @var Imagick|null
+     */
     private ?Imagick $image;
-
+    /**
+     * @var ImagickDraw|null
+     */
     private ?ImagickDraw $draw;
-
-    private ?int $gradientCount;
-
+    /**
+     * @var int|null
+     */
+    private ?int $gradientcount;
     /**
      * @var TransformationMatrix[]|null
      */
     private ?array $matrices;
+    /**
+     * @var int|null
+     */
+    private ?int $matrixindex;
 
-    private ?int $matrixIndex;
-
-    public function __construct(string $imageFormat = 'png', int $compressionQuality = 100) {
+    /**
+     * Constructor.
+     *
+     * @param string $imageformat
+     * @param int $compressionquality
+     */
+    public function __construct(string $imageformat = 'png', int $compressionquality = 100) {
         if (! class_exists(Imagick::class)) {
             throw new RuntimeException('You need to install the imagick extension to use this back end');
         }
 
-        $this->imageFormat = $imageFormat;
-        $this->compressionQuality = $compressionQuality;
+        $this->imageformat = $imageformat;
+        $this->compressionquality = $compressionquality;
     }
 
-    public function new(int $size, ColorInterface $backgroundColor): void {
+    /**
+     * @param int $size
+     * @param ColorInterface $backgroundcolor
+     * @return void
+     * @throws \ImagickException
+     * @throws \ImagickPixelException
+     */
+    public function new(int $size, ColorInterface $backgroundcolor): void {
         $this->image = new Imagick();
-        $this->image->newImage($size, $size, $this->getColorPixel($backgroundColor));
-        $this->image->setImageFormat($this->imageFormat);
-        $this->image->setCompressionQuality($this->compressionQuality);
+        $this->image->newImage($size, $size, $this->get_color_pixel($backgroundcolor));
+        $this->image->setImageFormat($this->imageformat);
+        $this->image->setCompressionQuality($this->compressionquality);
         $this->draw = new ImagickDraw();
-        $this->gradientCount = 0;
+        $this->gradientcount = 0;
         $this->matrices = [new TransformationMatrix()];
-        $this->matrixIndex = 0;
+        $this->matrixindex = 0;
     }
 
+    /**
+     * @param float $size
+     * @return void
+     */
     public function scale(float $size): void {
         if (null === $this->draw) {
             throw new RuntimeException('No image has been started');
         }
 
         $this->draw->scale($size, $size);
-        $this->matrices[$this->matrixIndex] = $this->matrices[$this->matrixIndex]
+        $this->matrices[$this->matrixindex] = $this->matrices[$this->matrixindex]
             ->multiply(TransformationMatrix::scale($size));
     }
 
+    /**
+     * @param float $x
+     * @param float $y
+     * @return void
+     */
     public function translate(float $x, float $y): void {
         if (null === $this->draw) {
             throw new RuntimeException('No image has been started');
         }
 
         $this->draw->translate($x, $y);
-        $this->matrices[$this->matrixIndex] = $this->matrices[$this->matrixIndex]
+        $this->matrices[$this->matrixindex] = $this->matrices[$this->matrixindex]
             ->multiply(TransformationMatrix::translate($x, $y));
     }
 
+    /**
+     * @param int $degrees
+     * @return void
+     */
     public function rotate(int $degrees): void {
         if (null === $this->draw) {
             throw new RuntimeException('No image has been started');
         }
 
         $this->draw->rotate($degrees);
-        $this->matrices[$this->matrixIndex] = $this->matrices[$this->matrixIndex]
+        $this->matrices[$this->matrixindex] = $this->matrices[$this->matrixindex]
             ->multiply(TransformationMatrix::rotate($degrees));
     }
 
+    /**
+     * @return void
+     * @throws \ImagickException
+     */
     public function push(): void {
         if (null === $this->draw) {
             throw new RuntimeException('No image has been started');
         }
 
         $this->draw->push();
-        $this->matrices[++$this->matrixIndex] = $this->matrices[$this->matrixIndex - 1];
+        $this->matrices[++$this->matrixindex] = $this->matrices[$this->matrixindex - 1];
     }
 
+    /**
+     * @return void
+     * @throws \ImagickException
+     */
     public function pop(): void {
         if (null === $this->draw) {
             throw new RuntimeException('No image has been started');
         }
 
         $this->draw->pop();
-        unset($this->matrices[$this->matrixIndex--]);
+        unset($this->matrices[$this->matrixindex--]);
     }
 
-    public function drawPathWithColor(Path $path, ColorInterface $color): void {
+    /**
+     * @param Path $path
+     * @param ColorInterface $color
+     * @return void
+     * @throws \ImagickDrawException
+     * @throws \ImagickPixelException
+     */
+    public function draw_path_with_color(Path $path, ColorInterface $color): void {
         if (null === $this->draw) {
             throw new RuntimeException('No image has been started');
         }
 
-        $this->draw->setFillColor($this->getColorPixel($color));
-        $this->drawPath($path);
+        $this->draw->setFillColor($this->get_color_pixel($color));
+        $this->draw_path($path);
     }
 
-    public function drawPathWithGradient(
+    /**
+     * @param Path $path
+     * @param Gradient $gradient
+     * @param float $x
+     * @param float $y
+     * @param float $width
+     * @param float $height
+     * @return void
+     * @throws \ImagickException
+     * @throws \ImagickPixelException
+     */
+    public function draw_path_with_gradient(
         Path $path,
         Gradient $gradient,
         float $x,
@@ -144,10 +212,14 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
             throw new RuntimeException('No image has been started');
         }
 
-        $this->draw->setFillPatternURL('#' . $this->createGradientFill($gradient, $x, $y, $width, $height));
-        $this->drawPath($path);
+        $this->draw->setFillPatternURL('#' . $this->create_gradient_fill($gradient, $x, $y, $width, $height));
+        $this->draw_path($path);
     }
 
+    /**
+     * @return string
+     * @throws \ImagickException
+     */
     public function done(): string {
         if (null === $this->draw) {
             throw new RuntimeException('No image has been started');
@@ -159,12 +231,16 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
         $this->image->clear();
         $this->draw = null;
         $this->image = null;
-        $this->gradientCount = null;
+        $this->gradientcount = null;
 
         return $blob;
     }
 
-    private function drawPath(Path $path): void {
+    /**
+     * @param Path $path
+     * @return void
+     */
+    private function draw_path(Path $path): void {
         $this->draw->pathStart();
 
         foreach ($path as $op) {
@@ -212,50 +288,60 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
         $this->draw->pathFinish();
     }
 
-    private function createGradientFill(Gradient $gradient, float $x, float $y, float $width, float $height): string {
-        [$width, $height] = $this->matrices[$this->matrixIndex]->apply($width, $height);
+    /**
+     * @param Gradient $gradient
+     * @param float $x
+     * @param float $y
+     * @param float $width
+     * @param float $height
+     * @return string
+     * @throws \ImagickException
+     * @throws \ImagickPixelException
+     */
+    private function create_gradient_fill(Gradient $gradient, float $x, float $y, float $width, float $height): string {
+        [$width, $height] = $this->matrices[$this->matrixindex]->apply($width, $height);
 
-        $startColor = $this->getColorPixel($gradient->getStartColor())->getColorAsString();
-        $endColor = $this->getColorPixel($gradient->getEndColor())->getColorAsString();
-        $gradientImage = new Imagick();
+        $startcolor = $this->get_color_pixel($gradient->getStartColor())->getColorAsString();
+        $endcolor = $this->get_color_pixel($gradient->getEndColor())->getColorAsString();
+        $gradientimage = new Imagick();
 
         switch ($gradient->getType()) {
             case GradientType::HORIZONTAL():
-                $gradientImage->newPseudoImage((int) $height, (int) $width, sprintf(
+                $gradientimage->newPseudoImage((int) $height, (int) $width, sprintf(
                     'gradient:%s-%s',
-                    $startColor,
-                    $endColor
+                    $startcolor,
+                    $endcolor
                 ));
-                $gradientImage->rotateImage('transparent', -90);
+                $gradientimage->rotateImage('transparent', -90);
                 break;
 
             case GradientType::VERTICAL():
-                $gradientImage->newPseudoImage((int) $width, (int) $height, sprintf(
+                $gradientimage->newPseudoImage((int) $width, (int) $height, sprintf(
                     'gradient:%s-%s',
-                    $startColor,
-                    $endColor
+                    $startcolor,
+                    $endcolor
                 ));
                 break;
 
             case GradientType::DIAGONAL():
             case GradientType::INVERSE_DIAGONAL():
-                $gradientImage->newPseudoImage((int) ($width * sqrt(2)), (int) ($height * sqrt(2)), sprintf(
+                $gradientimage->newPseudoImage((int) ($width * sqrt(2)), (int) ($height * sqrt(2)), sprintf(
                     'gradient:%s-%s',
-                    $startColor,
-                    $endColor
+                    $startcolor,
+                    $endcolor
                 ));
 
                 if (GradientType::DIAGONAL() === $gradient->getType()) {
-                    $gradientImage->rotateImage('transparent', -45);
+                    $gradientimage->rotateImage('transparent', -45);
                 } else {
-                    $gradientImage->rotateImage('transparent', -135);
+                    $gradientimage->rotateImage('transparent', -135);
                 }
 
-                $rotatedWidth = $gradientImage->getImageWidth();
-                $rotatedHeight = $gradientImage->getImageHeight();
+                $rotatedWidth = $gradientimage->getImageWidth();
+                $rotatedHeight = $gradientimage->getImageHeight();
 
-                $gradientImage->setImagePage($rotatedWidth, $rotatedHeight, 0, 0);
-                $gradientImage->cropImage(
+                $gradientimage->setImagePage($rotatedWidth, $rotatedHeight, 0, 0);
+                $gradientimage->cropImage(
                     intdiv($rotatedWidth, 2) - 2,
                     intdiv($rotatedHeight, 2) - 2,
                     intdiv($rotatedWidth, 4) + 1,
@@ -264,22 +350,27 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
                 break;
 
             case GradientType::RADIAL():
-                $gradientImage->newPseudoImage((int) $width, (int) $height, sprintf(
+                $gradientimage->newPseudoImage((int) $width, (int) $height, sprintf(
                     'radial-gradient:%s-%s',
-                    $startColor,
-                    $endColor
+                    $startcolor,
+                    $endcolor
                 ));
                 break;
         }
 
-        $id = sprintf('g%d', ++$this->gradientCount);
+        $id = sprintf('g%d', ++$this->gradientcount);
         $this->draw->pushPattern($id, 0, 0, $width, $height);
-        $this->draw->composite(Imagick::COMPOSITE_COPY, 0, 0, $width, $height, $gradientImage);
+        $this->draw->composite(Imagick::COMPOSITE_COPY, 0, 0, $width, $height, $gradientimage);
         $this->draw->popPattern();
         return $id;
     }
 
-    private function getColorPixel(ColorInterface $color): ImagickPixel {
+    /**
+     * @param ColorInterface $color
+     * @return ImagickPixel
+     * @throws \ImagickPixelException
+     */
+    private function get_color_pixel(ColorInterface $color): ImagickPixel {
         $alpha = 100;
 
         if ($color instanceof Alpha) {
@@ -316,6 +407,6 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
             ));
         }
 
-        return $this->getColorPixel(new Alpha($alpha, $color->toRgb()));
+        return $this->get_color_pixel(new Alpha($alpha, $color->toRgb()));
     }
 }

@@ -52,7 +52,7 @@ final class GDLibRenderer implements RendererInterface
         if ($this->fill === null) {
             $this->fill = Fill::default();
         }
-        if ($this->fill->hasGradientFill()) {
+        if ($this->fill->has_gradient_fill()) {
             throw new InvalidArgumentException('GDLibRenderer does not support gradients');
         }
     }
@@ -61,10 +61,10 @@ final class GDLibRenderer implements RendererInterface
      * @throws InvalidArgumentException if matrix width doesn't match height
      */
     public function render(QrCode $qrCode): string {
-        $matrix = $qrCode->getMatrix();
-        $matrixSize = $matrix->getWidth();
+        $matrix = $qrCode->get_matrix();
+        $matrixSize = $matrix->get_width();
 
-        if ($matrixSize !== $matrix->getHeight()) {
+        if ($matrixSize !== $matrix->get_height()) {
             throw new InvalidArgumentException('Matrix must have the same width and height');
         }
 
@@ -85,23 +85,23 @@ final class GDLibRenderer implements RendererInterface
         imagealphablending($this->image, false);
         imagesavealpha($this->image, true);
 
-        $bg = $this->getColor($this->fill->getBackgroundColor());
+        $bg = $this->getColor($this->fill->get_background_color());
         imagefilledrectangle($this->image, 0, 0, $this->size, $this->size, $bg);
         imagealphablending($this->image, true);
     }
 
     private function draw(ByteMatrix $matrix): void {
-        $matrixSize = $matrix->getWidth();
+        $matrixSize = $matrix->get_width();
 
-        $pointsOnSide = $matrix->getWidth() + $this->margin * 2;
+        $pointsOnSide = $matrix->get_width() + $this->margin * 2;
         $pointInPx = $this->size / $pointsOnSide;
 
-        $this->drawEye(0, 0, $pointInPx, $this->fill->getTopLeftEyeFill());
-        $this->drawEye($matrixSize - 7, 0, $pointInPx, $this->fill->getTopRightEyeFill());
-        $this->drawEye(0, $matrixSize - 7, $pointInPx, $this->fill->getBottomLeftEyeFill());
+        $this->drawEye(0, 0, $pointInPx, $this->fill->get_top_left_eyefill());
+        $this->drawEye($matrixSize - 7, 0, $pointInPx, $this->fill->get_top_right_eyefill());
+        $this->drawEye(0, $matrixSize - 7, $pointInPx, $this->fill->get_bottom_left_eyefill());
 
-        $rows = $matrix->getArray()->toArray();
-        $color = $this->getColor($this->fill->getForegroundColor());
+        $rows = $matrix->get_array()->toArray();
+        $color = $this->getColor($this->fill->get_foreground_color());
         for ($y = 0; $y < $matrixSize; $y += 1) {
             for ($x = 0; $x < $matrixSize; $x += 1) {
                 if (! $rows[$y][$x]) {
@@ -121,11 +121,11 @@ final class GDLibRenderer implements RendererInterface
 
     private function drawEye(int $xOffset, int $yOffset, float $pointInPx, EyeFill $eyeFill): void {
         $internalColor = $this->getColor($eyeFill->inheritsInternalColor()
-            ? $this->fill->getForegroundColor()
+            ? $this->fill->get_foreground_color()
             : $eyeFill->getInternalColor());
 
         $externalColor = $this->getColor($eyeFill->inheritsExternalColor()
-            ? $this->fill->getForegroundColor()
+            ? $this->fill->get_foreground_color()
             : $eyeFill->getExternalColor());
 
         for ($y = 0; $y < 7; $y += 1) {

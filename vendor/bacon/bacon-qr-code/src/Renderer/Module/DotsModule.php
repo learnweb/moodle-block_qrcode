@@ -38,8 +38,8 @@ final class DotsModule implements ModuleInterface
     }
 
     public function createPath(ByteMatrix $matrix): Path {
-        $width = $matrix->getWidth();
-        $height = $matrix->getHeight();
+        $width = $matrix->get_width();
+        $height = $matrix->get_height();
         $path = new Path();
         $halfSize = $this->size / 2;
         $margin = (1 - $this->size) / 2;

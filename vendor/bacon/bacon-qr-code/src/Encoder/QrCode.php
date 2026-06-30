@@ -24,6 +24,9 @@ use BaconQrCode\Common\Version;
 
 /**
  * QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class QrCode
 {
@@ -34,73 +37,104 @@ final class QrCode
 
     /**
      * Mask pattern of the QR code.
+     * @var int
      */
-    private int $maskPattern = -1;
+    private int $maskpattern = -1;
 
     /**
      * Matrix of the QR code.
+     * @var ByteMatrix
      */
     private ByteMatrix $matrix;
 
+    /**
+     * Constructor.
+     *
+     * @param Mode $mode
+     * @param ErrorCorrectionLevel $errorcorrectionlevel
+     * @param Version $version
+     * @param int $maskpattern
+     * @param ByteMatrix $matrix
+     */
     public function __construct(
+            /**
+             * @var Mode
+             */
         private readonly Mode $mode,
-        private readonly ErrorCorrectionLevel $errorCorrectionLevel,
+            /**
+             * @var ErrorCorrectionLevel
+             */
+        private readonly ErrorCorrectionLevel $errorcorrectionlevel,
+            /**
+             * @var Version
+             */
         private readonly Version $version,
-        int $maskPattern,
+        int $maskpattern,
         ByteMatrix $matrix
     ) {
-        $this->maskPattern = $maskPattern;
+        $this->maskpattern = $maskpattern;
         $this->matrix = $matrix;
     }
 
     /**
      * Gets the mode.
+     * @return Mode
      */
-    public function getMode(): Mode {
+    public function get_mode(): Mode {
         return $this->mode;
     }
 
     /**
      * Gets the EC level.
+     * @return ErrorCorrectionLevel
      */
-    public function getErrorCorrectionLevel(): ErrorCorrectionLevel {
-        return $this->errorCorrectionLevel;
+    public function get_error_correction_level(): ErrorCorrectionLevel {
+        return $this->errorcorrectionlevel;
     }
 
     /**
      * Gets the version.
+     * @return Version
      */
-    public function getVersion(): Version {
+    public function get_version(): Version {
         return $this->version;
     }
 
     /**
      * Gets the mask pattern.
+     * @return int
      */
-    public function getMaskPattern(): int {
-        return $this->maskPattern;
+    public function get_mask_pattern(): int {
+        return $this->maskpattern;
     }
 
-    public function getMatrix(): ByteMatrix {
+    /**
+     * Gets the Matrix.
+     * @return ByteMatrix
+     */
+    public function get_matrix(): ByteMatrix {
         return $this->matrix;
     }
 
     /**
      * Validates whether a mask pattern is valid.
+     * @param int $maskpattern
+     * @return bool
      */
-    public static function isValidMaskPattern(int $maskPattern): bool {
-        return $maskPattern > 0 && $maskPattern < self::NUM_MASK_PATTERNS;
+    public static function is_valid_mask_pattern(int $maskpattern): bool {
+        return $maskpattern > 0 && $maskpattern < self::NUM_MASK_PATTERNS;
     }
 
     /**
      * Returns a string representation of the QR code.
+     * @return string
      */
     public function __toString(): string {
         $result = "<<\n"
                 . ' mode: ' . $this->mode . "\n"
-                . ' ecLevel: ' . $this->errorCorrectionLevel . "\n"
+                . ' ecLevel: ' . $this->errorcorrectionlevel . "\n"
                 . ' version: ' . $this->version . "\n"
-                . ' maskPattern: ' . $this->maskPattern . "\n";
+                . ' maskPattern: ' . $this->maskpattern . "\n";
 
         if ($this->matrix === null) {
             $result .= " matrix: null\n";

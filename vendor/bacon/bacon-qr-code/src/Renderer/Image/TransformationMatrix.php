@@ -18,6 +18,10 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Image;
 
+/**
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class TransformationMatrix
 {
     /**
@@ -25,10 +29,17 @@ final class TransformationMatrix
      */
     private array $values;
 
+    /**
+     * Constructor.
+     */
     public function __construct() {
         $this->values = [1, 0, 0, 1, 0, 0];
     }
 
+    /**
+     * @param TransformationMatrix $other
+     * @return self
+     */
     public function multiply(self $other): self {
         $matrix = new self();
         $matrix->values[0] = $this->values[0] * $other->values[0] + $this->values[2] * $other->values[1];
@@ -43,18 +54,31 @@ final class TransformationMatrix
         return $matrix;
     }
 
+    /**
+     * @param float $size
+     * @return self
+     */
     public static function scale(float $size): self {
         $matrix = new self();
         $matrix->values = [$size, 0, 0, $size, 0, 0];
         return $matrix;
     }
 
+    /**
+     * @param float $x
+     * @param float $y
+     * @return self
+     */
     public static function translate(float $x, float $y): self {
         $matrix = new self();
         $matrix->values = [1, 0, 0, 1, $x, $y];
         return $matrix;
     }
 
+    /**
+     * @param int $degrees
+     * @return self
+     */
     public static function rotate(int $degrees): self {
         $matrix = new self();
         $rad = deg2rad($degrees);

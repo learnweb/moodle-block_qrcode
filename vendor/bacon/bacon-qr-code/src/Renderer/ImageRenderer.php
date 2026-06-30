@@ -38,55 +38,55 @@ final class ImageRenderer implements RendererInterface
      * @throws InvalidArgumentException if matrix width doesn't match height
      */
     public function render(QrCode $qrCode): string {
-        $size = $this->rendererStyle->getSize();
-        $margin = $this->rendererStyle->getMargin();
-        $matrix = $qrCode->getMatrix();
-        $matrixSize = $matrix->getWidth();
+        $size = $this->rendererStyle->get_size();
+        $margin = $this->rendererStyle->get_margin();
+        $matrix = $qrCode->get_matrix();
+        $matrixSize = $matrix->get_width();
 
-        if ($matrixSize !== $matrix->getHeight()) {
+        if ($matrixSize !== $matrix->get_height()) {
             throw new InvalidArgumentException('Matrix must have the same width and height');
         }
 
         $totalSize = $matrixSize + ($margin * 2);
         $moduleSize = $size / $totalSize;
-        $fill = $this->rendererStyle->getFill();
+        $fill = $this->rendererStyle->get_fill();
 
-        $this->imageBackEnd->new($size, $fill->getBackgroundColor());
+        $this->imageBackEnd->new($size, $fill->get_background_color());
         $this->imageBackEnd->scale((float) $moduleSize);
         $this->imageBackEnd->translate((float) $margin, (float) $margin);
 
-        $module = $this->rendererStyle->getModule();
+        $module = $this->rendererStyle->get_module();
         $moduleMatrix = clone $matrix;
         MatrixUtil::removepositiondetectionpatterns($moduleMatrix);
         $modulePath = $this->drawEyes($matrixSize, $module->createPath($moduleMatrix));
 
-        if ($fill->hasGradientFill()) {
-            $this->imageBackEnd->drawPathWithGradient(
+        if ($fill->has_gradient_fill()) {
+            $this->imageBackEnd->draw_path_with_gradient(
                 $modulePath,
-                $fill->getForegroundGradient(),
+                $fill->get_foreground_gradient(),
                 0,
                 0,
                 $matrixSize,
                 $matrixSize
             );
         } else {
-            $this->imageBackEnd->drawPathWithColor($modulePath, $fill->getForegroundColor());
+            $this->imageBackEnd->draw_path_with_color($modulePath, $fill->get_foreground_color());
         }
 
         return $this->imageBackEnd->done();
     }
 
     private function drawEyes(int $matrixSize, Path $modulePath): Path {
-        $fill = $this->rendererStyle->getFill();
+        $fill = $this->rendererStyle->get_fill();
 
-        $eye = $this->rendererStyle->getEye();
+        $eye = $this->rendererStyle->get_eye();
         $externalPath = $eye->getExternalPath();
         $internalPath = $eye->getInternalPath();
 
         $modulePath = $this->drawEye(
             $externalPath,
             $internalPath,
-            $fill->getTopLeftEyeFill(),
+            $fill->get_top_left_eyefill(),
             3.5,
             3.5,
             0,
@@ -95,7 +95,7 @@ final class ImageRenderer implements RendererInterface
         $modulePath = $this->drawEye(
             $externalPath,
             $internalPath,
-            $fill->getTopRightEyeFill(),
+            $fill->get_top_right_eyefill(),
             $matrixSize - 3.5,
             3.5,
             90,
@@ -104,7 +104,7 @@ final class ImageRenderer implements RendererInterface
         $modulePath = $this->drawEye(
             $externalPath,
             $internalPath,
-            $fill->getBottomLeftEyeFill(),
+            $fill->get_bottom_left_eyefill(),
             3.5,
             $matrixSize - 3.5,
             -90,
@@ -145,7 +145,7 @@ final class ImageRenderer implements RendererInterface
                 $externalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
             );
         } else {
-            $this->imageBackEnd->drawPathWithColor($externalPath, $fill->getExternalColor());
+            $this->imageBackEnd->draw_path_with_color($externalPath, $fill->getExternalColor());
         }
 
         if ($fill->inheritsInternalColor()) {
@@ -153,7 +153,7 @@ final class ImageRenderer implements RendererInterface
                 $internalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
             );
         } else {
-            $this->imageBackEnd->drawPathWithColor($internalPath, $fill->getInternalColor());
+            $this->imageBackEnd->draw_path_with_color($internalPath, $fill->getInternalColor());
         }
 
         $this->imageBackEnd->pop();

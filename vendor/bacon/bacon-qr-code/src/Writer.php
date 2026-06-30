@@ -26,13 +26,21 @@ use BaconQrCode\Renderer\RendererInterface;
 
 /**
  * QR code writer.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class Writer
 {
     /**
+     * @var RendererInterface
+     */
+    private readonly RendererInterface $renderer;
+
+    /**
      * Creates a new writer with a specific renderer.
      */
-    public function __construct(private readonly RendererInterface $renderer) {
+    public function __construct($renderer) {
     }
 
     /**
@@ -43,35 +51,35 @@ final class Writer
      *
      * @throws InvalidArgumentException if the content is empty
      */
-    public function writeString(
+    public function write_string(
         string $content,
         string $encoding = Encoder::DEFAULT_BYTE_MODE_ENCODING,
-        ?ErrorCorrectionLevel $ecLevel = null,
-        ?Version $forcedVersion = null
+        ?ErrorCorrectionLevel $eclevel = null,
+        ?Version $forcedversion = null
     ): string {
         if (strlen($content) === 0) {
             throw new InvalidArgumentException('Found empty contents');
         }
 
-        if (null === $ecLevel) {
-            $ecLevel = ErrorCorrectionLevel::L();
+        if (null === $eclevel) {
+            $eclevel = ErrorCorrectionLevel::L();
         }
 
-        return $this->renderer->render(Encoder::encode($content, $ecLevel, $encoding, $forcedVersion));
+        return $this->renderer->render(Encoder::encode($content, $eclevel, $encoding, $forcedversion));
     }
 
     /**
      * Writes QR code to a file.
      *
-     * @see Writer::writeString()
+     * @see Writer::write_string()
      */
-    public function writeFile(
+    public function write_file(
         string $content,
         string $filename,
         string $encoding = Encoder::DEFAULT_BYTE_MODE_ENCODING,
-        ?ErrorCorrectionLevel $ecLevel = null,
-        ?Version $forcedVersion = null
+        ?ErrorCorrectionLevel $eclevel = null,
+        ?Version $forcedversion = null
     ): void {
-        file_put_contents($filename, $this->writeString($content, $encoding, $ecLevel, $forcedVersion));
+        file_put_contents($filename, $this->write_string($content, $encoding, $eclevel, $forcedversion));
     }
 }

@@ -24,65 +24,91 @@ use BaconQrCode\Renderer\Path\Path;
 use BaconQrCode\Renderer\RendererStyle\Gradient;
 
 /**
- * Interface for back ends able to to produce path based images.
+ * Interface for back ends able to produce path based images.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 interface ImageBackEndInterface
 {
     /**
-     * Starts a new image.
+     *  Starts a new image.
      *
-     * If a previous image was already started, previous data get erased.
+     *  If a previous image was already started, previous data get erased.
+     *
+     * @param int $size
+     * @param ColorInterface $backgroundcolor
+     * @return void
      */
-    public function new(int $size, ColorInterface $backgroundColor): void;
+    public function new(int $size, ColorInterface $backgroundcolor): void;
 
     /**
-     * Transforms all following drawing operation coordinates by scaling them by a given factor.
+     *  Transforms all following drawing operation coordinates by scaling them by a given factor.
      *
+     * @param float $size
+     * @return void
      * @throws RuntimeException if no image was started yet.
      */
     public function scale(float $size): void;
 
     /**
-     * Transforms all following drawing operation coordinates by translating them by a given amount.
+     *  Transforms all following drawing operation coordinates by translating them by a given amount.
      *
+     * @param float $x
+     * @param float $y
+     * @return void
      * @throws RuntimeException if no image was started yet.
      */
     public function translate(float $x, float $y): void;
 
     /**
-     * Transforms all following drawing operation coordinates by rotating them by a given amount.
+     *  Transforms all following drawing operation coordinates by rotating them by a given amount.
      *
+     * @param int $degrees
+     * @return void
      * @throws RuntimeException if no image was started yet.
      */
     public function rotate(int $degrees): void;
 
     /**
-     * Pushes the current coordinate transformation onto a stack.
+     *  Pushes the current coordinate transformation onto a stack.
      *
+     * @return void
      * @throws RuntimeException if no image was started yet.
      */
     public function push(): void;
 
     /**
-     * Pops the last coordinate transformation from a stack.
+     *  Pops the last coordinate transformation from a stack.
      *
+     * @return void
      * @throws RuntimeException if no image was started yet.
      */
     public function pop(): void;
 
     /**
-     * Draws a path with a given color.
+     *  Draws a path with a given color.
      *
-     * @throws RuntimeException if no image was started yet.
+     * @param Path $path
+     * @param ColorInterface $color
+     * @return void
+     *@throws RuntimeException if no image was started yet.
      */
-    public function drawPathWithColor(Path $path, ColorInterface $color): void;
+    public function draw_path_with_color(Path $path, ColorInterface $color): void;
 
     /**
-     * Draws a path with a given gradient which spans the box described by the position and size.
+     *  Draws a path with a given gradient which spans the box described by the position and size.
      *
+     * @param Path $path
+     * @param Gradient $gradient
+     * @param float $x
+     * @param float $y
+     * @param float $width
+     * @param float $height
+     * @return void
      * @throws RuntimeException if no image was started yet.
      */
-    public function drawPathWithGradient(
+    public function draw_path_with_gradient(
         Path $path,
         Gradient $gradient,
         float $x,
@@ -92,10 +118,11 @@ interface ImageBackEndInterface
     ): void;
 
     /**
-     * Ends the image drawing operation and returns the resulting blob.
+     *  Ends the image drawing operation and returns the resulting blob.
      *
-     * This should reset the state of the back end and thus this method should only be callable once per image.
+     *  This should reset the state of the back end and thus this method should only be callable once per image.
      *
+     * @return string
      * @throws RuntimeException if no image was started yet.
      */
     public function done(): string;

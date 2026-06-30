@@ -171,8 +171,8 @@ final class MatrixUtil
         $pdpwidth = count(self::POSITION_DETECTION_PATTERN[0]);
 
         self::removepositiondetectionpattern(0, 0, $matrix);
-        self::removepositiondetectionpattern($matrix->getWidth() - $pdpwidth, 0, $matrix);
-        self::removepositiondetectionpattern(0, $matrix->getWidth() - $pdpwidth, $matrix);
+        self::removepositiondetectionpattern($matrix->get_width() - $pdpwidth, 0, $matrix);
+        self::removepositiondetectionpattern(0, $matrix->get_width() - $pdpwidth, $matrix);
     }
 
     /**
@@ -193,11 +193,11 @@ final class MatrixUtil
             $matrix->set($x1, $y1, (int) $bit);
 
             if ($i < 8) {
-                $x2 = $matrix->getWidth() - $i - 1;
+                $x2 = $matrix->get_width() - $i - 1;
                 $y2 = 8;
             } else {
                 $x2 = 8;
-                $y2 = $matrix->getHeight() - 7 + ($i - 8);
+                $y2 = $matrix->get_height() - 7 + ($i - 8);
             }
 
             $matrix->set($x2, $y2, (int) $bit);
@@ -243,8 +243,8 @@ final class MatrixUtil
                 $bit = $versioninfobits->get($bitindex);
                 --$bitindex;
 
-                $matrix->set($i, $matrix->getHeight() - 11 + $j, (int) $bit);
-                $matrix->set($matrix->getHeight() - 11 + $j, $i, (int) $bit);
+                $matrix->set($i, $matrix->get_height() - 11 + $j, (int) $bit);
+                $matrix->set($matrix->get_height() - 11 + $j, $i, (int) $bit);
             }
         }
     }
@@ -310,20 +310,20 @@ final class MatrixUtil
         $pdpwidth = count(self::POSITION_DETECTION_PATTERN[0]);
 
         self::embedpositiondetectionpattern(0, 0, $matrix);
-        self::embedpositiondetectionpattern($matrix->getWidth() - $pdpwidth, 0, $matrix);
-        self::embedpositiondetectionpattern(0, $matrix->getWidth() - $pdpwidth, $matrix);
+        self::embedpositiondetectionpattern($matrix->get_width() - $pdpwidth, 0, $matrix);
+        self::embedpositiondetectionpattern(0, $matrix->get_width() - $pdpwidth, $matrix);
 
         $hspwidth = 8;
 
         self::embedhorizontalseparationpattern(0, $hspwidth - 1, $matrix);
-        self::embedhorizontalseparationpattern($matrix->getWidth() - $hspwidth, $hspwidth - 1, $matrix);
-        self::embedhorizontalseparationpattern(0, $matrix->getWidth() - $hspwidth, $matrix);
+        self::embedhorizontalseparationpattern($matrix->get_width() - $hspwidth, $hspwidth - 1, $matrix);
+        self::embedhorizontalseparationpattern(0, $matrix->get_width() - $hspwidth, $matrix);
 
         $vspsize = 7;
 
         self::embedverticalseparationpattern($vspsize, 0, $matrix);
-        self::embedverticalseparationpattern($matrix->getHeight() - $vspsize - 1, 0, $matrix);
-        self::embedverticalseparationpattern($vspsize, $matrix->getHeight() - $vspsize, $matrix);
+        self::embedverticalseparationpattern($matrix->get_height() - $vspsize - 1, 0, $matrix);
+        self::embedverticalseparationpattern($vspsize, $matrix->get_height() - $vspsize, $matrix);
     }
 
     /**
@@ -391,11 +391,11 @@ final class MatrixUtil
      * @throws RuntimeException if a byte was already set to 0
      */
     private static function embeddarkdotatleftbottomcorner(ByteMatrix $matrix): void {
-        if (0 === $matrix->get(8, $matrix->getHeight() - 8)) {
+        if (0 === $matrix->get(8, $matrix->get_height() - 8)) {
             throw new RuntimeException('Byte already set to 0');
         }
 
-        $matrix->set(8, $matrix->getHeight() - 8, 1);
+        $matrix->set(8, $matrix->get_height() - 8, 1);
     }
 
     /**
@@ -442,7 +442,7 @@ final class MatrixUtil
      * Embeds timing patterns into a matrix.
      */
     private static function embedtimingpatterns(ByteMatrix $matrix): void {
-        $matrixwidth = $matrix->getWidth();
+        $matrixwidth = $matrix->get_width();
 
         for ($i = 8; $i < $matrixwidth - 8; ++$i) {
             $bit = ($i + 1) % 2;
@@ -470,8 +470,8 @@ final class MatrixUtil
         $direction = -1;
 
         // Start from the right bottom cell.
-        $x = $matrix->getWidth() - 1;
-        $y = $matrix->getHeight() - 1;
+        $x = $matrix->get_width() - 1;
+        $y = $matrix->get_height() - 1;
 
         while ($x > 0) {
             // Skip vertical timing pattern.
@@ -479,7 +479,7 @@ final class MatrixUtil
                 --$x;
             }
 
-            while ($y >= 0 && $y < $matrix->getHeight()) {
+            while ($y >= 0 && $y < $matrix->get_height()) {
                 for ($i = 0; $i < 2; $i++) {
                     $xx = $x - $i;
 

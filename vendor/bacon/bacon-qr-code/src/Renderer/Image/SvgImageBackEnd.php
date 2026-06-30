@@ -31,27 +31,47 @@ use BaconQrCode\Renderer\RendererStyle\Gradient;
 use BaconQrCode\Renderer\RendererStyle\GradientType;
 use XMLWriter;
 
+/**
+ * @copyright 2025 D. Meißner
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class SvgImageBackEnd implements ImageBackEndInterface
 {
     private const PRECISION = 3;
     private const SCALE_FORMAT = 'scale(%.' . self::PRECISION . 'F)';
     private const TRANSLATE_FORMAT = 'translate(%.' . self::PRECISION . 'F,%.' . self::PRECISION . 'F)';
-
+    /**
+     * @var XMLWriter|null
+     */
     private ?XMLWriter $xmlWriter;
-
+    /**
+     * @var array|null
+     */
     private ?array $stack;
-
+    /**
+     * @var int|null
+     */
     private ?int $currentStack;
-
+    /**
+     * @var int|null
+     */
     private ?int $gradientCount;
 
+    /**
+     * Constructor.
+     */
     public function __construct() {
         if (! class_exists(XMLWriter::class)) {
             throw new RuntimeException('You need to install the libxml extension to use this back end');
         }
     }
 
-    public function new(int $size, ColorInterface $backgroundColor): void {
+    /**
+     * @param int $size
+     * @param ColorInterface $backgroundcolor
+     * @return void
+     */
+    public function new(int $size, ColorInterface $backgroundcolor): void {
         $this->xmlWriter = new XMLWriter();
         $this->xmlWriter->openMemory();
 
@@ -69,8 +89,8 @@ final class SvgImageBackEnd implements ImageBackEndInterface
 
         $alpha = 1;
 
-        if ($backgroundColor instanceof Alpha) {
-            $alpha = $backgroundColor->getAlpha() / 100;
+        if ($backgroundcolor instanceof Alpha) {
+            $alpha = $backgroundcolor->getAlpha() / 100;
         }
 
         if (0 === $alpha) {
@@ -82,7 +102,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->writeAttribute('y', '0');
         $this->xmlWriter->writeAttribute('width', (string) $size);
         $this->xmlWriter->writeAttribute('height', (string) $size);
-        $this->xmlWriter->writeAttribute('fill', $this->getColorString($backgroundColor));
+        $this->xmlWriter->writeAttribute('fill', $this->get_color_string($backgroundcolor));
 
         if ($alpha < 1) {
             $this->xmlWriter->writeAttribute('fill-opacity', (string) $alpha);
@@ -91,6 +111,10 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->endElement();
     }
 
+    /**
+     * @param float $size
+     * @return void
+     */
     public function scale(float $size): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
@@ -104,6 +128,11 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         ++$this->stack[$this->currentStack];
     }
 
+    /**
+     * @param float $x
+     * @param float $y
+     * @return void
+     */
     public function translate(float $x, float $y): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
@@ -117,6 +146,10 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         ++$this->stack[$this->currentStack];
     }
 
+    /**
+     * @param int $degrees
+     * @return void
+     */
     public function rotate(int $degrees): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
@@ -127,6 +160,9 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         ++$this->stack[$this->currentStack];
     }
 
+    /**
+     * @return void
+     */
     public function push(): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
@@ -137,6 +173,9 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         ++$this->currentStack;
     }
 
+    /**
+     * @return void
+     */
     public function pop(): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
@@ -150,7 +189,12 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         --$this->currentStack;
     }
 
-    public function drawPathWithColor(Path $path, ColorInterface $color): void {
+    /**
+     * @param Path $path
+     * @param ColorInterface $color
+     * @return void
+     */
+    public function draw_path_with_color(Path $path, ColorInterface $color): void {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
         }
@@ -162,7 +206,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         }
 
         $this->startPathElement($path);
-        $this->xmlWriter->writeAttribute('fill', $this->getColorString($color));
+        $this->xmlWriter->writeAttribute('fill', $this->get_color_string($color));
 
         if ($alpha < 1) {
             $this->xmlWriter->writeAttribute('fill-opacity', (string) $alpha);
@@ -171,7 +215,16 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->endElement();
     }
 
-    public function drawPathWithGradient(
+    /**
+     * @param Path $path
+     * @param Gradient $gradient
+     * @param float $x
+     * @param float $y
+     * @param float $width
+     * @param float $height
+     * @return void
+     */
+    public function draw_path_with_gradient(
         Path $path,
         Gradient $gradient,
         float $x,
@@ -183,19 +236,22 @@ final class SvgImageBackEnd implements ImageBackEndInterface
             throw new RuntimeException('No image has been started');
         }
 
-        $gradientId = $this->createGradientFill($gradient, $x, $y, $width, $height);
+        $gradientId = $this->create_gradient_fill($gradient, $x, $y, $width, $height);
         $this->startPathElement($path);
         $this->xmlWriter->writeAttribute('fill', 'url(#' . $gradientId . ')');
         $this->xmlWriter->endElement();
     }
 
+    /**
+     * @return string
+     */
     public function done(): string {
         if (null === $this->xmlWriter) {
             throw new RuntimeException('No image has been started');
         }
 
-        foreach ($this->stack as $openElements) {
-            for ($i = $openElements; $i > 0; --$i) {
+        foreach ($this->stack as $openelements) {
+            for ($i = $openelements; $i > 0; --$i) {
                 $this->xmlWriter->endElement();
             }
         }
@@ -210,13 +266,17 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         return $blob;
     }
 
+    /**
+     * @param Path $path
+     * @return void
+     */
     private function startPathElement(Path $path): void {
-        $pathData = [];
+        $pathdata = [];
 
         foreach ($path as $op) {
             switch (true) {
                 case $op instanceof Move:
-                    $pathData[] = sprintf(
+                    $pathdata[] = sprintf(
                         'M%s %s',
                         round($op->getX(), self::PRECISION),
                         round($op->getY(), self::PRECISION)
@@ -224,7 +284,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
                     break;
 
                 case $op instanceof Line:
-                    $pathData[] = sprintf(
+                    $pathdata[] = sprintf(
                         'L%s %s',
                         round($op->getX(), self::PRECISION),
                         round($op->getY(), self::PRECISION)
@@ -232,7 +292,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
                     break;
 
                 case $op instanceof EllipticArc:
-                    $pathData[] = sprintf(
+                    $pathdata[] = sprintf(
                         'A%s %s %s %u %u %s %s',
                         round($op->getXRadius(), self::PRECISION),
                         round($op->getYRadius(), self::PRECISION),
@@ -245,7 +305,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
                     break;
 
                 case $op instanceof Curve:
-                    $pathData[] = sprintf(
+                    $pathdata[] = sprintf(
                         'C%s %s %s %s %s %s',
                         round($op->getX1(), self::PRECISION),
                         round($op->getY1(), self::PRECISION),
@@ -257,7 +317,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
                     break;
 
                 case $op instanceof Close:
-                    $pathData[] = 'Z';
+                    $pathdata[] = 'Z';
                     break;
 
                 default:
@@ -267,14 +327,22 @@ final class SvgImageBackEnd implements ImageBackEndInterface
 
         $this->xmlWriter->startElement('path');
         $this->xmlWriter->writeAttribute('fill-rule', 'evenodd');
-        $this->xmlWriter->writeAttribute('d', implode('', $pathData));
+        $this->xmlWriter->writeAttribute('d', implode('', $pathdata));
     }
 
-    private function createGradientFill(Gradient $gradient, float $x, float $y, float $width, float $height): string {
+    /**
+     * @param Gradient $gradient
+     * @param float $x
+     * @param float $y
+     * @param float $width
+     * @param float $height
+     * @return string
+     */
+    private function create_gradient_fill(Gradient $gradient, float $x, float $y, float $width, float $height): string {
         $this->xmlWriter->startElement('defs');
 
-        $startColor = $gradient->getStartColor();
-        $endColor = $gradient->getEndColor();
+        $startcolor = $gradient->getStartColor();
+        $endcolor = $gradient->getEndColor();
 
         if ($gradient->getType() === GradientType::RADIAL()) {
             $this->xmlWriter->startElement('radialGradient');
@@ -320,29 +388,29 @@ final class SvgImageBackEnd implements ImageBackEndInterface
                 break;
         }
 
-        $toBeHashed = $this->getColorString($startColor) . $this->getColorString($endColor) . $gradient->getType();
-        if ($startColor instanceof Alpha) {
-            $toBeHashed .= (string) $startColor->getAlpha();
+        $tobehashed = $this->get_color_string($startcolor) . $this->get_color_string($endcolor) . $gradient->getType();
+        if ($startcolor instanceof Alpha) {
+            $tobehashed .= (string) $startcolor->getAlpha();
         }
-        $id = sprintf('g%d-%s', ++$this->gradientCount, hash('xxh64', $toBeHashed));
+        $id = sprintf('g%d-%s', ++$this->gradientCount, hash('xxh64', $tobehashed));
         $this->xmlWriter->writeAttribute('id', $id);
 
         $this->xmlWriter->startElement('stop');
         $this->xmlWriter->writeAttribute('offset', '0%');
-        $this->xmlWriter->writeAttribute('stop-color', $this->getColorString($startColor));
+        $this->xmlWriter->writeAttribute('stop-color', $this->get_color_string($startcolor));
 
-        if ($startColor instanceof Alpha) {
-            $this->xmlWriter->writeAttribute('stop-opacity', (string) $startColor->getAlpha());
+        if ($startcolor instanceof Alpha) {
+            $this->xmlWriter->writeAttribute('stop-opacity', (string) $startcolor->getAlpha());
         }
 
         $this->xmlWriter->endElement();
 
         $this->xmlWriter->startElement('stop');
         $this->xmlWriter->writeAttribute('offset', '100%');
-        $this->xmlWriter->writeAttribute('stop-color', $this->getColorString($endColor));
+        $this->xmlWriter->writeAttribute('stop-color', $this->get_color_string($endcolor));
 
-        if ($endColor instanceof Alpha) {
-            $this->xmlWriter->writeAttribute('stop-opacity', (string) $endColor->getAlpha());
+        if ($endcolor instanceof Alpha) {
+            $this->xmlWriter->writeAttribute('stop-opacity', (string) $endcolor->getAlpha());
         }
 
         $this->xmlWriter->endElement();
@@ -353,7 +421,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         return $id;
     }
 
-    private function getColorString(ColorInterface $color): string {
+    private function get_color_string(ColorInterface $color): string {
         $color = $color->toRgb();
 
         return sprintf(

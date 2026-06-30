@@ -39,7 +39,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
     private ?string $eps;
 
-    public function new(int $size, ColorInterface $backgroundColor): void {
+    public function new(int $size, ColorInterface $backgroundcolor): void {
         $this->eps = "%!PS-Adobe-3.0 EPSF-3.0\n"
             . "%%Creator: BaconQrCode\n"
             . sprintf("%%%%BoundingBox: 0 0 %d %d \n", $size, $size)
@@ -64,7 +64,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             . "1 -1 s\n"
             . sprintf("0 -%d t\n", $size);
 
-        if ($backgroundColor instanceof Alpha && 0 === $backgroundColor->getAlpha()) {
+        if ($backgroundcolor instanceof Alpha && 0 === $backgroundcolor->getAlpha()) {
             return;
         }
 
@@ -74,7 +74,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             . sprintf(' %s %s l', (string) $size, (string) $size)
             . sprintf(' 0 %s l', (string) $size)
             . ' z'
-            . ' ' . $this->getColorSetString($backgroundColor) . " f\n",
+            . ' ' . $this->getColorSetString($backgroundcolor) . " f\n",
             75,
             "\n "
         );
@@ -120,7 +120,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= "Q\n";
     }
 
-    public function drawPathWithColor(Path $path, ColorInterface $color): void {
+    public function draw_path_with_color(Path $path, ColorInterface $color): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
         }
@@ -136,7 +136,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         );
     }
 
-    public function drawPathWithGradient(
+    public function draw_path_with_gradient(
         Path $path,
         Gradient $gradient,
         float $x,

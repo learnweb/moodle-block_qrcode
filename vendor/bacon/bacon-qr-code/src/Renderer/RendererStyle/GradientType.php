@@ -26,12 +26,30 @@ use DASPRiD\Enum\AbstractEnum;
  * @method static self DIAGONAL()
  * @method static self INVERSE_DIAGONAL()
  * @method static self RADIAL()
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class GradientType extends AbstractEnum
 {
+    /**
+     *
+     */
     protected const VERTICAL = null;
+    /**
+     *
+     */
     protected const HORIZONTAL = null;
+    /**
+     *
+     */
     protected const DIAGONAL = null;
+    /**
+     *
+     */
     protected const INVERSE_DIAGONAL = null;
+    /**
+     *
+     */
     protected const RADIAL = null;
 }

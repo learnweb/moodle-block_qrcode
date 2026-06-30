@@ -28,11 +28,11 @@ final readonly class MatrixFactory implements MatrixFactoryInterface
 {
     public function create(QrCodeInterface $qrCode): MatrixInterface {
         $baconErrorCorrectionLevel = ErrorCorrectionLevelConverter::convertToBaconErrorCorrectionLevel($qrCode->getErrorCorrectionLevel());
-        $baconMatrix = Encoder::encode($qrCode->getData(), $baconErrorCorrectionLevel, strval($qrCode->getEncoding()))->getMatrix();
+        $baconMatrix = Encoder::encode($qrCode->getData(), $baconErrorCorrectionLevel, strval($qrCode->getEncoding()))->get_matrix();
 
         $blockValues = [];
-        $columnCount = $baconMatrix->getWidth();
-        $rowCount = $baconMatrix->getHeight();
+        $columnCount = $baconMatrix->get_width();
+        $rowCount = $baconMatrix->get_height();
         for ($rowIndex = 0; $rowIndex < $rowCount; ++$rowIndex) {
             $blockValues[$rowIndex] = [];
             for ($columnIndex = 0; $columnIndex < $columnCount; ++$columnIndex) {
