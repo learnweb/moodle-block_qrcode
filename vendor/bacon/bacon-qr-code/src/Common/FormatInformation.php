@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * BaconQrCode
+ * BaconQrCode.
  *
  * @link      http://github.com/Bacon/BaconQrCode For the canonical source repository
  * @copyright 2013 Ben 'DASPRiD' Scholzen
- * @license   http://opensource.org/licenses/BSD-2-Clause Simplified BSD License
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace BaconQrCode\Common;
@@ -83,20 +83,30 @@ class FormatInformation
 
     /**
      * Error correction level.
+     *
+     * @var ErrorCorrectionLevel
      */
-    private ErrorCorrectionLevel $ecLevel;
+    private ErrorCorrectionLevel $eclevel;
 
-    private int $dataMask;
+    /**
+     * @var int
+     */
+    private int $datamask;
 
-    protected function __construct(int $formatInfo) {
-        $this->ecLevel = ErrorCorrectionLevel::forbits(($formatInfo >> 3) & 0x3);
-        $this->dataMask = $formatInfo & 0x7;
+    /**
+     * Creates a new format information instance.
+     *
+     * @param int $formatinfo encoded format information
+     */
+    protected function __construct(int $formatinfo) {
+        $this->eclevel = ErrorCorrectionLevel::forbits(($formatinfo >> 3) & 0x3);
+        $this->datamask = $formatinfo & 0x7;
     }
 
     /**
      * Checks how many bits are different between two integers.
      */
-    public static function numBitsDiffering(int $a, int $b): int {
+    public static function numbitsdiffering(int $a, int $b): int {
         $a ^= $b;
 
         return (
@@ -114,57 +124,56 @@ class FormatInformation
     /**
      * Decodes format information.
      */
-    public static function decodeFormatInformation(int $maskedFormatInfo1, int $maskedFormatInfo2): ?self {
-        $formatInfo = self::doDecodeFormatInformation($maskedFormatInfo1, $maskedFormatInfo2);
+    public static function decodeformatinformation(int $maskedformatinfo1, int $maskedformatinfo2): ?self {
+        $formatinfo = self::dodecodeformatinformation($maskedformatinfo1, $maskedformatinfo2);
 
-        if (null !== $formatInfo) {
-            return $formatInfo;
+        if (null !== $formatinfo) {
+            return $formatinfo;
         }
 
-        // Should return null, but, some QR codes apparently do not mask this info. Try again by actually masking the
-        // pattern first.
-        return self::doDecodeFormatInformation(
-            $maskedFormatInfo1 ^ self::FORMAT_INFO_MASK_QR,
-            $maskedFormatInfo2 ^ self::FORMAT_INFO_MASK_QR
+        // Should return null, but, some QR codes apparently do not mask this info. Try again by actually masking the pattern first.
+        return self::dodecodeformatinformation(
+            $maskedformatinfo1 ^ self::FORMAT_INFO_MASK_QR,
+            $maskedformatinfo2 ^ self::FORMAT_INFO_MASK_QR
         );
     }
 
     /**
      * Internal method for decoding format information.
      */
-    private static function doDecodeFormatInformation(int $maskedFormatInfo1, int $maskedFormatInfo2): ?self {
-        $bestDifference = PHP_INT_MAX;
-        $bestFormatInfo = 0;
+    private static function dodecodeformatinformation(int $maskedformatinfo1, int $maskedformatinfo2): ?self {
+        $bestdifference = PHP_INT_MAX;
+        $bestformatinfo = 0;
 
-        foreach (self::FORMAT_INFO_DECODE_LOOKUP as $decodeInfo) {
-            $targetInfo = $decodeInfo[0];
+        foreach (self::FORMAT_INFO_DECODE_LOOKUP as $decodeinfo) {
+            $targetinfo = $decodeinfo[0];
 
-            if ($targetInfo === $maskedFormatInfo1 || $targetInfo === $maskedFormatInfo2) {
-                // Found an exact match
-                return new self($decodeInfo[1]);
+            if ($targetinfo === $maskedformatinfo1 || $targetinfo === $maskedformatinfo2) {
+                // Found an exact match.
+                return new self($decodeinfo[1]);
             }
 
-            $bitsDifference = self::numBitsDiffering($maskedFormatInfo1, $targetInfo);
+            $bitsdifference = self::numbitsdiffering($maskedformatinfo1, $targetinfo);
 
-            if ($bitsDifference < $bestDifference) {
-                $bestFormatInfo = $decodeInfo[1];
-                $bestDifference = $bitsDifference;
+            if ($bitsdifference < $bestdifference) {
+                $bestformatinfo = $decodeinfo[1];
+                $bestdifference = $bitsdifference;
             }
 
-            if ($maskedFormatInfo1 !== $maskedFormatInfo2) {
-                // Also try the other option
-                $bitsDifference = self::numBitsDiffering($maskedFormatInfo2, $targetInfo);
+            if ($maskedformatinfo1 !== $maskedformatinfo2) {
+                // Also try the other option.
+                $bitsdifference = self::numbitsdiffering($maskedformatinfo2, $targetinfo);
 
-                if ($bitsDifference < $bestDifference) {
-                    $bestFormatInfo = $decodeInfo[1];
-                    $bestDifference = $bitsDifference;
+                if ($bitsdifference < $bestdifference) {
+                    $bestformatinfo = $decodeinfo[1];
+                    $bestdifference = $bitsdifference;
                 }
             }
         }
 
         // Hamming distance of the 32 masked codes is 7, by construction, so <= 3 bits differing means we found a match.
-        if ($bestDifference <= 3) {
-            return new self($bestFormatInfo);
+        if ($bestdifference <= 3) {
+            return new self($bestformatinfo);
         }
 
         return null;
@@ -173,22 +182,22 @@ class FormatInformation
     /**
      * Returns the error correction level.
      */
-    public function getErrorCorrectionLevel(): ErrorCorrectionLevel {
-        return $this->ecLevel;
+    public function geterrorcorrectionlevel(): ErrorCorrectionLevel {
+        return $this->eclevel;
     }
 
     /**
      * Returns the data mask.
      */
-    public function getDataMask(): int {
-        return $this->dataMask;
+    public function getdatamask(): int {
+        return $this->datamask;
     }
 
     /**
      * Hashes the code of the EC level.
      */
-    public function hashCode(): int {
-        return ($this->ecLevel->getbits() << 3) | $this->dataMask;
+    public function hashcode(): int {
+        return ($this->eclevel->getbits() << 3) | $this->datamask;
     }
 
     /**
@@ -196,8 +205,8 @@ class FormatInformation
      */
     public function equals(self $other): bool {
         return (
-            $this->ecLevel === $other->ecLevel
-            && $this->dataMask === $other->dataMask
+            $this->eclevel === $other->eclevel
+            && $this->datamask === $other->datamask
         );
     }
 }

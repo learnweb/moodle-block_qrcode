@@ -205,7 +205,7 @@ final class Version
                 return self::getversionfornumber($i + 7);
             }
 
-            $bitsdifference = FormatInformation::numBitsDiffering($versionbits, $targetversion);
+            $bitsdifference = FormatInformation::numbitsdiffering($versionbits, $targetversion);
 
             if ($bitsdifference < $bestdifference) {
                 $bestversion = $i + 7;
