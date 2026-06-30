@@ -100,14 +100,14 @@ final class Encoder
         // But need to know how many bits it takes to know version. First we
         // take a guess at version by assuming version will be the minimum, 1:
         $provisionalBitsNeeded = $headerBits->getsize()
-            + $mode->getCharacterCountBits(Version::getversionfornumber(1))
+            + $mode->getcharactercountbits(Version::getversionfornumber(1))
             + $dataBits->getsize();
         $provisionalVersion = self::chooseVersion($provisionalBitsNeeded, $ecLevel);
 
         // Use that guess to calculate the right version. I am still not sure
         // this works in 100% of cases.
         $bitsNeeded = $headerBits->getsize()
-            + $mode->getCharacterCountBits($provisionalVersion)
+            + $mode->getcharactercountbits($provisionalVersion)
             + $dataBits->getsize();
         $version = self::chooseVersion($bitsNeeded, $ecLevel);
 
@@ -509,7 +509,7 @@ final class Encoder
      * @throws WriterException if num letters is bigger than expected
      */
     private static function appendLengthInfo(int $numLetters, Version $version, Mode $mode, BitArray $bits): void {
-        $numBits = $mode->getCharacterCountBits($version);
+        $numBits = $mode->getcharactercountbits($version);
 
         if ($numLetters >= (1 << $numBits)) {
             throw new WriterException($numLetters . ' is bigger than ' . ((1 << $numBits) - 1));

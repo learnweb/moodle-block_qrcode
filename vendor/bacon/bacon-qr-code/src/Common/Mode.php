@@ -23,17 +23,6 @@ use DASPRiD\Enum\AbstractEnum;
 /**
  * Enum representing various modes in which data can be encoded to bits.
  *
- * @method static self TERMINATOR()
- * @method static self NUMERIC()
- * @method static self ALPHANUMERIC()
- * @method static self STRUCTURED_APPEND()
- * @method static self BYTE()
- * @method static self ECI()
- * @method static self KANJI()
- * @method static self FNC1_FIRST_POSITION()
- * @method static self FNC1_SECOND_POSITION()
- * @method static self HANZI()
- *
  * @copyright  2024 Justus Dieckmann
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -90,10 +79,18 @@ final class Mode extends AbstractEnum
     protected const HANZI = [[8, 10, 12], 0x0d];
 
     /**
-     * @param int[] $characterCountBitsForVersions
+     * Creates a new encoding mode.
+     *
+     * @param int[] $charactercountbitsforversions
      */
     protected function __construct(
-        private readonly array $characterCountBitsForVersions,
+        /**
+         * @var array
+         */
+        private readonly array $charactercountbitsforversions,
+        /**
+         * @var int
+         */
         private readonly int $bits
     ) {
     }
@@ -101,7 +98,7 @@ final class Mode extends AbstractEnum
     /**
      * Returns the number of bits used in a specific QR code version.
      */
-    public function getCharacterCountBits(Version $version): int {
+    public function getcharactercountbits(Version $version): int {
         $number = $version->getversionnumber();
 
         if ($number <= 9) {
@@ -112,7 +109,7 @@ final class Mode extends AbstractEnum
             $offset = 2;
         }
 
-        return $this->characterCountBitsForVersions[$offset];
+        return $this->charactercountbitsforversions[$offset];
     }
 
     /**
