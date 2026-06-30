@@ -57,7 +57,7 @@ final class ImageRenderer implements RendererInterface
 
         $module = $this->rendererStyle->getModule();
         $moduleMatrix = clone $matrix;
-        MatrixUtil::removePositionDetectionPatterns($moduleMatrix);
+        MatrixUtil::removepositiondetectionpatterns($moduleMatrix);
         $modulePath = $this->drawEyes($matrixSize, $module->createPath($moduleMatrix));
 
         if ($fill->hasGradientFill()) {

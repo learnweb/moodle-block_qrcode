@@ -68,7 +68,7 @@ final class GDLibRenderer implements RendererInterface
             throw new InvalidArgumentException('Matrix must have the same width and height');
         }
 
-        MatrixUtil::removePositionDetectionPatterns($matrix);
+        MatrixUtil::removepositiondetectionpatterns($matrix);
         $this->newImage();
         $this->draw($matrix);
 

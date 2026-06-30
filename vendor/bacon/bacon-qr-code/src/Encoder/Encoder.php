@@ -155,7 +155,7 @@ final class Encoder
         $maskPattern = self::chooseMaskPattern($finalBits, $ecLevel, $version, $matrix);
 
         // Build the matrix.
-        MatrixUtil::buildMatrix($finalBits, $ecLevel, $version, $maskPattern, $matrix);
+        MatrixUtil::buildmatrix($finalBits, $ecLevel, $version, $maskPattern, $matrix);
 
         return new QrCode($mode, $ecLevel, $version, $maskPattern, $matrix);
     }
@@ -256,7 +256,7 @@ final class Encoder
         $bestMaskPattern = -1;
 
         for ($maskPattern = 0; $maskPattern < QrCode::NUM_MASK_PATTERNS; ++$maskPattern) {
-            MatrixUtil::buildMatrix($bits, $ecLevel, $version, $maskPattern, $matrix);
+            MatrixUtil::buildmatrix($bits, $ecLevel, $version, $maskPattern, $matrix);
             $penalty = self::calculateMaskPenalty($matrix);
 
             if ($penalty < $minPenalty) {
