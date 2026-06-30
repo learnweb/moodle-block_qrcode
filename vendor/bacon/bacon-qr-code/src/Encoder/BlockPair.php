@@ -22,18 +22,27 @@ use SplFixedArray;
 
 /**
  * Block pair.
+ *
+ * @copyright  2017 Tamara Gunkel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class BlockPair
 {
     /**
      * Creates a new block pair.
      *
-     * @param SplFixedArray<int> $dataBytes Data bytes in the block.
-     * @param SplFixedArray<int> $errorCorrectionBytes Error correction bytes in the block.
+     * @param SplFixedArray<int> $databytes Data bytes in the block.
+     * @param SplFixedArray<int> $errorcorrectionbytes Error correction bytes in the block.
      */
     public function __construct(
-        private readonly SplFixedArray $dataBytes,
-        private readonly SplFixedArray $errorCorrectionBytes
+        /**
+         * @var SplFixedArray
+         */
+        private readonly SplFixedArray $databytes,
+        /**
+         * @var SplFixedArray
+         */
+        private readonly SplFixedArray $errorcorrectionbytes
     ) {
     }
 
@@ -42,8 +51,8 @@ final class BlockPair
      *
      * @return SplFixedArray<int>
      */
-    public function getDataBytes(): SplFixedArray {
-        return $this->dataBytes;
+    public function getdatabytes(): SplFixedArray {
+        return $this->databytes;
     }
 
     /**
@@ -51,7 +60,7 @@ final class BlockPair
      *
      * @return SplFixedArray<int>
      */
-    public function getErrorCorrectionBytes(): SplFixedArray {
-        return $this->errorCorrectionBytes;
+    public function geterrorcorrectionbytes(): SplFixedArray {
+        return $this->errorcorrectionbytes;
     }
 }
