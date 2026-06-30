@@ -23,18 +23,32 @@ use BaconQrCode\Exception\InvalidArgumentException;
 
 /**
  * Mask utility.
+ *
+ * @copyright  2017 Tamara Gunkel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class MaskUtil
 {
-    /**#@+
-     * Penalty weights from section 6.8.2.1
+    /**
+     *  First penalty weight from section 6.8.2.1.
      */
     public const N1 = 3;
+    /**
+     *  Second penalty weight from section 6.8.2.1.
+     */
     public const N2 = 3;
+    /**
+     *  Third penalty weight from section 6.8.2.1.
+     */
     public const N3 = 40;
+    /**
+     *  Fourth penalty weight from section 6.8.2.1.
+     */
     public const N4 = 10;
-    /**#@-*/
 
+    /**
+     * Constructor.
+     */
     private function __construct() {
     }
 
@@ -44,10 +58,10 @@ final class MaskUtil
      * Finds repetitive cells with the same color and gives penalty to them.
      * Example: 00000 or 11111.
      */
-    public static function applyMaskPenaltyRule1(ByteMatrix $matrix): int {
+    public static function applymaskpenaltyrule1(ByteMatrix $matrix): int {
         return (
-            self::applyMaskPenaltyRule1Internal($matrix, true)
-            + self::applyMaskPenaltyRule1Internal($matrix, false)
+            self::applymaskpenaltyrule1internal($matrix, true)
+            + self::applymaskpenaltyrule1internal($matrix, false)
         );
     }
 
@@ -59,7 +73,7 @@ final class MaskUtil
      * give a penalty proportional to (M-1)x(N-1), because this is the number of
      * 2x2 blocks inside such a block.
      */
-    public static function applyMaskPenaltyRule2(ByteMatrix $matrix): int {
+    public static function applymaskpenaltyrule2(ByteMatrix $matrix): int {
         $penalty = 0;
         $array = $matrix->getArray();
         $width = $matrix->getWidth();
@@ -89,7 +103,7 @@ final class MaskUtil
      * to them. If we find patterns like 000010111010000, we give penalties
      * twice (i.e. 40 * 2).
      */
-    public static function applyMaskPenaltyRule3(ByteMatrix $matrix): int {
+    public static function applymaskpenaltyrule3(ByteMatrix $matrix): int {
         $penalty = 0;
         $array = $matrix->getArray();
         $width = $matrix->getWidth();
@@ -163,31 +177,30 @@ final class MaskUtil
     /**
      * Applies mask penalty rule 4 and returns the penalty.
      *
-     * Calculates the ratio of dark cells and gives penalty if the ratio is far
-     * from 50%. It gives 10 penalty for 5% distance.
+     * Calculates the ratio of dark cells and gives penalty if the ratio is far from 50%. It gives 10 penalty for 5% distance.
      */
-    public static function applyMaskPenaltyRule4(ByteMatrix $matrix): int {
-        $numDarkCells = 0;
+    public static function applymaskpenaltyrule4(ByteMatrix $matrix): int {
+        $numdarkcells = 0;
 
         $array = $matrix->getArray();
         $width = $matrix->getWidth();
         $height = $matrix->getHeight();
 
         for ($y = 0; $y < $height; ++$y) {
-            $arrayY = $array[$y];
+            $arrayy = $array[$y];
 
             for ($x = 0; $x < $width; ++$x) {
-                if (1 === $arrayY[$x]) {
-                    ++$numDarkCells;
+                if (1 === $arrayy[$x]) {
+                    ++$numdarkcells;
                 }
             }
         }
 
-        $numTotalCells = $height * $width;
-        $darkRatio = $numDarkCells / $numTotalCells;
-        $fixedPercentVariances = (int) (abs($darkRatio - 0.5) * 20);
+        $numtotalcells = $height * $width;
+        $darkratio = $numdarkcells / $numtotalcells;
+        $fixedpercentvariances = (int) (abs($darkratio - 0.5) * 20);
 
-        return $fixedPercentVariances * self::N4;
+        return $fixedpercentvariances * self::N4;
     }
 
     /**
@@ -197,8 +210,8 @@ final class MaskUtil
      *
      * @throws InvalidArgumentException if an invalid mask pattern was supplied
      */
-    public static function getDataMaskBit(int $maskPattern, int $x, int $y): bool {
-        switch ($maskPattern) {
+    public static function getdatamaskbit(int $maskpattern, int $x, int $y): bool {
+        switch ($maskpattern) {
             case 0:
                 $intermediate = ($y + $x) & 0x1;
                 break;
@@ -235,7 +248,7 @@ final class MaskUtil
                 break;
 
             default:
-                throw new InvalidArgumentException('Invalid mask pattern: ' . $maskPattern);
+                throw new InvalidArgumentException('Invalid mask pattern: ' . $maskpattern);
         }
 
         return 0 == $intermediate;
@@ -247,33 +260,33 @@ final class MaskUtil
      * We need this for doing this calculation in both vertical and horizontal
      * orders respectively.
      */
-    private static function applyMaskPenaltyRule1Internal(ByteMatrix $matrix, bool $isHorizontal): int {
+    private static function applymaskpenaltyrule1internal(ByteMatrix $matrix, bool $ishorizontal): int {
         $penalty = 0;
-        $iLimit = $isHorizontal ? $matrix->getHeight() : $matrix->getWidth();
-        $jLimit = $isHorizontal ? $matrix->getWidth() : $matrix->getHeight();
+        $ilimit = $ishorizontal ? $matrix->getHeight() : $matrix->getWidth();
+        $jlimit = $ishorizontal ? $matrix->getWidth() : $matrix->getHeight();
         $array = $matrix->getArray();
 
-        for ($i = 0; $i < $iLimit; ++$i) {
-            $numSameBitCells = 0;
-            $prevBit = -1;
+        for ($i = 0; $i < $ilimit; ++$i) {
+            $numsamebitcells = 0;
+            $prevbit = -1;
 
-            for ($j = 0; $j < $jLimit; $j++) {
-                $bit = $isHorizontal ? $array[$i][$j] : $array[$j][$i];
+            for ($j = 0; $j < $jlimit; $j++) {
+                $bit = $ishorizontal ? $array[$i][$j] : $array[$j][$i];
 
-                if ($bit === $prevBit) {
-                    ++$numSameBitCells;
+                if ($bit === $prevbit) {
+                    ++$numsamebitcells;
                 } else {
-                    if ($numSameBitCells >= 5) {
-                        $penalty += self::N1 + ($numSameBitCells - 5);
+                    if ($numsamebitcells >= 5) {
+                        $penalty += self::N1 + ($numsamebitcells - 5);
                     }
 
-                    $numSameBitCells = 1;
-                    $prevBit = $bit;
+                    $numsamebitcells = 1;
+                    $prevbit = $bit;
                 }
             }
 
-            if ($numSameBitCells >= 5) {
-                $penalty += self::N1 + ($numSameBitCells - 5);
+            if ($numsamebitcells >= 5) {
+                $penalty += self::N1 + ($numsamebitcells - 5);
             }
         }
 

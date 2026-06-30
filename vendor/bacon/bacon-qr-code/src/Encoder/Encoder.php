@@ -209,10 +209,10 @@ final class Encoder
      */
     private static function calculateMaskPenalty(ByteMatrix $matrix): int {
         return (
-            MaskUtil::applyMaskPenaltyRule1($matrix)
-            + MaskUtil::applyMaskPenaltyRule2($matrix)
-            + MaskUtil::applyMaskPenaltyRule3($matrix)
-            + MaskUtil::applyMaskPenaltyRule4($matrix)
+            MaskUtil::applymaskpenaltyrule1($matrix)
+            + MaskUtil::applymaskpenaltyrule2($matrix)
+            + MaskUtil::applymaskpenaltyrule3($matrix)
+            + MaskUtil::applymaskpenaltyrule4($matrix)
         );
     }
 

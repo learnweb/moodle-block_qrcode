@@ -486,7 +486,7 @@ final class MatrixUtil
                     }
 
                     // Skip masking if maskPattern is -1.
-                    if (-1 !== $maskPattern && MaskUtil::getDataMaskBit($maskPattern, $xx, $y)) {
+                    if (-1 !== $maskPattern && MaskUtil::getdatamaskbit($maskPattern, $xx, $y)) {
                         $bit = ! $bit;
                     }
 
