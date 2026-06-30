@@ -103,6 +103,7 @@ final class ReedSolomonCodec
     private SplFixedArray $generatorpoly;
 
     /**
+     * Constructs a Reed-Solomon codec with the given parameters.
      * @throws InvalidArgumentException if symbol size ist not between 0 and 8
      * @throws InvalidArgumentException if first root is invalid
      * @throws InvalidArgumentException if num roots is invalid
@@ -170,11 +171,13 @@ final class ReedSolomonCodec
         $this->primitive = $primitive;
         $this->numroots = $numroots;
 
-        // Find prim-th root of 1, used in decoding.
-        for ($iPrimitive = 1; ($iPrimitive % $primitive) !== 0; $iPrimitive += $this->blocksize) {
+        // Find the primitive-th root of 1, used in decoding.
+        $iprimitive = 1;
+        while (($iprimitive % $primitive) !== 0) {
+            $iprimitive += $this->blocksize;
         }
 
-        $this->iprimitive = intdiv($iPrimitive, $primitive);
+        $this->iprimitive = intdiv($iprimitive, $primitive);
 
         $this->generatorpoly[0] = 1;
 
@@ -183,7 +186,8 @@ final class ReedSolomonCodec
 
             for ($j = $i; $j > 0; $j--) {
                 if ($this->generatorpoly[$j] !== 0) {
-                    $this->generatorpoly[$j] = $this->generatorpoly[$j - 1] ^ $this->alphato[$this->modnn($this->indexof[$this->generatorpoly[$j]] + $root)];
+                    $this->generatorpoly[$j] = $this->generatorpoly[$j - 1] ^
+                            $this->alphato[$this->modnn($this->indexof[$this->generatorpoly[$j]] + $root)];
                 } else {
                     $this->generatorpoly[$j] = $this->generatorpoly[$j - 1];
                 }
@@ -212,11 +216,12 @@ final class ReedSolomonCodec
             $feedback = $this->indexof[$data[$i] ^ $parity[0]];
 
             if ($feedback !== $this->blocksize) {
-                // Feedback term is non-zero
+                // Feedback term is non-zero.
                 $feedback = $this->modnn($this->blocksize - $this->generatorpoly[$this->numroots] + $feedback);
 
                 for ($j = 1; $j < $this->numroots; ++$j) {
-                    $parity[$j] = $parity[$j] ^ $this->alphato[$this->modnn($feedback + $this->generatorpoly[$this->numroots - $j])];
+                    $parity[$j] =
+                            $parity[$j] ^ $this->alphato[$this->modnn($feedback + $this->generatorpoly[$this->numroots - $j])];
                 }
             }
 
@@ -257,7 +262,8 @@ final class ReedSolomonCodec
                 if ($syndromes[$j] === 0) {
                     $syndromes[$j] = $data[$i];
                 } else {
-                    $syndromes[$j] = $data[$i] ^ $this->alphato[$this->modnn($this->indexof[$syndromes[$j]] + ($this->firstroot + $j) * $this->primitive)];
+                    $syndromes[$j] = $data[$i] ^ $this->alphato[$this->modnn($this->indexof[$syndromes[$j]] +
+                                    ($this->firstroot + $j) * $this->primitive)];
                 }
             }
         }
@@ -395,12 +401,11 @@ final class ReedSolomonCodec
         }
 
         if ($deglambda !== $count) {
-            // deg(lambda) unequal to number of roots: uncorrectable error detected.
+            // If deg(lambda) unequal to number of roots: uncorrectable error detected.
             return null;
         }
 
-        // Compute err+eras evaluate poly omega(x) = s(x)*lambda(x) (modulo x**numroots). In index form. Also find
-        // deg(omega).
+        // Compute err+eras evaluate poly omega(x) = s(x)*lambda(x) (modulo x**numroots). In index form. Also find deg(omega).
         $degomega = $deglambda - 1;
 
         for ($i = 0; $i <= $degomega; ++$i) {
@@ -429,14 +434,14 @@ final class ReedSolomonCodec
             $num2 = $this->alphato[$this->modnn($root[$j] * ($this->firstroot - 1) + $this->blocksize)];
             $den  = 0;
 
-            // lambda[i+1] for i even is the formal derivativelambda_pr of lambda[i].
+            // For even i, lambda[i + 1] represents the formal derivative lambda_pr of lambda[i].
             for ($i = min($deglambda, $this->numroots - 1) & ~1; $i >= 0; $i -= 2) {
                 if ($lambda[$i + 1] !== $this->blocksize) {
                     $den ^= $this->alphato[$this->modnn($lambda[$i + 1] + $i * $root[$j])];
                 }
             }
 
-            // Apply error to data
+            // Apply error to data.
             if ($num1 !== 0 && $loc[$j] >= $this->padding) {
                 $data[$loc[$j] - $this->padding] = $data[$loc[$j] - $this->padding] ^ (
                     $this->alphato[$this->modnn(
