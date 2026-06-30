@@ -98,8 +98,8 @@ final class Mode extends AbstractEnum
     /**
      * Returns the number of bits used in a specific QR code version.
      */
-    public function getcharactercountbits(Version $version): int {
-        $number = $version->getversionnumber();
+    public function get_character_count_bits(Version $version): int {
+        $number = $version->get_version_number();
 
         if ($number <= 9) {
             $offset = 0;
@@ -115,7 +115,7 @@ final class Mode extends AbstractEnum
     /**
      * Returns the four bits used to encode this mode.
      */
-    public function getbits(): int {
+    public function get_bits(): int {
         return $this->bits;
     }
 }

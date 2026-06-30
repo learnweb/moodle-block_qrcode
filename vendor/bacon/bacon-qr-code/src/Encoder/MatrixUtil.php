@@ -182,7 +182,7 @@ final class MatrixUtil
         $typeinfobits = new BitArray();
         self::maketypeinfobits($level, $maskpattern, $typeinfobits);
 
-        $typeinfobitssize = $typeinfobits->getsize();
+        $typeinfobitssize = $typeinfobits->get_size();
 
         for ($i = 0; $i < $typeinfobitssize; ++$i) {
             $bit = $typeinfobits->get($typeinfobitssize - 1 - $i);
@@ -211,17 +211,17 @@ final class MatrixUtil
      */
     private static function maketypeinfobits(ErrorCorrectionLevel $level, int $maskpattern, BitArray $bits): void {
         $typeinfo = ($level->getbits() << 3) | $maskpattern;
-        $bits->appendbits($typeinfo, 5);
+        $bits->append_bits($typeinfo, 5);
 
         $bchcode = self::calculatebchcode($typeinfo, self::TYPE_INFO_POLY);
-        $bits->appendbits($bchcode, 10);
+        $bits->append_bits($bchcode, 10);
 
         $maskbits = new BitArray();
-        $maskbits->appendbits(self::TYPE_INFO_MASK_PATTERN, 15);
-        $bits->xorbits($maskbits);
+        $maskbits->append_bits(self::TYPE_INFO_MASK_PATTERN, 15);
+        $bits->xor_bits($maskbits);
 
-        if (15 !== $bits->getsize()) {
-            throw new RuntimeException('Bit array resulted in invalid size: ' . $bits->getsize());
+        if (15 !== $bits->get_size()) {
+            throw new RuntimeException('Bit array resulted in invalid size: ' . $bits->get_size());
         }
     }
 
@@ -229,7 +229,7 @@ final class MatrixUtil
      * Embeds version information if required.
      */
     private static function maybeembedversioninfo(Version $version, ByteMatrix $matrix): void {
-        if ($version->getversionnumber() < 7) {
+        if ($version->get_version_number() < 7) {
             return;
         }
 
@@ -255,13 +255,13 @@ final class MatrixUtil
      * @throws RuntimeException if bit array resulted in invalid size
      */
     private static function makeversioninfobits(Version $version, BitArray $bits): void {
-        $bits->appendbits($version->getversionnumber(), 6);
+        $bits->append_bits($version->get_version_number(), 6);
 
-        $bchcode = self::calculatebchcode($version->getversionnumber(), self::VERSION_INFO_POLY);
-        $bits->appendbits($bchcode, 12);
+        $bchcode = self::calculatebchcode($version->get_version_number(), self::VERSION_INFO_POLY);
+        $bits->append_bits($bchcode, 12);
 
-        if (18 !== $bits->getsize()) {
-            throw new RuntimeException('Bit array resulted in invalid size: ' . $bits->getsize());
+        if (18 !== $bits->get_size()) {
+            throw new RuntimeException('Bit array resulted in invalid size: ' . $bits->get_size());
         }
     }
 
@@ -402,11 +402,11 @@ final class MatrixUtil
      * Embeds position adjustment patterns if required.
      */
     private static function maybeembedpositionadjustmentpatterns(Version $version, ByteMatrix $matrix): void {
-        if ($version->getversionnumber() < 2) {
+        if ($version->get_version_number() < 2) {
             return;
         }
 
-        $index = $version->getversionnumber() - 1;
+        $index = $version->get_version_number() - 1;
 
         $coordinates = self::POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE[$index];
         $numcoordinates = count($coordinates);
@@ -488,7 +488,7 @@ final class MatrixUtil
                         continue;
                     }
 
-                    if ($bitindex < $databits->getsize()) {
+                    if ($bitindex < $databits->get_size()) {
                         $bit = $databits->get($bitindex);
                         ++$bitindex;
                     } else {
@@ -499,7 +499,7 @@ final class MatrixUtil
                     }
 
                     // Skip masking if maskPattern is -1.
-                    if (-1 !== $maskpattern && MaskUtil::getdatamaskbit($maskpattern, $xx, $y)) {
+                    if (-1 !== $maskpattern && MaskUtil::get_data_mask_bit($maskpattern, $xx, $y)) {
                         $bit = ! $bit;
                     }
 
@@ -515,8 +515,8 @@ final class MatrixUtil
         }
 
         // All bits should be consumed.
-        if ($databits->getsize() !== $bitindex) {
-            throw new WriterException('Not all bits consumed (' . $bitindex . ' out of ' . $databits->getsize() . ')');
+        if ($databits->get_size() !== $bitindex) {
+            throw new WriterException('Not all bits consumed (' . $bitindex . ' out of ' . $databits->get_size() . ')');
         }
     }
 }

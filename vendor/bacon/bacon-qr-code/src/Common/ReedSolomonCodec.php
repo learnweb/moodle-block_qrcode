@@ -187,13 +187,13 @@ final class ReedSolomonCodec
             for ($j = $i; $j > 0; $j--) {
                 if ($this->generatorpoly[$j] !== 0) {
                     $this->generatorpoly[$j] = $this->generatorpoly[$j - 1] ^
-                            $this->alphato[$this->modnn($this->indexof[$this->generatorpoly[$j]] + $root)];
+                            $this->alphato[$this->mod_nn($this->indexof[$this->generatorpoly[$j]] + $root)];
                 } else {
                     $this->generatorpoly[$j] = $this->generatorpoly[$j - 1];
                 }
             }
 
-            $this->generatorpoly[$j] = $this->alphato[$this->modnn($this->indexof[$this->generatorpoly[0]] + $root)];
+            $this->generatorpoly[$j] = $this->alphato[$this->mod_nn($this->indexof[$this->generatorpoly[0]] + $root)];
         }
 
         // Convert generator poly to index form for quicker encoding.
@@ -217,11 +217,11 @@ final class ReedSolomonCodec
 
             if ($feedback !== $this->blocksize) {
                 // Feedback term is non-zero.
-                $feedback = $this->modnn($this->blocksize - $this->generatorpoly[$this->numroots] + $feedback);
+                $feedback = $this->mod_nn($this->blocksize - $this->generatorpoly[$this->numroots] + $feedback);
 
                 for ($j = 1; $j < $this->numroots; ++$j) {
                     $parity[$j] =
-                            $parity[$j] ^ $this->alphato[$this->modnn($feedback + $this->generatorpoly[$this->numroots - $j])];
+                            $parity[$j] ^ $this->alphato[$this->mod_nn($feedback + $this->generatorpoly[$this->numroots - $j])];
                 }
             }
 
@@ -230,7 +230,7 @@ final class ReedSolomonCodec
             }
 
             if ($feedback !== $this->blocksize) {
-                $parity[$this->numroots - 1] = $this->alphato[$this->modnn($feedback + $this->generatorpoly[0])];
+                $parity[$this->numroots - 1] = $this->alphato[$this->mod_nn($feedback + $this->generatorpoly[0])];
             } else {
                 $parity[$this->numroots - 1] = 0;
             }
@@ -262,7 +262,7 @@ final class ReedSolomonCodec
                 if ($syndromes[$j] === 0) {
                     $syndromes[$j] = $data[$i];
                 } else {
-                    $syndromes[$j] = $data[$i] ^ $this->alphato[$this->modnn($this->indexof[$syndromes[$j]] +
+                    $syndromes[$j] = $data[$i] ^ $this->alphato[$this->mod_nn($this->indexof[$syndromes[$j]] +
                                     ($this->firstroot + $j) * $this->primitive)];
                 }
             }
@@ -286,16 +286,16 @@ final class ReedSolomonCodec
 
         if ($numerasures > 0) {
             // Init lambda to be the erasure locator polynomial.
-            $lambda[1] = $this->alphato[$this->modnn($this->primitive * ($this->blocksize - 1 - $erasures[0]))];
+            $lambda[1] = $this->alphato[$this->mod_nn($this->primitive * ($this->blocksize - 1 - $erasures[0]))];
 
             for ($i = 1; $i < $numerasures; ++$i) {
-                $u = $this->modnn($this->primitive * ($this->blocksize - 1 - $erasures[$i]));
+                $u = $this->mod_nn($this->primitive * ($this->blocksize - 1 - $erasures[$i]));
 
                 for ($j = $i + 1; $j > 0; --$j) {
                     $tmp = $this->indexof[$lambda[$j - 1]];
 
                     if ($tmp !== $this->blocksize) {
-                        $lambda[$j] = $lambda[$j] ^ $this->alphato[$this->modnn($u + $tmp)];
+                        $lambda[$j] = $lambda[$j] ^ $this->alphato[$this->mod_nn($u + $tmp)];
                     }
                 }
             }
@@ -315,7 +315,7 @@ final class ReedSolomonCodec
 
             for ($i = 0; $i < $r; ++$i) {
                 if ($lambda[$i] !== 0 && $syndromes[$r - $i - 1] !== $this->blocksize) {
-                    $discrepancyr ^= $this->alphato[$this->modnn($this->indexof[$lambda[$i]] + $syndromes[$r - $i - 1])];
+                    $discrepancyr ^= $this->alphato[$this->mod_nn($this->indexof[$lambda[$i]] + $syndromes[$r - $i - 1])];
                 }
             }
 
@@ -333,7 +333,7 @@ final class ReedSolomonCodec
 
             for ($i = 0; $i < $this->numroots; ++$i) {
                 if ($b[$i] !== $this->blocksize) {
-                    $t[$i + 1] = $lambda[$i + 1] ^ $this->alphato[$this->modnn($discrepancyr + $b[$i])];
+                    $t[$i + 1] = $lambda[$i + 1] ^ $this->alphato[$this->mod_nn($discrepancyr + $b[$i])];
                 } else {
                     $t[$i + 1] = $lambda[$i + 1];
                 }
@@ -346,7 +346,7 @@ final class ReedSolomonCodec
                     $b[$i] = (
                         $lambda[$i] === 0
                         ? $this->blocksize
-                        : $this->modnn($this->indexof[$lambda[$i]] - $discrepancyr + $this->blocksize)
+                        : $this->mod_nn($this->indexof[$lambda[$i]] - $discrepancyr + $this->blocksize)
                     );
                 }
             } else {
@@ -376,12 +376,12 @@ final class ReedSolomonCodec
         $count = 0;
         $i = 1;
 
-        for ($k = $this->iprimitive - 1; $i <= $this->blocksize; ++$i, $k = $this->modnn($k + $this->iprimitive)) {
+        for ($k = $this->iprimitive - 1; $i <= $this->blocksize; ++$i, $k = $this->mod_nn($k + $this->iprimitive)) {
             $q = 1;
 
             for ($j = $deglambda; $j > 0; $j--) {
                 if ($reg[$j] !== $this->blocksize) {
-                    $reg[$j] = $this->modnn($reg[$j] + $j);
+                    $reg[$j] = $this->mod_nn($reg[$j] + $j);
                     $q ^= $this->alphato[$reg[$j]];
                 }
             }
@@ -413,7 +413,7 @@ final class ReedSolomonCodec
 
             for ($j = $i; $j >= 0; --$j) {
                 if ($syndromes[$i - $j] !== $this->blocksize && $lambda[$j] !== $this->blocksize) {
-                    $tmp ^= $this->alphato[$this->modnn($syndromes[$i - $j] + $lambda[$j])];
+                    $tmp ^= $this->alphato[$this->mod_nn($syndromes[$i - $j] + $lambda[$j])];
                 }
             }
 
@@ -427,24 +427,24 @@ final class ReedSolomonCodec
 
             for ($i = $degomega; $i >= 0; $i--) {
                 if ($omega[$i] !== $this->blocksize) {
-                    $num1 ^= $this->alphato[$this->modnn($omega[$i] + $i * $root[$j])];
+                    $num1 ^= $this->alphato[$this->mod_nn($omega[$i] + $i * $root[$j])];
                 }
             }
 
-            $num2 = $this->alphato[$this->modnn($root[$j] * ($this->firstroot - 1) + $this->blocksize)];
+            $num2 = $this->alphato[$this->mod_nn($root[$j] * ($this->firstroot - 1) + $this->blocksize)];
             $den  = 0;
 
             // For even i, lambda[i + 1] represents the formal derivative lambda_pr of lambda[i].
             for ($i = min($deglambda, $this->numroots - 1) & ~1; $i >= 0; $i -= 2) {
                 if ($lambda[$i + 1] !== $this->blocksize) {
-                    $den ^= $this->alphato[$this->modnn($lambda[$i + 1] + $i * $root[$j])];
+                    $den ^= $this->alphato[$this->mod_nn($lambda[$i + 1] + $i * $root[$j])];
                 }
             }
 
             // Apply error to data.
             if ($num1 !== 0 && $loc[$j] >= $this->padding) {
                 $data[$loc[$j] - $this->padding] = $data[$loc[$j] - $this->padding] ^ (
-                    $this->alphato[$this->modnn(
+                    $this->alphato[$this->mod_nn(
                         $this->indexof[$num1] + $this->indexof[$num2] + $this->blocksize - $this->indexof[$den]
                     )]
                 );
@@ -467,7 +467,7 @@ final class ReedSolomonCodec
     /**
      * Computes $x % GF_SIZE, where GF_SIZE is 2**GF_BITS - 1, without a slow divide.
      */
-    private function modnn(int $x): int {
+    private function mod_nn(int $x): int {
         while ($x >= $this->blocksize) {
             $x -= $this->blocksize;
             $x = ($x >> $this->symbolsize) + ($x & $this->blocksize);

@@ -106,7 +106,7 @@ class FormatInformation
     /**
      * Checks how many bits are different between two integers.
      */
-    public static function numbitsdiffering(int $a, int $b): int {
+    public static function num_bits_differing(int $a, int $b): int {
         $a ^= $b;
 
         return (
@@ -124,15 +124,15 @@ class FormatInformation
     /**
      * Decodes format information.
      */
-    public static function decodeformatinformation(int $maskedformatinfo1, int $maskedformatinfo2): ?self {
-        $formatinfo = self::dodecodeformatinformation($maskedformatinfo1, $maskedformatinfo2);
+    public static function decode_format_information(int $maskedformatinfo1, int $maskedformatinfo2): ?self {
+        $formatinfo = self::do_decode_format_information($maskedformatinfo1, $maskedformatinfo2);
 
         if (null !== $formatinfo) {
             return $formatinfo;
         }
 
         // Should return null, but, some QR codes apparently do not mask this info. Try again by actually masking the pattern first.
-        return self::dodecodeformatinformation(
+        return self::do_decode_format_information(
             $maskedformatinfo1 ^ self::FORMAT_INFO_MASK_QR,
             $maskedformatinfo2 ^ self::FORMAT_INFO_MASK_QR
         );
@@ -141,7 +141,7 @@ class FormatInformation
     /**
      * Internal method for decoding format information.
      */
-    private static function dodecodeformatinformation(int $maskedformatinfo1, int $maskedformatinfo2): ?self {
+    private static function do_decode_format_information(int $maskedformatinfo1, int $maskedformatinfo2): ?self {
         $bestdifference = PHP_INT_MAX;
         $bestformatinfo = 0;
 
@@ -153,7 +153,7 @@ class FormatInformation
                 return new self($decodeinfo[1]);
             }
 
-            $bitsdifference = self::numbitsdiffering($maskedformatinfo1, $targetinfo);
+            $bitsdifference = self::num_bits_differing($maskedformatinfo1, $targetinfo);
 
             if ($bitsdifference < $bestdifference) {
                 $bestformatinfo = $decodeinfo[1];
@@ -162,7 +162,7 @@ class FormatInformation
 
             if ($maskedformatinfo1 !== $maskedformatinfo2) {
                 // Also try the other option.
-                $bitsdifference = self::numbitsdiffering($maskedformatinfo2, $targetinfo);
+                $bitsdifference = self::num_bits_differing($maskedformatinfo2, $targetinfo);
 
                 if ($bitsdifference < $bestdifference) {
                     $bestformatinfo = $decodeinfo[1];
@@ -182,21 +182,21 @@ class FormatInformation
     /**
      * Returns the error correction level.
      */
-    public function geterrorcorrectionlevel(): ErrorCorrectionLevel {
+    public function get_error_correction_level(): ErrorCorrectionLevel {
         return $this->eclevel;
     }
 
     /**
      * Returns the data mask.
      */
-    public function getdatamask(): int {
+    public function get_data_mask(): int {
         return $this->datamask;
     }
 
     /**
      * Hashes the code of the EC level.
      */
-    public function hashcode(): int {
+    public function hash_code(): int {
         return ($this->eclevel->getbits() << 3) | $this->datamask;
     }
 

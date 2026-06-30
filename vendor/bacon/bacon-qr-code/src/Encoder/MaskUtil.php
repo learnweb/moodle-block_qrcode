@@ -58,10 +58,10 @@ final class MaskUtil
      * Finds repetitive cells with the same color and gives penalty to them.
      * Example: 00000 or 11111.
      */
-    public static function applymaskpenaltyrule1(ByteMatrix $matrix): int {
+    public static function apply_mask_penalty_rule_1(ByteMatrix $matrix): int {
         return (
-            self::applymaskpenaltyrule1internal($matrix, true)
-            + self::applymaskpenaltyrule1internal($matrix, false)
+            self::apply_mask_penalty_rule_1_internal($matrix, true)
+            + self::apply_mask_penalty_rule_1_internal($matrix, false)
         );
     }
 
@@ -73,7 +73,7 @@ final class MaskUtil
      * give a penalty proportional to (M-1)x(N-1), because this is the number of
      * 2x2 blocks inside such a block.
      */
-    public static function applymaskpenaltyrule2(ByteMatrix $matrix): int {
+    public static function apply_mask_penalty_rule_2(ByteMatrix $matrix): int {
         $penalty = 0;
         $array = $matrix->getArray();
         $width = $matrix->getWidth();
@@ -103,7 +103,7 @@ final class MaskUtil
      * to them. If we find patterns like 000010111010000, we give penalties
      * twice (i.e. 40 * 2).
      */
-    public static function applymaskpenaltyrule3(ByteMatrix $matrix): int {
+    public static function apply_mask_penalty_rule_3(ByteMatrix $matrix): int {
         $penalty = 0;
         $array = $matrix->getArray();
         $width = $matrix->getWidth();
@@ -179,7 +179,7 @@ final class MaskUtil
      *
      * Calculates the ratio of dark cells and gives penalty if the ratio is far from 50%. It gives 10 penalty for 5% distance.
      */
-    public static function applymaskpenaltyrule4(ByteMatrix $matrix): int {
+    public static function apply_mask_penalty_rule_4(ByteMatrix $matrix): int {
         $numdarkcells = 0;
 
         $array = $matrix->getArray();
@@ -210,7 +210,7 @@ final class MaskUtil
      *
      * @throws InvalidArgumentException if an invalid mask pattern was supplied
      */
-    public static function getdatamaskbit(int $maskpattern, int $x, int $y): bool {
+    public static function get_data_mask_bit(int $maskpattern, int $x, int $y): bool {
         switch ($maskpattern) {
             case 0:
                 $intermediate = ($y + $x) & 0x1;
@@ -260,7 +260,7 @@ final class MaskUtil
      * We need this for doing this calculation in both vertical and horizontal
      * orders respectively.
      */
-    private static function applymaskpenaltyrule1internal(ByteMatrix $matrix, bool $ishorizontal): int {
+    private static function apply_mask_penalty_rule_1_internal(ByteMatrix $matrix, bool $ishorizontal): int {
         $penalty = 0;
         $ilimit = $ishorizontal ? $matrix->getHeight() : $matrix->getWidth();
         $jlimit = $ishorizontal ? $matrix->getWidth() : $matrix->getHeight();

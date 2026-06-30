@@ -121,9 +121,9 @@ final class Version
         $this->ecblocks = $ecblocks;
 
         $totalcodewords = 0;
-        $eccodewords = $ecblocks[0]->geteccodewordsperblock();
+        $eccodewords = $ecblocks[0]->get_ec_codewords_per_block();
 
-        foreach ($ecblocks[0]->getecblocks() as $ecblock) {
+        foreach ($ecblocks[0]->get_ec_blocks() as $ecblock) {
             $totalcodewords += $ecblock->getcount() * ($ecblock->getdatacodewords() + $eccodewords);
         }
 
@@ -133,7 +133,7 @@ final class Version
     /**
      * Returns the version number.
      */
-    public function getversionnumber(): int {
+    public function get_version_number(): int {
         return $this->versionnumber;
     }
 
@@ -142,28 +142,28 @@ final class Version
      *
      * @return int[]
      */
-    public function getalignmentpatterncenters(): array {
+    public function get_alignment_pattern_centers(): array {
         return $this->alignmentPatternCenters;
     }
 
     /**
      * Returns the total number of codewords.
      */
-    public function gettotalcodewords(): int {
+    public function get_total_codewords(): int {
         return $this->totalcodewords;
     }
 
     /**
      * Calculates the dimension for the current version.
      */
-    public function getdimensionforversion(): int {
+    public function get_dimension_for_version(): int {
         return 17 + 4 * $this->versionnumber;
     }
 
     /**
      * Returns the number of EC blocks for a specific EC level.
      */
-    public function getecblocksforlevel(ErrorCorrectionLevel $eclevel): EcBlocks {
+    public function get_ecblocks_for_level(ErrorCorrectionLevel $eclevel): EcBlocks {
         return $this->ecblocks[$eclevel->ordinal()];
     }
 
@@ -172,12 +172,12 @@ final class Version
      *
      * @throws InvalidArgumentException if dimension is not 1 mod 4
      */
-    public static function getprovisionalversionfordimension(int $dimension): self {
+    public static function get_provisional_version_for_dimension(int $dimension): self {
         if (1 !== $dimension % 4) {
             throw new InvalidArgumentException('Dimension is not 1 mod 4');
         }
 
-        return self::getversionfornumber(intdiv($dimension - 17, 4));
+        return self::get_version_for_number(intdiv($dimension - 17, 4));
     }
 
     /**
@@ -185,7 +185,7 @@ final class Version
      *
      * @throws InvalidArgumentException if version number is out of range
      */
-    public static function getversionfornumber(int $versionnumber): self {
+    public static function get_version_for_number(int $versionnumber): self {
         if ($versionnumber < 1 || $versionnumber > 40) {
             throw new InvalidArgumentException('Version number must be between 1 and 40');
         }
@@ -196,16 +196,16 @@ final class Version
     /**
      * Decodes version information from an integer and returns the version.
      */
-    public static function decodeversioninformation(int $versionbits): ?self {
+    public static function decode_version_information(int $versionbits): ?self {
         $bestdifference = PHP_INT_MAX;
         $bestversion = 0;
 
         foreach (self::VERSION_DECODE_INFO as $i => $targetversion) {
             if ($targetversion === $versionbits) {
-                return self::getversionfornumber($i + 7);
+                return self::get_version_for_number($i + 7);
             }
 
-            $bitsdifference = FormatInformation::numbitsdiffering($versionbits, $targetversion);
+            $bitsdifference = FormatInformation::num_bits_differing($versionbits, $targetversion);
 
             if ($bitsdifference < $bestdifference) {
                 $bestversion = $i + 7;
@@ -214,7 +214,7 @@ final class Version
         }
 
         if ($bestdifference <= 3) {
-            return self::getversionfornumber($bestversion);
+            return self::get_version_for_number($bestversion);
         }
 
         return null;
@@ -223,8 +223,8 @@ final class Version
     /**
      * Builds the function pattern for the current version.
      */
-    public function buildfunctionpattern(): BitMatrix {
-        $dimension = $this->getdimensionforversion();
+    public function build_function_pattern(): BitMatrix {
+        $dimension = $this->get_dimension_for_version();
         $bitmatrix = new BitMatrix($dimension);
 
         // Top left finder pattern + separator + format.

@@ -52,21 +52,21 @@ final class BitArray
     /**
      * Gets the size in bits.
      */
-    public function getsize(): int {
+    public function get_size(): int {
         return $this->size;
     }
 
     /**
      * Gets the size in bytes.
      */
-    public function getsizeinbytes(): int {
+    public function get_size_in_bytes(): int {
         return ($this->size + 7) >> 3;
     }
 
     /**
      * Ensures that the array has a minimum capacity.
      */
-    public function ensurecapacity(int $size): void {
+    public function ensure_capacity(int $size): void {
         if ($size > count($this->bits) << 5) {
             $this->bits->setSize(($size + 31) >> 5);
         }
@@ -96,7 +96,7 @@ final class BitArray
     /**
      * Gets the next set bit position from a given position.
      */
-    public function getnextset(int $from): int {
+    public function get_next_set(int $from): int {
         if ($from >= $this->size) {
             return $this->size;
         }
@@ -121,7 +121,7 @@ final class BitArray
     /**
      * Gets the next unset bit position from a given position.
      */
-    public function getnextunset(int $from): int {
+    public function get_next_unset(int $from): int {
         if ($from >= $this->size) {
             return $this->size;
         }
@@ -146,7 +146,7 @@ final class BitArray
     /**
      * Sets a bulk of bits.
      */
-    public function setbulk(int $i, int $newbits): void {
+    public function set_bulk(int $i, int $newbits): void {
         $this->bits[$i >> 5] = $newbits;
     }
 
@@ -155,7 +155,7 @@ final class BitArray
      *
      * @throws InvalidArgumentException if end is smaller than start
      */
-    public function setrange(int $start, int $end): void {
+    public function set_range(int $start, int $end): void {
         if ($end < $start) {
             throw new InvalidArgumentException('End must be greater or equal to start');
         }
@@ -203,7 +203,7 @@ final class BitArray
 
      * @throws InvalidArgumentException if end is smaller than start
      */
-    public function isrange(int $start, int $end, bool $value): bool {
+    public function is_range(int $start, int $end, bool $value): bool {
         if ($end < $start) {
             throw new InvalidArgumentException('End must be greater or equal to start');
         }
@@ -242,8 +242,8 @@ final class BitArray
     /**
      * Appends a bit to the array.
      */
-    public function appendbit(bool $bit): void {
-        $this->ensurecapacity($this->size + 1);
+    public function append_bit(bool $bit): void {
+        $this->ensure_capacity($this->size + 1);
 
         if ($bit) {
             $this->bits[$this->size >> 5] = $this->bits[$this->size >> 5] | (1 << ($this->size & 0x1f));
@@ -257,27 +257,27 @@ final class BitArray
 
      * @throws InvalidArgumentException if num bits is not between 0 and 32
      */
-    public function appendbits(int $value, int $numbits): void {
+    public function append_bits(int $value, int $numbits): void {
         if ($numbits < 0 || $numbits > 32) {
             throw new InvalidArgumentException('Num bits must be between 0 and 32');
         }
 
-        $this->ensurecapacity($this->size + $numbits);
+        $this->ensure_capacity($this->size + $numbits);
 
         for ($numbitsleft = $numbits; $numbitsleft > 0; $numbitsleft--) {
-            $this->appendbit((($value >> ($numbitsleft - 1)) & 0x01) === 1);
+            $this->append_bit((($value >> ($numbitsleft - 1)) & 0x01) === 1);
         }
     }
 
     /**
      * Appends another bit array to this array.
      */
-    public function appendbitarray(self $other): void {
-        $othersize = $other->getsize();
-        $this->ensurecapacity($this->size + $other->getsize());
+    public function append_bit_array(self $other): void {
+        $othersize = $other->get_size();
+        $this->ensure_capacity($this->size + $other->get_size());
 
         for ($i = 0; $i < $othersize; ++$i) {
-            $this->appendbit($other->get($i));
+            $this->append_bit($other->get($i));
         }
     }
 
@@ -286,9 +286,9 @@ final class BitArray
      *
      * @throws InvalidArgumentException if sizes don't match
      */
-    public function xorbits(self $other): void {
+    public function xor_bits(self $other): void {
         $bitslength = count($this->bits);
-        $otherbits  = $other->getbitarray();
+        $otherbits  = $other->get_bit_array();
 
         if ($bitslength !== count($otherbits)) {
             throw new InvalidArgumentException('Sizes don\'t match');
@@ -304,7 +304,7 @@ final class BitArray
      *
      * @return SplFixedArray<int>
      */
-    public function tobytes(int $bitoffset, int $numbytes): SplFixedArray {
+    public function to_bytes(int $bitoffset, int $numbytes): SplFixedArray {
         $bytes = new SplFixedArray($numbytes);
 
         for ($i = 0; $i < $numbytes; ++$i) {
@@ -329,7 +329,7 @@ final class BitArray
      *
      * @return SplFixedArray<int>
      */
-    public function getbitarray(): SplFixedArray {
+    public function get_bit_array(): SplFixedArray {
         return $this->bits;
     }
 
