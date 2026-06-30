@@ -142,7 +142,7 @@ final class ReedSolomonCodec
         $this->alphato = SplFixedArray::fromArray(array_fill(0, $this->blocksize + 1, 0), false);
         $this->indexof = SplFixedArray::fromArray(array_fill(0, $this->blocksize + 1, 0), false);
 
-        // Generate galous field lookup table
+        // Generate galous field lookup table.
         $this->indexof[0] = $this->blocksize;
         $this->alphato[$this->blocksize] = 0;
 
