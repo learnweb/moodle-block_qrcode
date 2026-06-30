@@ -26,41 +26,58 @@ use SplFixedArray;
  * Reed-Solomon codec for 8-bit characters.
  *
  * Based on libfec by Phil Karn, KA9Q.
+ *
+ * @copyright  2017 Tamara Gunkel
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class ReedSolomonCodec
 {
     /**
      * Symbol size in bits.
+     *
+     * @var int
      */
-    private int $symbolSize;
+    private int $symbolsize;
 
     /**
      * Block size in symbols.
+     *
+     * @var int
      */
-    private int $blockSize;
+    private int $blocksize;
 
     /**
      * First root of RS code generator polynomial, index form.
+     *
+     * @var int
      */
-    private int $firstRoot;
+    private int $firstroot;
 
     /**
      * Primitive element to generate polynomial roots, index form.
+     *
+     * @var int
      */
     private int $primitive;
 
     /**
      * Prim-th root of 1, index form.
+     *
+     * @var int
      */
-    private int $iPrimitive;
+    private int $iprimitive;
 
     /**
      * RS code generator polynomial degree (number of roots).
+     *
+     * @var int
      */
-    private int $numRoots;
+    private int $numroots;
 
     /**
      * Padding bytes at front of shortened block.
+     *
+     * @var int
      */
     private int $padding;
 
@@ -69,21 +86,21 @@ final class ReedSolomonCodec
      *
      * @var SplFixedArray
      */
-    private SplFixedArray $alphaTo;
+    private SplFixedArray $alphato;
 
     /**
      * Anti-Log lookup table.
      *
      * @var SplFixedArray
      */
-    private SplFixedArray $indexOf;
+    private SplFixedArray $indexof;
 
     /**
      * Generator polynomial.
      *
      * @var SplFixedArray
      */
-    private SplFixedArray $generatorPoly;
+    private SplFixedArray $generatorpoly;
 
     /**
      * @throws InvalidArgumentException if symbol size ist not between 0 and 8
@@ -93,91 +110,91 @@ final class ReedSolomonCodec
      * @throws RuntimeException if field generator polynomial is not primitive
      */
     public function __construct(
-        int $symbolSize,
-        int $gfPoly,
-        int $firstRoot,
+        int $symbolsize,
+        int $gfpoly,
+        int $firstroot,
         int $primitive,
-        int $numRoots,
+        int $numroots,
         int $padding
     ) {
-        if ($symbolSize < 0 || $symbolSize > 8) {
+        if ($symbolsize < 0 || $symbolsize > 8) {
             throw new InvalidArgumentException('Symbol size must be between 0 and 8');
         }
 
-        if ($firstRoot < 0 || $firstRoot >= (1 << $symbolSize)) {
-            throw new InvalidArgumentException('First root must be between 0 and ' . (1 << $symbolSize));
+        if ($firstroot < 0 || $firstroot >= (1 << $symbolsize)) {
+            throw new InvalidArgumentException('First root must be between 0 and ' . (1 << $symbolsize));
         }
 
-        if ($numRoots < 0 || $numRoots >= (1 << $symbolSize)) {
-            throw new InvalidArgumentException('Num roots must be between 0 and ' . (1 << $symbolSize));
+        if ($numroots < 0 || $numroots >= (1 << $symbolsize)) {
+            throw new InvalidArgumentException('Num roots must be between 0 and ' . (1 << $symbolsize));
         }
 
-        if ($padding < 0 || $padding >= ((1 << $symbolSize) - 1 - $numRoots)) {
+        if ($padding < 0 || $padding >= ((1 << $symbolsize) - 1 - $numroots)) {
             throw new InvalidArgumentException(
-                'Padding must be between 0 and ' . ((1 << $symbolSize) - 1 - $numRoots)
+                'Padding must be between 0 and ' . ((1 << $symbolsize) - 1 - $numroots)
             );
         }
 
-        $this->symbolSize = $symbolSize;
-        $this->blockSize = (1 << $symbolSize) - 1;
+        $this->symbolsize = $symbolsize;
+        $this->blocksize = (1 << $symbolsize) - 1;
         $this->padding = $padding;
-        $this->alphaTo = SplFixedArray::fromArray(array_fill(0, $this->blockSize + 1, 0), false);
-        $this->indexOf = SplFixedArray::fromArray(array_fill(0, $this->blockSize + 1, 0), false);
+        $this->alphato = SplFixedArray::fromArray(array_fill(0, $this->blocksize + 1, 0), false);
+        $this->indexof = SplFixedArray::fromArray(array_fill(0, $this->blocksize + 1, 0), false);
 
         // Generate galous field lookup table
-        $this->indexOf[0] = $this->blockSize;
-        $this->alphaTo[$this->blockSize] = 0;
+        $this->indexof[0] = $this->blocksize;
+        $this->alphato[$this->blocksize] = 0;
 
         $sr = 1;
 
-        for ($i = 0; $i < $this->blockSize; ++$i) {
-            $this->indexOf[$sr] = $i;
-            $this->alphaTo[$i]  = $sr;
+        for ($i = 0; $i < $this->blocksize; ++$i) {
+            $this->indexof[$sr] = $i;
+            $this->alphato[$i]  = $sr;
 
             $sr <<= 1;
 
-            if ($sr & (1 << $symbolSize)) {
-                $sr ^= $gfPoly;
+            if ($sr & (1 << $symbolsize)) {
+                $sr ^= $gfpoly;
             }
 
-            $sr &= $this->blockSize;
+            $sr &= $this->blocksize;
         }
 
         if (1 !== $sr) {
             throw new RuntimeException('Field generator polynomial is not primitive');
         }
 
-        // Form RS code generator polynomial from its roots
-        $this->generatorPoly = SplFixedArray::fromArray(array_fill(0, $numRoots + 1, 0), false);
-        $this->firstRoot = $firstRoot;
+        // Form RS code generator polynomial from its roots.
+        $this->generatorpoly = SplFixedArray::fromArray(array_fill(0, $numroots + 1, 0), false);
+        $this->firstroot = $firstroot;
         $this->primitive = $primitive;
-        $this->numRoots = $numRoots;
+        $this->numroots = $numroots;
 
-        // Find prim-th root of 1, used in decoding
-        for ($iPrimitive = 1; ($iPrimitive % $primitive) !== 0; $iPrimitive += $this->blockSize) {
+        // Find prim-th root of 1, used in decoding.
+        for ($iPrimitive = 1; ($iPrimitive % $primitive) !== 0; $iPrimitive += $this->blocksize) {
         }
 
-        $this->iPrimitive = intdiv($iPrimitive, $primitive);
+        $this->iprimitive = intdiv($iPrimitive, $primitive);
 
-        $this->generatorPoly[0] = 1;
+        $this->generatorpoly[0] = 1;
 
-        for ($i = 0, $root = $firstRoot * $primitive; $i < $numRoots; ++$i, $root += $primitive) {
-            $this->generatorPoly[$i + 1] = 1;
+        for ($i = 0, $root = $firstroot * $primitive; $i < $numroots; ++$i, $root += $primitive) {
+            $this->generatorpoly[$i + 1] = 1;
 
             for ($j = $i; $j > 0; $j--) {
-                if ($this->generatorPoly[$j] !== 0) {
-                    $this->generatorPoly[$j] = $this->generatorPoly[$j - 1] ^ $this->alphaTo[$this->modNn($this->indexOf[$this->generatorPoly[$j]] + $root)];
+                if ($this->generatorpoly[$j] !== 0) {
+                    $this->generatorpoly[$j] = $this->generatorpoly[$j - 1] ^ $this->alphato[$this->modnn($this->indexof[$this->generatorpoly[$j]] + $root)];
                 } else {
-                    $this->generatorPoly[$j] = $this->generatorPoly[$j - 1];
+                    $this->generatorpoly[$j] = $this->generatorpoly[$j - 1];
                 }
             }
 
-            $this->generatorPoly[$j] = $this->alphaTo[$this->modNn($this->indexOf[$this->generatorPoly[0]] + $root)];
+            $this->generatorpoly[$j] = $this->alphato[$this->modnn($this->indexof[$this->generatorpoly[0]] + $root)];
         }
 
-        // Convert generator poly to index form for quicker encoding
-        for ($i = 0; $i <= $numRoots; ++$i) {
-            $this->generatorPoly[$i] = $this->indexOf[$this->generatorPoly[$i]];
+        // Convert generator poly to index form for quicker encoding.
+        for ($i = 0; $i <= $numroots; ++$i) {
+            $this->generatorpoly[$i] = $this->indexof[$this->generatorpoly[$i]];
         }
     }
 
@@ -185,32 +202,32 @@ final class ReedSolomonCodec
      * Encodes data and writes result back into parity array.
      */
     public function encode(SplFixedArray $data, SplFixedArray $parity): void {
-        for ($i = 0; $i < $this->numRoots; ++$i) {
+        for ($i = 0; $i < $this->numroots; ++$i) {
             $parity[$i] = 0;
         }
 
-        $iterations = $this->blockSize - $this->numRoots - $this->padding;
+        $iterations = $this->blocksize - $this->numroots - $this->padding;
 
         for ($i = 0; $i < $iterations; ++$i) {
-            $feedback = $this->indexOf[$data[$i] ^ $parity[0]];
+            $feedback = $this->indexof[$data[$i] ^ $parity[0]];
 
-            if ($feedback !== $this->blockSize) {
+            if ($feedback !== $this->blocksize) {
                 // Feedback term is non-zero
-                $feedback = $this->modNn($this->blockSize - $this->generatorPoly[$this->numRoots] + $feedback);
+                $feedback = $this->modnn($this->blocksize - $this->generatorpoly[$this->numroots] + $feedback);
 
-                for ($j = 1; $j < $this->numRoots; ++$j) {
-                    $parity[$j] = $parity[$j] ^ $this->alphaTo[$this->modNn($feedback + $this->generatorPoly[$this->numRoots - $j])];
+                for ($j = 1; $j < $this->numroots; ++$j) {
+                    $parity[$j] = $parity[$j] ^ $this->alphato[$this->modnn($feedback + $this->generatorpoly[$this->numroots - $j])];
                 }
             }
 
-            for ($j = 0; $j < $this->numRoots - 1; ++$j) {
+            for ($j = 0; $j < $this->numroots - 1; ++$j) {
                 $parity[$j] = $parity[$j + 1];
             }
 
-            if ($feedback !== $this->blockSize) {
-                $parity[$this->numRoots - 1] = $this->alphaTo[$this->modNn($feedback + $this->generatorPoly[0])];
+            if ($feedback !== $this->blocksize) {
+                $parity[$this->numroots - 1] = $this->alphato[$this->modnn($feedback + $this->generatorpoly[0])];
             } else {
-                $parity[$this->numRoots - 1] = 0;
+                $parity[$this->numroots - 1] = 0;
             }
         }
     }
@@ -220,87 +237,87 @@ final class ReedSolomonCodec
      */
     public function decode(SplFixedArray $data, ?SplFixedArray $erasures = null): ?int {
         // This speeds up the initialization a bit.
-        $numRootsPlusOne = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0), false);
-        $numRoots = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0), false);
+        $numrootsplusone = SplFixedArray::fromArray(array_fill(0, $this->numroots + 1, 0), false);
+        $numroots = SplFixedArray::fromArray(array_fill(0, $this->numroots, 0), false);
 
-        $lambda = clone $numRootsPlusOne;
-        $b = clone $numRootsPlusOne;
-        $t = clone $numRootsPlusOne;
-        $omega = clone $numRootsPlusOne;
-        $root = clone $numRoots;
-        $loc = clone $numRoots;
+        $lambda = clone $numrootsplusone;
+        $b = clone $numrootsplusone;
+        $t = clone $numrootsplusone;
+        $omega = clone $numrootsplusone;
+        $root = clone $numroots;
+        $loc = clone $numroots;
 
-        $numErasures = (null !== $erasures ? count($erasures) : 0);
+        $numerasures = (null !== $erasures ? count($erasures) : 0);
 
-        // Form the Syndromes; i.e., evaluate data(x) at roots of g(x)
-        $syndromes = SplFixedArray::fromArray(array_fill(0, $this->numRoots, $data[0]), false);
+        // Form the Syndromes; i.e., evaluate data(x) at roots of g(x).
+        $syndromes = SplFixedArray::fromArray(array_fill(0, $this->numroots, $data[0]), false);
 
-        for ($i = 1; $i < $this->blockSize - $this->padding; ++$i) {
-            for ($j = 0; $j < $this->numRoots; ++$j) {
+        for ($i = 1; $i < $this->blocksize - $this->padding; ++$i) {
+            for ($j = 0; $j < $this->numroots; ++$j) {
                 if ($syndromes[$j] === 0) {
                     $syndromes[$j] = $data[$i];
                 } else {
-                    $syndromes[$j] = $data[$i] ^ $this->alphaTo[$this->modNn($this->indexOf[$syndromes[$j]] + ($this->firstRoot + $j) * $this->primitive)];
+                    $syndromes[$j] = $data[$i] ^ $this->alphato[$this->modnn($this->indexof[$syndromes[$j]] + ($this->firstroot + $j) * $this->primitive)];
                 }
             }
         }
 
-        // Convert syndromes to index form, checking for nonzero conditions
-        $syndromeError = 0;
+        // Convert syndromes to index form, checking for nonzero conditions.
+        $syndromeerror = 0;
 
-        for ($i = 0; $i < $this->numRoots; ++$i) {
-            $syndromeError |= $syndromes[$i];
-            $syndromes[$i] = $this->indexOf[$syndromes[$i]];
+        for ($i = 0; $i < $this->numroots; ++$i) {
+            $syndromeerror |= $syndromes[$i];
+            $syndromes[$i] = $this->indexof[$syndromes[$i]];
         }
 
-        if (! $syndromeError) {
-            // If syndrome is zero, data[] is a codeword and there are no errors to correct, so return data[]
-            // unmodified.
+        if (! $syndromeerror) {
+            /* If syndrome is zero, data[] is a codeword and there are no errors to correct, so return data[]
+            unmodified. */
             return 0;
         }
 
         $lambda[0] = 1;
 
-        if ($numErasures > 0) {
-            // Init lambda to be the erasure locator polynomial
-            $lambda[1] = $this->alphaTo[$this->modNn($this->primitive * ($this->blockSize - 1 - $erasures[0]))];
+        if ($numerasures > 0) {
+            // Init lambda to be the erasure locator polynomial.
+            $lambda[1] = $this->alphato[$this->modnn($this->primitive * ($this->blocksize - 1 - $erasures[0]))];
 
-            for ($i = 1; $i < $numErasures; ++$i) {
-                $u = $this->modNn($this->primitive * ($this->blockSize - 1 - $erasures[$i]));
+            for ($i = 1; $i < $numerasures; ++$i) {
+                $u = $this->modnn($this->primitive * ($this->blocksize - 1 - $erasures[$i]));
 
                 for ($j = $i + 1; $j > 0; --$j) {
-                    $tmp = $this->indexOf[$lambda[$j - 1]];
+                    $tmp = $this->indexof[$lambda[$j - 1]];
 
-                    if ($tmp !== $this->blockSize) {
-                        $lambda[$j] = $lambda[$j] ^ $this->alphaTo[$this->modNn($u + $tmp)];
+                    if ($tmp !== $this->blocksize) {
+                        $lambda[$j] = $lambda[$j] ^ $this->alphato[$this->modnn($u + $tmp)];
                     }
                 }
             }
         }
 
-        for ($i = 0; $i <= $this->numRoots; ++$i) {
-            $b[$i] = $this->indexOf[$lambda[$i]];
+        for ($i = 0; $i <= $this->numroots; ++$i) {
+            $b[$i] = $this->indexof[$lambda[$i]];
         }
 
-        // Begin Berlekamp-Massey algorithm to determine error+erasure locator polynomial
-        $r  = $numErasures;
-        $el = $numErasures;
+        // Begin Berlekamp-Massey algorithm to determine error+erasure locator polynomial.
+        $r  = $numerasures;
+        $el = $numerasures;
 
-        while (++$r <= $this->numRoots) {
-            // Compute discrepancy at the r-th step in poly form
-            $discrepancyR = 0;
+        while (++$r <= $this->numroots) {
+            // Compute discrepancy at the r-th step in poly form.
+            $discrepancyr = 0;
 
             for ($i = 0; $i < $r; ++$i) {
-                if ($lambda[$i] !== 0 && $syndromes[$r - $i - 1] !== $this->blockSize) {
-                    $discrepancyR ^= $this->alphaTo[$this->modNn($this->indexOf[$lambda[$i]] + $syndromes[$r - $i - 1])];
+                if ($lambda[$i] !== 0 && $syndromes[$r - $i - 1] !== $this->blocksize) {
+                    $discrepancyr ^= $this->alphato[$this->modnn($this->indexof[$lambda[$i]] + $syndromes[$r - $i - 1])];
                 }
             }
 
-            $discrepancyR = $this->indexOf[$discrepancyR];
+            $discrepancyr = $this->indexof[$discrepancyr];
 
-            if ($discrepancyR === $this->blockSize) {
+            if ($discrepancyr === $this->blocksize) {
                 $tmp = $b->toArray();
-                array_unshift($tmp, $this->blockSize);
+                array_unshift($tmp, $this->blocksize);
                 array_pop($tmp);
                 $b = SplFixedArray::fromArray($tmp, false);
                 continue;
@@ -308,27 +325,27 @@ final class ReedSolomonCodec
 
             $t[0] = $lambda[0];
 
-            for ($i = 0; $i < $this->numRoots; ++$i) {
-                if ($b[$i] !== $this->blockSize) {
-                    $t[$i + 1] = $lambda[$i + 1] ^ $this->alphaTo[$this->modNn($discrepancyR + $b[$i])];
+            for ($i = 0; $i < $this->numroots; ++$i) {
+                if ($b[$i] !== $this->blocksize) {
+                    $t[$i + 1] = $lambda[$i + 1] ^ $this->alphato[$this->modnn($discrepancyr + $b[$i])];
                 } else {
                     $t[$i + 1] = $lambda[$i + 1];
                 }
             }
 
-            if (2 * $el <= $r + $numErasures - 1) {
-                $el = $r + $numErasures - $el;
+            if (2 * $el <= $r + $numerasures - 1) {
+                $el = $r + $numerasures - $el;
 
-                for ($i = 0; $i <= $this->numRoots; ++$i) {
+                for ($i = 0; $i <= $this->numroots; ++$i) {
                     $b[$i] = (
                         $lambda[$i] === 0
-                        ? $this->blockSize
-                        : $this->modNn($this->indexOf[$lambda[$i]] - $discrepancyR + $this->blockSize)
+                        ? $this->blocksize
+                        : $this->modnn($this->indexof[$lambda[$i]] - $discrepancyr + $this->blocksize)
                     );
                 }
             } else {
                 $tmp = $b->toArray();
-                array_unshift($tmp, $this->blockSize);
+                array_unshift($tmp, $this->blocksize);
                 array_pop($tmp);
                 $b = SplFixedArray::fromArray($tmp, false);
             }
@@ -336,14 +353,14 @@ final class ReedSolomonCodec
             $lambda = clone $t;
         }
 
-        // Convert lambda to index form and compute deg(lambda(x))
-        $degLambda = 0;
+        // Convert lambda to index form and compute deg(lambda(x)).
+        $deglambda = 0;
 
-        for ($i = 0; $i <= $this->numRoots; ++$i) {
-            $lambda[$i] = $this->indexOf[$lambda[$i]];
+        for ($i = 0; $i <= $this->numroots; ++$i) {
+            $lambda[$i] = $this->indexof[$lambda[$i]];
 
-            if ($lambda[$i] !== $this->blockSize) {
-                $degLambda = $i;
+            if ($lambda[$i] !== $this->blocksize) {
+                $deglambda = $i;
             }
         }
 
@@ -353,77 +370,77 @@ final class ReedSolomonCodec
         $count = 0;
         $i = 1;
 
-        for ($k = $this->iPrimitive - 1; $i <= $this->blockSize; ++$i, $k = $this->modNn($k + $this->iPrimitive)) {
+        for ($k = $this->iprimitive - 1; $i <= $this->blocksize; ++$i, $k = $this->modnn($k + $this->iprimitive)) {
             $q = 1;
 
-            for ($j = $degLambda; $j > 0; $j--) {
-                if ($reg[$j] !== $this->blockSize) {
-                    $reg[$j] = $this->modNn($reg[$j] + $j);
-                    $q ^= $this->alphaTo[$reg[$j]];
+            for ($j = $deglambda; $j > 0; $j--) {
+                if ($reg[$j] !== $this->blocksize) {
+                    $reg[$j] = $this->modnn($reg[$j] + $j);
+                    $q ^= $this->alphato[$reg[$j]];
                 }
             }
 
             if ($q !== 0) {
-                // Not a root
+                // Not a root.
                 continue;
             }
 
-            // Store root (index-form) and error location number
+            // Store root (index-form) and error location number.
             $root[$count] = $i;
             $loc[$count] = $k;
 
-            if (++$count === $degLambda) {
+            if (++$count === $deglambda) {
                 break;
             }
         }
 
-        if ($degLambda !== $count) {
-            // deg(lambda) unequal to number of roots: uncorrectable error detected
+        if ($deglambda !== $count) {
+            // deg(lambda) unequal to number of roots: uncorrectable error detected.
             return null;
         }
 
-        // Compute err+eras evaluate poly omega(x) = s(x)*lambda(x) (modulo x**numRoots). In index form. Also find
+        // Compute err+eras evaluate poly omega(x) = s(x)*lambda(x) (modulo x**numroots). In index form. Also find
         // deg(omega).
-        $degOmega = $degLambda - 1;
+        $degomega = $deglambda - 1;
 
-        for ($i = 0; $i <= $degOmega; ++$i) {
+        for ($i = 0; $i <= $degomega; ++$i) {
             $tmp = 0;
 
             for ($j = $i; $j >= 0; --$j) {
-                if ($syndromes[$i - $j] !== $this->blockSize && $lambda[$j] !== $this->blockSize) {
-                    $tmp ^= $this->alphaTo[$this->modNn($syndromes[$i - $j] + $lambda[$j])];
+                if ($syndromes[$i - $j] !== $this->blocksize && $lambda[$j] !== $this->blocksize) {
+                    $tmp ^= $this->alphato[$this->modnn($syndromes[$i - $j] + $lambda[$j])];
                 }
             }
 
-            $omega[$i] = $this->indexOf[$tmp];
+            $omega[$i] = $this->indexof[$tmp];
         }
 
-        // Compute error values in poly-form. num1 = omega(inv(X(l))), num2 = inv(X(l))**(firstRoot-1) and
-        // den = lambda_pr(inv(X(l))) all in poly form.
+        /* Compute error values in poly-form. num1 = omega(inv(X(l))), num2 = inv(X(l))**(firstRoot-1) and
+        den = lambda_pr(inv(X(l))) all in poly form. */
         for ($j = $count - 1; $j >= 0; --$j) {
             $num1 = 0;
 
-            for ($i = $degOmega; $i >= 0; $i--) {
-                if ($omega[$i] !== $this->blockSize) {
-                    $num1 ^= $this->alphaTo[$this->modNn($omega[$i] + $i * $root[$j])];
+            for ($i = $degomega; $i >= 0; $i--) {
+                if ($omega[$i] !== $this->blocksize) {
+                    $num1 ^= $this->alphato[$this->modnn($omega[$i] + $i * $root[$j])];
                 }
             }
 
-            $num2 = $this->alphaTo[$this->modNn($root[$j] * ($this->firstRoot - 1) + $this->blockSize)];
+            $num2 = $this->alphato[$this->modnn($root[$j] * ($this->firstroot - 1) + $this->blocksize)];
             $den  = 0;
 
-            // lambda[i+1] for i even is the formal derivativelambda_pr of lambda[i]
-            for ($i = min($degLambda, $this->numRoots - 1) & ~1; $i >= 0; $i -= 2) {
-                if ($lambda[$i + 1] !== $this->blockSize) {
-                    $den ^= $this->alphaTo[$this->modNn($lambda[$i + 1] + $i * $root[$j])];
+            // lambda[i+1] for i even is the formal derivativelambda_pr of lambda[i].
+            for ($i = min($deglambda, $this->numroots - 1) & ~1; $i >= 0; $i -= 2) {
+                if ($lambda[$i + 1] !== $this->blocksize) {
+                    $den ^= $this->alphato[$this->modnn($lambda[$i + 1] + $i * $root[$j])];
                 }
             }
 
             // Apply error to data
             if ($num1 !== 0 && $loc[$j] >= $this->padding) {
                 $data[$loc[$j] - $this->padding] = $data[$loc[$j] - $this->padding] ^ (
-                    $this->alphaTo[$this->modNn(
-                        $this->indexOf[$num1] + $this->indexOf[$num2] + $this->blockSize - $this->indexOf[$den]
+                    $this->alphato[$this->modnn(
+                        $this->indexof[$num1] + $this->indexof[$num2] + $this->blocksize - $this->indexof[$den]
                     )]
                 );
             }
@@ -445,10 +462,10 @@ final class ReedSolomonCodec
     /**
      * Computes $x % GF_SIZE, where GF_SIZE is 2**GF_BITS - 1, without a slow divide.
      */
-    private function modNn(int $x): int {
-        while ($x >= $this->blockSize) {
-            $x -= $this->blockSize;
-            $x = ($x >> $this->symbolSize) + ($x & $this->blockSize);
+    private function modnn(int $x): int {
+        while ($x >= $this->blocksize) {
+            $x -= $this->blocksize;
+            $x = ($x >> $this->symbolsize) + ($x & $this->blocksize);
         }
 
         return $x;
