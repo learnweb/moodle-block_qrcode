@@ -33,18 +33,60 @@ use DASPRiD\Enum\AbstractEnum;
  * @method static self FNC1_FIRST_POSITION()
  * @method static self FNC1_SECOND_POSITION()
  * @method static self HANZI()
+ *
+ * @copyright  2024 Justus Dieckmann
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class Mode extends AbstractEnum
 {
+    /**
+     * Terminator mode.
+     */
     protected const TERMINATOR = [[0, 0, 0], 0x00];
+
+    /**
+     * Numeric encoding mode.
+     */
     protected const NUMERIC = [[10, 12, 14], 0x01];
+
+    /**
+     * Alphanumeric encoding mode.
+     */
     protected const ALPHANUMERIC = [[9, 11, 13], 0x02];
+
+    /**
+     * Structured append encoding mode.
+     */
     protected const STRUCTURED_APPEND = [[0, 0, 0], 0x03];
+
+    /**
+     * Byte encoding mode.
+     */
     protected const BYTE = [[8, 16, 16], 0x04];
+
+    /**
+     * Extended Channel Interpretation encoding mode.
+     */
     protected const ECI = [[0, 0, 0], 0x07];
+
+    /**
+     * Kanji encoding mode.
+     */
     protected const KANJI = [[8, 10, 12], 0x08];
+
+    /**
+     * FNC1 first position encoding mode.
+     */
     protected const FNC1_FIRST_POSITION = [[0, 0, 0], 0x05];
+
+    /**
+     * FNC1 second position encoding mode.
+     */
     protected const FNC1_SECOND_POSITION = [[0, 0, 0], 0x09];
+
+    /**
+     * Hanzi encoding mode.
+     */
     protected const HANZI = [[8, 10, 12], 0x0d];
 
     /**
@@ -76,7 +118,7 @@ final class Mode extends AbstractEnum
     /**
      * Returns the four bits used to encode this mode.
      */
-    public function getBits(): int {
+    public function getbits(): int {
         return $this->bits;
     }
 }

@@ -500,7 +500,7 @@ final class Encoder
      * Appends mode information to a bit array.
      */
     private static function appendModeInfo(Mode $mode, BitArray $bits): void {
-        $bits->appendbits($mode->getBits(), 4);
+        $bits->appendbits($mode->getbits(), 4);
     }
 
     /**
@@ -673,7 +673,7 @@ final class Encoder
      */
     private static function appendEci(CharacterSetEci $eci, BitArray $bits): void {
         $mode = Mode::ECI();
-        $bits->appendbits($mode->getBits(), 4);
+        $bits->appendbits($mode->getbits(), 4);
         $bits->appendbits($eci->getvalue(), 8);
     }
 }
