@@ -19,6 +19,8 @@ declare(strict_types=1);
 namespace BaconQrCode\Renderer\Path;
 
 /**
+ * Represents a close path operation.
+ *
  * @copyright 2024 Justus Dieckmann
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -36,6 +38,8 @@ final class Close implements OperationInterface
     }
 
     /**
+     * Returns the close operation instance.
+     *
      * @return self
      */
     public static function instance(): self {
@@ -43,6 +47,8 @@ final class Close implements OperationInterface
     }
 
     /**
+     * Returns this close operation unchanged.
+     *
      * @return self
      */
     public function translate(float $x, float $y): OperationInterface {
@@ -50,6 +56,8 @@ final class Close implements OperationInterface
     }
 
     /**
+     * Returns this close operation unchanged.
+     *
      * @return self
      */
     public function rotate(int $degrees): OperationInterface {

@@ -19,12 +19,16 @@ declare(strict_types=1);
 namespace BaconQrCode\Renderer\Path;
 
 /**
+ * Represents a curve path operation.
+ *
  * @copyright 2025 D. Meißner
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class Curve implements OperationInterface
 {
     /**
+     * Constructor.
+     *
      * @param float $x1
      * @param float $y1
      * @param float $x2
@@ -33,29 +37,29 @@ final class Curve implements OperationInterface
      * @param float $y3
      */
     public function __construct(
-            /**
-             * @var float
-             */
+        /**
+         * @var float
+         */
         private readonly float $x1,
-            /**
-             * @var float
-             */
+        /**
+         * @var float
+         */
         private readonly float $y1,
-            /**
-             * @var float
-             */
+        /**
+         * @var float
+         */
         private readonly float $x2,
-            /**
-             * @var float
-             */
+        /**
+         * @var float
+         */
         private readonly float $y2,
-            /**
-             * @var float
-             */
+        /**
+         * @var float
+         */
         private readonly float $x3,
-            /**
-             * @var float
-             */
+        /**
+         * @var float
+         */
         private readonly float $y3
     ) {
     }
@@ -109,6 +113,8 @@ final class Curve implements OperationInterface
     }
 
     /**
+     * Returns a translated curve operation.
+     *
      * @param float $x
      * @param float $y
      * @return OperationInterface
@@ -125,6 +131,8 @@ final class Curve implements OperationInterface
     }
 
     /**
+     * Returns a rotated curve operation.
+     *
      * @param int $degrees
      * @return OperationInterface
      */

@@ -37,6 +37,8 @@ use ImagickDraw;
 use ImagickPixel;
 
 /**
+ * Renders QR code images using the Imagick extension.
+ *
  * @copyright 2024 Justus Dieckmann
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -87,6 +89,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Starts a new image.
+     *
      * @param int $size
      * @param ColorInterface $backgroundcolor
      * @return void
@@ -105,6 +109,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Scales the current drawing context.
+     *
      * @param float $size
      * @return void
      */
@@ -119,6 +125,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Translates the current drawing context.
+     *
      * @param float $x
      * @param float $y
      * @return void
@@ -134,6 +142,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Rotates the current drawing context.
+     *
      * @param int $degrees
      * @return void
      */
@@ -148,6 +158,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Saves the current drawing context.
+     *
      * @return void
      * @throws \ImagickException
      */
@@ -161,6 +173,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Restores the previous drawing context.
+     *
      * @return void
      * @throws \ImagickException
      */
@@ -174,6 +188,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Draws a path with a color fill.
+     *
      * @param Path $path
      * @param ColorInterface $color
      * @return void
@@ -190,6 +206,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Draws a path with a gradient fill.
+     *
      * @param Path $path
      * @param Gradient $gradient
      * @param float $x
@@ -217,6 +235,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Finishes the image and returns its binary data.
+     *
      * @return string
      * @throws \ImagickException
      */
@@ -237,6 +257,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Draws the given path.
+     *
      * @param Path $path
      * @return void
      */
@@ -246,7 +268,7 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
         foreach ($path as $op) {
             switch (true) {
                 case $op instanceof Move:
-                    $this->draw->pathMoveToAbsolute($op->getX(), $op->getY());
+                    $this->draw->pathMoveToAbsolute($op->get_x(), $op->get_y());
                     break;
 
                 case $op instanceof Line:
@@ -289,6 +311,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Creates a gradient fill pattern.
+     *
      * @param Gradient $gradient
      * @param float $x
      * @param float $y
@@ -337,15 +361,15 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
                     $gradientimage->rotateImage('transparent', -135);
                 }
 
-                $rotatedWidth = $gradientimage->getImageWidth();
-                $rotatedHeight = $gradientimage->getImageHeight();
+                $rotatedwidth = $gradientimage->getImageWidth();
+                $rotatedheight = $gradientimage->getImageHeight();
 
-                $gradientimage->setImagePage($rotatedWidth, $rotatedHeight, 0, 0);
+                $gradientimage->setImagePage($rotatedwidth, $rotatedheight, 0, 0);
                 $gradientimage->cropImage(
-                    intdiv($rotatedWidth, 2) - 2,
-                    intdiv($rotatedHeight, 2) - 2,
-                    intdiv($rotatedWidth, 4) + 1,
-                    intdiv($rotatedWidth, 4) + 1
+                    intdiv($rotatedwidth, 2) - 2,
+                    intdiv($rotatedheight, 2) - 2,
+                    intdiv($rotatedwidth, 4) + 1,
+                    intdiv($rotatedwidth, 4) + 1
                 );
                 break;
 
@@ -366,6 +390,8 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Returns an Imagick pixel for the given color.
+     *
      * @param ColorInterface $color
      * @return ImagickPixel
      * @throws \ImagickPixelException
@@ -391,10 +417,10 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
         if ($color instanceof Cmyk) {
             return new ImagickPixel(sprintf(
                 'cmyka(%d, %d, %d, %d, %F)',
-                $color->getCyan(),
-                $color->getMagenta(),
-                $color->getYellow(),
-                $color->getBlack(),
+                $color->get_cyan(),
+                $color->get_magenta(),
+                $color->get_yellow(),
+                $color->get_black(),
                 $alpha / 100
             ));
         }
@@ -407,6 +433,6 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
             ));
         }
 
-        return $this->get_color_pixel(new Alpha($alpha, $color->toRgb()));
+        return $this->get_color_pixel(new Alpha($alpha, $color->to_rgb()));
     }
 }

@@ -43,7 +43,7 @@ final class ModuleEye implements EyeInterface
             $matrix->set(6, $y, 1);
         }
 
-        return $this->module->createPath($matrix)->translate(-3.5, -3.5);
+        return $this->module->create_path($matrix)->translate(-3.5, -3.5);
     }
 
     public function getInternalPath(): Path {
@@ -55,6 +55,6 @@ final class ModuleEye implements EyeInterface
             }
         }
 
-        return $this->module->createPath($matrix)->translate(-1.5, -1.5);
+        return $this->module->create_path($matrix)->translate(-1.5, -1.5);
     }
 }

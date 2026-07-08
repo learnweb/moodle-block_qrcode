@@ -26,8 +26,17 @@ use BaconQrCode\Renderer\Path\Path;
  *
  * A module always receives a byte matrix (with values either being 1 or 0). It returns a path, where the origin
  * coordinate (0, 0) equals the top left corner of the first matrix value.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 interface ModuleInterface
 {
-    public function createPath(ByteMatrix $matrix): Path;
+    /**
+     * Creates a path from the byte matrix.
+     *
+     * @param ByteMatrix $matrix
+     * @return Path
+     */
+    public function create_path(ByteMatrix $matrix): Path;
 }

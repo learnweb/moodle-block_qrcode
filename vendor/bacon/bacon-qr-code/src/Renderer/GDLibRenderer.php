@@ -219,7 +219,7 @@ final class GDLibRenderer implements RendererInterface
             $color = $color->getBaseColor();
         }
 
-        $rgb = $color->toRgb();
+        $rgb = $color->to_rgb();
 
         $colorKey = sprintf('%02X%02X%02X%02X', $rgb->getRed(), $rgb->getGreen(), $rgb->getBlue(), $alpha);
 

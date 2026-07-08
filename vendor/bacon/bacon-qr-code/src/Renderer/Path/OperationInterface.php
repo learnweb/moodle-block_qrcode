@@ -18,6 +18,12 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Path;
 
+/**
+ * Interface for path operations.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface OperationInterface
 {
     /**

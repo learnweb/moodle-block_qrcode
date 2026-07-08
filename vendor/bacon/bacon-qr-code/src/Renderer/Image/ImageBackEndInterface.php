@@ -92,7 +92,7 @@ interface ImageBackEndInterface
      * @param Path $path
      * @param ColorInterface $color
      * @return void
-     *@throws RuntimeException if no image was started yet.
+     * @throws RuntimeException if no image was started yet.
      */
     public function draw_path_with_color(Path $path, ColorInterface $color): void;
 

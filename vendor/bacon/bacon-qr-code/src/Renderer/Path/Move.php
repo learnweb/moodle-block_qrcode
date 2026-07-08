@@ -18,20 +18,53 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Path;
 
+/**
+ * Represents a move path operation.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class Move implements OperationInterface
 {
-    public function __construct(private readonly float $x, private readonly float $y) {
+    /**
+     * Constructor.
+     *
+     * @param float $x
+     * @param float $y
+     */
+    public function __construct(
+        /**
+         * @var float
+         */
+        private readonly float $x,
+        /**
+         * @var float
+         */
+        private readonly float $y
+    ) {
     }
 
-    public function getX(): float {
+    /**
+     * Returns X value.
+     *
+     * @return float
+     */
+    public function get_x(): float {
         return $this->x;
     }
 
-    public function getY(): float {
+    /**
+     * Returns Y value.
+     *
+     * @return float
+     */
+    public function get_y(): float {
         return $this->y;
     }
 
     /**
+     * Returns a translated move operation.
+     *
      * @return self
      */
     public function translate(float $x, float $y): OperationInterface {
@@ -39,6 +72,8 @@ final class Move implements OperationInterface
     }
 
     /**
+     * Returns a rotated move operation.
+     *
      * @return self
      */
     public function rotate(int $degrees): OperationInterface {

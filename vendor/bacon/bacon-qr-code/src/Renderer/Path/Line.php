@@ -19,19 +19,33 @@ declare(strict_types=1);
 namespace BaconQrCode\Renderer\Path;
 
 /**
+ * Represents a line path operation.
+ *
  * @copyright 2024 Justus Dieckmann
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class Line implements OperationInterface
 {
     /**
+     * @var float
+     */
+    private readonly float $x;
+    /**
+     * @var float
+     */
+    private readonly float $y;
+    /**
+     * Constructor.
+     *
      * @param float $x
      * @param float $y
      */
-    public function __construct(private readonly float $x, private readonly float $y) {
+    public function __construct($x, $y) {
     }
 
     /**
+     * Returns the X value.
+     *
      * @return float
      */
     public function get_x(): float {
@@ -39,6 +53,8 @@ final class Line implements OperationInterface
     }
 
     /**
+     * Returns the Y value.
+     *
      * @return float
      */
     public function get_y(): float {
@@ -46,6 +62,8 @@ final class Line implements OperationInterface
     }
 
     /**
+     * Returns a new line operation translated by the given X and Y values.
+     *
      * @param float $x
      * @param float $y
      * @return OperationInterface
@@ -55,6 +73,8 @@ final class Line implements OperationInterface
     }
 
     /**
+     * Returns a rotated line operation.
+     *
      * @param int $degrees
      * @return OperationInterface
      */

@@ -118,6 +118,8 @@ final class Path implements IteratorAggregate
     }
 
     /**
+     * Returns a translated path.
+     *
      * @param float $x
      * @param float $y
      * @return self
@@ -133,6 +135,8 @@ final class Path implements IteratorAggregate
     }
 
     /**
+     * Returns a rotated path.
+     *
      * @param int $degrees
      * @return self
      */
@@ -147,6 +151,8 @@ final class Path implements IteratorAggregate
     }
 
     /**
+     * Returns an iterator over the operations in this path.
+     *
      * @return Traversable<int, OperationInterface>
      */
     public function getIterator(): Traversable {

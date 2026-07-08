@@ -24,6 +24,9 @@ use Traversable;
 
 /**
  * Edge iterator based on potrace.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class EdgeIterator implements IteratorAggregate
 {
@@ -32,12 +35,26 @@ final class EdgeIterator implements IteratorAggregate
      */
     private array $bytes = [];
 
+    /**
+     * @var int|null
+     */
     private ?int $size;
 
+    /**
+     * @var int
+     */
     private int $width;
 
+    /**
+     * @var int
+     */
     private int $height;
 
+    /**
+     * Constructor.
+     *
+     * @param ByteMatrix $matrix
+     */
     public function __construct(ByteMatrix $matrix) {
         $this->bytes = iterator_to_array($matrix->get_bytes());
         $this->size = count($this->bytes);
@@ -46,28 +63,32 @@ final class EdgeIterator implements IteratorAggregate
     }
 
     /**
+     * Returns the edge iterator.
+     *
      * @return Traversable<Edge>
      */
     public function getIterator(): Traversable {
-        $originalBytes = $this->bytes;
-        $point = $this->findNext(0, 0);
+        $originalbytes = $this->bytes;
+        $point = $this->find_next(0, 0);
 
         while (null !== $point) {
-            $edge = $this->findEdge($point[0], $point[1]);
-            $this->xorEdge($edge);
+            $edge = $this->find_edge($point[0], $point[1]);
+            $this->xor_edge($edge);
 
             yield $edge;
 
-            $point = $this->findNext($point[0], $point[1]);
+            $point = $this->find_next($point[0], $point[1]);
         }
 
-        $this->bytes = $originalBytes;
+        $this->bytes = $originalbytes;
     }
 
     /**
+     * Finds the next set point.
+     *
      * @return int[]|null
      */
-    private function findNext(int $x, int $y): ?array {
+    private function find_next(int $x, int $y): ?array {
         $i = $this->width * $y + $x;
 
         while ($i < $this->size && 1 !== $this->bytes[$i]) {
@@ -75,54 +96,67 @@ final class EdgeIterator implements IteratorAggregate
         }
 
         if ($i < $this->size) {
-            return $this->pointOf($i);
+            return $this->point_of($i);
         }
 
         return null;
     }
 
-    private function findEdge(int $x, int $y): Edge {
-        $edge = new Edge($this->isSet($x, $y));
-        $startX = $x;
-        $startY = $y;
-        $dirX = 0;
-        $dirY = 1;
+    /**
+     * Finds an edge from the given point.
+     *
+     * @param int $x
+     * @param int $y
+     * @return Edge
+     */
+    private function find_edge(int $x, int $y): Edge {
+        $edge = new Edge($this->is_set($x, $y));
+        $startx = $x;
+        $starty = $y;
+        $dirx = 0;
+        $diry = 1;
 
         while (true) {
             $edge->addPoint($x, $y);
-            $x += $dirX;
-            $y += $dirY;
+            $x += $dirx;
+            $y += $diry;
 
-            if ($x === $startX && $y === $startY) {
+            if ($x === $startx && $y === $starty) {
                 break;
             }
 
-            $left = $this->isSet($x + ($dirX + $dirY - 1 ) / 2, $y + ($dirY - $dirX - 1) / 2);
-            $right = $this->isSet($x + ($dirX - $dirY - 1) / 2, $y + ($dirY + $dirX - 1) / 2);
+            $left = $this->is_set($x + ($dirx + $diry - 1 ) / 2, $y + ($diry - $dirx - 1) / 2);
+            $right = $this->is_set($x + ($dirx - $diry - 1) / 2, $y + ($diry + $dirx - 1) / 2);
 
             if ($right && ! $left) {
-                $tmp = $dirX;
-                $dirX = -$dirY;
-                $dirY = $tmp;
+                $tmp = $dirx;
+                $dirx = -$diry;
+                $diry = $tmp;
             } else if ($right) {
-                $tmp = $dirX;
-                $dirX = -$dirY;
-                $dirY = $tmp;
+                $tmp = $dirx;
+                $dirx = -$diry;
+                $diry = $tmp;
             } else if (! $left) {
-                $tmp = $dirX;
-                $dirX = $dirY;
-                $dirY = -$tmp;
+                $tmp = $dirx;
+                $dirx = $diry;
+                $diry = -$tmp;
             }
         }
 
         return $edge;
     }
 
-    private function xorEdge(Edge $path): void {
+    /**
+     * Applies XOR to the given edge.
+     *
+     * @param Edge $path
+     * @return void
+     */
+    private function xor_edge(Edge $path): void {
         $points = $path->getPoints();
         $y1 = $points[0][1];
         $length = count($points);
-        $maxX = $path->getMaxX();
+        $maxx = $path->getMaxX();
 
         for ($i = 1; $i < $length; ++$i) {
             $y = $points[$i][1];
@@ -132,17 +166,24 @@ final class EdgeIterator implements IteratorAggregate
             }
 
             $x = $points[$i][0];
-            $minY = min($y1, $y);
+            $miny = min($y1, $y);
 
-            for ($j = $x; $j < $maxX; ++$j) {
-                $this->flip($j, $minY);
+            for ($j = $x; $j < $maxx; ++$j) {
+                $this->flip($j, $miny);
             }
 
             $y1 = $y;
         }
     }
 
-    private function isSet(int $x, int $y): bool {
+    /**
+     * Checks whether the given point is set.
+     *
+     * @param int $x
+     * @param int $y
+     * @return bool
+     */
+    private function is_set(int $x, int $y): bool {
         return (
             $x >= 0
             && $x < $this->width
@@ -152,16 +193,25 @@ final class EdgeIterator implements IteratorAggregate
     }
 
     /**
+     * Returns the point for the given index.
+     *
      * @return int[]
      */
-    private function pointOf(int $i): array {
+    private function point_of(int $i): array {
         $y = intdiv($i, $this->width);
         return [$i - $y * $this->width, $y];
     }
 
+    /**
+     * Flips the value at the given point.
+     *
+     * @param int $x
+     * @param int $y
+     * @return void
+     */
     private function flip(int $x, int $y): void {
         $this->bytes[$this->width * $y + $x] = (
-            $this->isSet($x, $y) ? 0 : 1
+            $this->is_set($x, $y) ? 0 : 1
         );
     }
 }

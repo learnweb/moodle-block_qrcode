@@ -34,11 +34,16 @@ use BaconQrCode\Renderer\RendererStyle\Gradient;
 use BaconQrCode\Renderer\RendererStyle\GradientType;
 
 /**
+ * Renders QR code images as EPS.
+ *
  * @copyright 2024 Justus Dieckmann
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class EpsImageBackEnd implements ImageBackEndInterface
 {
+    /**
+     * Decimal precision.
+     */
     private const PRECISION = 3;
 
     /**
@@ -47,6 +52,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     private ?string $eps;
 
     /**
+     * Creates a new EPS image.
+     *
      * @param int $size
      * @param ColorInterface $backgroundcolor
      * @return void
@@ -93,6 +100,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Scales the current drawing context.
+     *
      * @param float $size
      * @return void
      */
@@ -105,6 +114,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Translates the current drawing context.
+     *
      * @param float $x
      * @param float $y
      * @return void
@@ -118,6 +129,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Rotates the current drawing context.
+     *
      * @param int $degrees
      * @return void
      */
@@ -130,6 +143,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Saves the current drawing context.
+     *
      * @return void
      */
     public function push(): void {
@@ -141,6 +156,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Restores the previous drawing context.
+     *
      * @return void
      */
     public function pop(): void {
@@ -152,6 +169,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Draws a path with a color fill.
+     *
      * @param Path $path
      * @param ColorInterface $color
      * @return void
@@ -161,11 +180,11 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             throw new RuntimeException('No image has been started');
         }
 
-        $fromX = 0;
-        $fromY = 0;
+        $fromx = 0;
+        $fromy = 0;
         $this->eps .= wordwrap(
             'n '
-            . $this->draw_path_operations($path, $fromX, $fromY)
+            . $this->draw_path_operations($path, $fromx, $fromy)
             . ' ' . $this->get_color_set_string($color) . " f\n",
             75,
             "\n "
@@ -173,6 +192,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Draws a path with a gradient fill.
+     *
      * @param Path $path
      * @param Gradient $gradient
      * @param float $x
@@ -193,10 +214,10 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             throw new RuntimeException('No image has been started');
         }
 
-        $fromX = 0;
-        $fromY = 0;
+        $fromx = 0;
+        $fromy = 0;
         $this->eps .= wordwrap(
-            'q n ' . $this->draw_path_operations($path, $fromX, $fromY) . "\n",
+            'q n ' . $this->draw_path_operations($path, $fromx, $fromy) . "\n",
             75,
             "\n "
         );
@@ -205,6 +226,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Finishes the EPS image and returns its content.
+     *
      * @return string
      */
     public function done(): string {
@@ -220,6 +243,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Converts path operations to EPS path data.
+     *
      * @param iterable $ops
      * @param $fromx
      * @param $fromy
@@ -231,8 +256,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         foreach ($ops as $op) {
             switch (true) {
                 case $op instanceof Move:
-                    $fromx = $tox = round($op->getX(), self::PRECISION);
-                    $fromy = $toy = round($op->getY(), self::PRECISION);
+                    $fromx = $tox = round($op->get_x(), self::PRECISION);
+                    $fromy = $toy = round($op->get_y(), self::PRECISION);
                     $pathdata[] = sprintf('%s %s m', $tox, $toy);
                     break;
 
@@ -269,6 +294,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Creates a gradient fill.
+     *
      * @param Gradient $gradient
      * @param float $x
      * @param float $y
@@ -288,21 +315,21 @@ final class EpsImageBackEnd implements ImageBackEndInterface
 
         if (! in_array($startcolortype, [Rgb::class, Cmyk::class, Gray::class])) {
             $startcolortype = Cmyk::class;
-            $startcolor = $startcolor->toCmyk();
+            $startcolor = $startcolor->to_cmyk();
         }
 
         if (get_class($endcolor) !== $startcolortype) {
             switch ($startcolortype) {
                 case Cmyk::class:
-                    $endcolor = $endcolor->toCmyk();
+                    $endcolor = $endcolor->to_cmyk();
                     break;
 
                 case Rgb::class:
-                    $endcolor = $endcolor->toRgb();
+                    $endcolor = $endcolor->to_rgb();
                     break;
 
                 case Gray::class:
-                    $endcolor = $endcolor->toGray();
+                    $endcolor = $endcolor->to_gray();
                     break;
             }
         }
@@ -374,15 +401,15 @@ final class EpsImageBackEnd implements ImageBackEndInterface
                 break;
 
             case GradientType::RADIAL():
-                $centerX = ($x + $width) / 2;
-                $centerY = ($y + $height) / 2;
+                $centerx = ($x + $width) / 2;
+                $centery = ($y + $height) / 2;
 
                 $this->eps .= sprintf(
                     " /Coords [ %s %s 0 %s %s %s ]\n",
-                    round($centerX, self::PRECISION),
-                    round($centerY, self::PRECISION),
-                    round($centerX, self::PRECISION),
-                    round($centerY, self::PRECISION),
+                    round($centerx, self::PRECISION),
+                    round($centery, self::PRECISION),
+                    round($centerx, self::PRECISION),
+                    round($centery, self::PRECISION),
                     round(max($width, $height) / 2, self::PRECISION)
                 );
                 break;
@@ -399,6 +426,8 @@ final class EpsImageBackEnd implements ImageBackEndInterface
     }
 
     /**
+     * Returns the EPS color command string.
+     *
      * @param ColorInterface $color
      * @return string
      */
@@ -415,10 +444,12 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             return $this->get_color_string($color) . ' gray';
         }
 
-        return $this->get_color_set_string($color->toCmyk());
+        return $this->get_color_set_string($color->to_cmyk());
     }
 
     /**
+     * Returns the EPS color value string.
+     *
      * @param ColorInterface $color
      * @return string
      */
@@ -430,10 +461,10 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         if ($color instanceof Cmyk) {
             return sprintf(
                 '%s %s %s %s',
-                $color->getCyan() / 100,
-                $color->getMagenta() / 100,
-                $color->getYellow() / 100,
-                $color->getBlack() / 100
+                $color->get_cyan() / 100,
+                $color->get_magenta() / 100,
+                $color->get_yellow() / 100,
+                $color->get_black() / 100
             );
         }
 
@@ -441,6 +472,6 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             return sprintf('%s', $color->getGray() / 100);
         }
 
-        return $this->get_color_string($color->toCmyk());
+        return $this->get_color_string($color->to_cmyk());
     }
 }

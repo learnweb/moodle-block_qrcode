@@ -36,7 +36,7 @@ final class SquareModule implements ModuleInterface
         return self::$instance ?: self::$instance = new self();
     }
 
-    public function createPath(ByteMatrix $matrix): Path {
+    public function create_path(ByteMatrix $matrix): Path {
         $path = new Path();
 
         foreach (new EdgeIterator($matrix) as $edge) {

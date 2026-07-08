@@ -53,11 +53,11 @@ final class Rgb implements ColorInterface
         return $this->blue;
     }
 
-    public function toRgb(): Rgb {
+    public function to_rgb(): Rgb {
         return $this;
     }
 
-    public function toCmyk(): Cmyk {
+    public function to_cmyk(): Cmyk {
         $c = 1 - ($this->red / 255);
         $m = 1 - ($this->green / 255);
         $y = 1 - ($this->blue / 255);
@@ -75,7 +75,7 @@ final class Rgb implements ColorInterface
         );
     }
 
-    public function toGray(): Gray {
+    public function to_gray(): Gray {
         return new Gray((int) (($this->red * 0.21 + $this->green * 0.71 + $this->blue * 0.07) / 2.55));
     }
 }

@@ -39,15 +39,15 @@ final class Alpha implements ColorInterface
         return $this->baseColor;
     }
 
-    public function toRgb(): Rgb {
-        return $this->baseColor->toRgb();
+    public function to_rgb(): Rgb {
+        return $this->baseColor->to_rgb();
     }
 
-    public function toCmyk(): Cmyk {
-        return $this->baseColor->toCmyk();
+    public function to_cmyk(): Cmyk {
+        return $this->baseColor->to_cmyk();
     }
 
-    public function toGray(): Gray {
-        return $this->baseColor->toGray();
+    public function to_gray(): Gray {
+        return $this->baseColor->to_gray();
     }
 }

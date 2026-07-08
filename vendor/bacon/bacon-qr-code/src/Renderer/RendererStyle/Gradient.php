@@ -35,14 +35,24 @@ final class Gradient
      * @param GradientType $type
      */
     public function __construct(
+        /**
+         * @var ColorInterface
+         */
         private readonly ColorInterface $startcolor,
+        /**
+         * @var ColorInterface
+         */
         private readonly ColorInterface $endcolor,
+        /**
+         * @var GradientType
+         */
         private readonly GradientType $type
     ) {
     }
 
     /**
-     * Returns
+     * Returns start color.
+     *
      * @return ColorInterface
      */
     public function get_start_color(): ColorInterface {
@@ -50,6 +60,8 @@ final class Gradient
     }
 
     /**
+     * Returns end color.
+     *
      * @return ColorInterface
      */
     public function get_end_color(): ColorInterface {
@@ -57,6 +69,8 @@ final class Gradient
     }
 
     /**
+     * Returns gradient type.
+     *
      * @return GradientType
      */
     public function get_type(): GradientType {

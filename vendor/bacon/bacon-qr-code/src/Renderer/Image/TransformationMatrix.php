@@ -19,6 +19,8 @@ declare(strict_types=1);
 namespace BaconQrCode\Renderer\Image;
 
 /**
+ * Represents a transformation matrix.
+ *
  * @copyright 2024 Justus Dieckmann
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -37,6 +39,8 @@ final class TransformationMatrix
     }
 
     /**
+     * Multiplies this matrix with another matrix.
+     *
      * @param TransformationMatrix $other
      * @return self
      */
@@ -55,6 +59,8 @@ final class TransformationMatrix
     }
 
     /**
+     * Creates a scaling matrix.
+     *
      * @param float $size
      * @return self
      */
@@ -65,6 +71,8 @@ final class TransformationMatrix
     }
 
     /**
+     * Creates a translation matrix.
+     *
      * @param float $x
      * @param float $y
      * @return self
@@ -76,6 +84,8 @@ final class TransformationMatrix
     }
 
     /**
+     * Creates a rotation matrix.
+     *
      * @param int $degrees
      * @return self
      */

@@ -18,20 +18,26 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Color;
 
+/**
+ * Interface for color representations.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface ColorInterface
 {
     /**
      * Converts the color to RGB.
      */
-    public function toRgb(): Rgb;
+    public function to_rgb(): Rgb;
 
     /**
      * Converts the color to CMYK.
      */
-    public function toCmyk(): Cmyk;
+    public function to_cmyk(): Cmyk;
 
     /**
      * Converts the color to gray.
      */
-    public function toGray(): Gray;
+    public function to_gray(): Gray;
 }
