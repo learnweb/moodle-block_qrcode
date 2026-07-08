@@ -59,6 +59,7 @@ final class ErrorCorrectionLevel extends AbstractEnum
      * @param int $bits the two bits used to encode this error correction level
      */
     protected function __construct(int $bits) {
+        $this->bits = $bits;
     }
 
     /**
@@ -91,7 +92,7 @@ final class ErrorCorrectionLevel extends AbstractEnum
      *
      * @return int the two bits used to encode this error correction level
      */
-    public function getbits(): int {
+    public function get_bits(): int {
         return $this->bits;
     }
 }

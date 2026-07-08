@@ -210,7 +210,7 @@ final class MatrixUtil
      * @throws RuntimeException if bit array resulted in invalid size
      */
     private static function maketypeinfobits(ErrorCorrectionLevel $level, int $maskpattern, BitArray $bits): void {
-        $typeinfo = ($level->getbits() << 3) | $maskpattern;
+        $typeinfo = ($level->get_bits() << 3) | $maskpattern;
         $bits->append_bits($typeinfo, 5);
 
         $bchcode = self::calculatebchcode($typeinfo, self::TYPE_INFO_POLY);

@@ -46,6 +46,7 @@ final class BitArray
      * Creates a new bit array with a given size.
      */
     public function __construct($size = 0) {
+        $this->size = $size;
         $this->bits = SplFixedArray::fromArray(array_fill(0, ($this->size + 31) >> 3, 0));
     }
 

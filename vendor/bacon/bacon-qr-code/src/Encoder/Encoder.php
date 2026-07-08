@@ -674,7 +674,7 @@ final class Encoder
      */
     private static function append_eci(CharacterSetEci $eci, BitArray $bits): void {
         $mode = Mode::ECI();
-        $bits->append_bits($mode->getbits(), 4);
+        $bits->append_bits($mode->get_bits(), 4);
         $bits->append_bits($eci->getvalue(), 8);
     }
 }

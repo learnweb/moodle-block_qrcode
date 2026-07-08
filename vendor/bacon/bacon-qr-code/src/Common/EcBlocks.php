@@ -51,6 +51,7 @@ final class EcBlocks
      * @param EcBlock ...$ecblocks
      */
     public function __construct(int $eccodewordsperblock, EcBlock ...$ecblocks) {
+        $this->eccodewordsperblock = $eccodewordsperblock;
         $this->ecblocks = $ecblocks;
     }
 

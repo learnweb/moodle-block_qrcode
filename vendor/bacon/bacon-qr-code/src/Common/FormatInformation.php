@@ -197,7 +197,7 @@ class FormatInformation
      * Hashes the code of the EC level.
      */
     public function hash_code(): int {
-        return ($this->eclevel->getbits() << 3) | $this->datamask;
+        return ($this->eclevel->get_bits() << 3) | $this->datamask;
     }
 
     /**
