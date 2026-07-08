@@ -45,16 +45,36 @@ final class Fill
      * @param EyeFill $bottomlefteyefill
      */
     private function __construct(
+        /**
+         * @var ColorInterface
+         */
         private readonly ColorInterface $backgroundcolor,
+        /**
+         * @var ColorInterface|null
+         */
         private readonly ?ColorInterface $foregroundcolor,
+        /**
+         * @var Gradient|null
+         */
         private readonly ?Gradient $foregroundgradient,
+        /**
+         * @var EyeFill
+         */
         private readonly EyeFill $toplefteyefill,
+        /**
+         * @var EyeFill
+         */
         private readonly EyeFill $toprighteyefill,
+        /**
+         * @var EyeFill
+         */
         private readonly EyeFill $bottomlefteyefill
     ) {
     }
 
     /**
+     * Returns the default fill.
+     *
      * @return self
      */
     public static function default(): self {
@@ -62,6 +82,8 @@ final class Fill
     }
 
     /**
+     * Creates a fill with a foreground color.
+     *
      * @param ColorInterface $backgroundcolor
      * @param ColorInterface $foregroundcolor
      * @param EyeFill $toplefteyefill
@@ -87,6 +109,8 @@ final class Fill
     }
 
     /**
+     * Creates a fill with a foreground gradient.
+     *
      * @param ColorInterface $backgroundcolor
      * @param Gradient $foregroundgradient
      * @param EyeFill $toplefteyefill
@@ -112,6 +136,8 @@ final class Fill
     }
 
     /**
+     * Creates a uniform color fill.
+     *
      * @param ColorInterface $backgroundcolor
      * @param ColorInterface $foregroundcolor
      * @return self
@@ -128,6 +154,8 @@ final class Fill
     }
 
     /**
+     * Creates a uniform gradient fill.
+     *
      * @param ColorInterface $backgroundcolor
      * @param Gradient $foregroundgradient
      * @return self
@@ -144,6 +172,8 @@ final class Fill
     }
 
     /**
+     * Checks whether the fill uses a gradient.
+     *
      * @return bool
      */
     public function has_gradient_fill(): bool {
@@ -151,6 +181,8 @@ final class Fill
     }
 
     /**
+     * Returns the background color.
+     *
      * @return ColorInterface
      */
     public function get_background_color(): ColorInterface {
@@ -158,6 +190,8 @@ final class Fill
     }
 
     /**
+     * Returns the foreground color.
+     *
      * @return ColorInterface
      */
     public function get_foreground_color(): ColorInterface {
@@ -169,6 +203,8 @@ final class Fill
     }
 
     /**
+     * Returns the foreground gradient.
+     *
      * @return Gradient
      */
     public function get_foreground_gradient(): Gradient {
@@ -180,6 +216,8 @@ final class Fill
     }
 
     /**
+     * Returns the top-left eye fill.
+     *
      * @return EyeFill
      */
     public function get_top_left_eyefill(): EyeFill {
@@ -187,6 +225,8 @@ final class Fill
     }
 
     /**
+     * Returns the top-right eye fill.
+     *
      * @return EyeFill
      */
     public function get_top_right_eyefill(): EyeFill {
@@ -194,6 +234,8 @@ final class Fill
     }
 
     /**
+     * Returns the bottom-left eye fill.
+     *
      * @return EyeFill
      */
     public function get_bottom_left_eyefill(): EyeFill {

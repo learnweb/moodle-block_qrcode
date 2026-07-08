@@ -33,12 +33,24 @@ use BaconQrCode\Renderer\Path\Path;
 use BaconQrCode\Renderer\RendererStyle\Gradient;
 use BaconQrCode\Renderer\RendererStyle\GradientType;
 
+/**
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class EpsImageBackEnd implements ImageBackEndInterface
 {
     private const PRECISION = 3;
 
+    /**
+     * @var string|null
+     */
     private ?string $eps;
 
+    /**
+     * @param int $size
+     * @param ColorInterface $backgroundcolor
+     * @return void
+     */
     public function new(int $size, ColorInterface $backgroundcolor): void {
         $this->eps = "%!PS-Adobe-3.0 EPSF-3.0\n"
             . "%%Creator: BaconQrCode\n"
@@ -74,12 +86,16 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             . sprintf(' %s %s l', (string) $size, (string) $size)
             . sprintf(' 0 %s l', (string) $size)
             . ' z'
-            . ' ' . $this->getColorSetString($backgroundcolor) . " f\n",
+            . ' ' . $this->get_color_set_string($backgroundcolor) . " f\n",
             75,
             "\n "
         );
     }
 
+    /**
+     * @param float $size
+     * @return void
+     */
     public function scale(float $size): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
@@ -88,6 +104,11 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= sprintf("%1\$s %1\$s s\n", round($size, self::PRECISION));
     }
 
+    /**
+     * @param float $x
+     * @param float $y
+     * @return void
+     */
     public function translate(float $x, float $y): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
@@ -96,6 +117,10 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= sprintf("%s %s t\n", round($x, self::PRECISION), round($y, self::PRECISION));
     }
 
+    /**
+     * @param int $degrees
+     * @return void
+     */
     public function rotate(int $degrees): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
@@ -104,6 +129,9 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= sprintf("%d r\n", $degrees);
     }
 
+    /**
+     * @return void
+     */
     public function push(): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
@@ -112,6 +140,9 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= "q\n";
     }
 
+    /**
+     * @return void
+     */
     public function pop(): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
@@ -120,6 +151,11 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= "Q\n";
     }
 
+    /**
+     * @param Path $path
+     * @param ColorInterface $color
+     * @return void
+     */
     public function draw_path_with_color(Path $path, ColorInterface $color): void {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
@@ -129,13 +165,22 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $fromY = 0;
         $this->eps .= wordwrap(
             'n '
-            . $this->drawPathOperations($path, $fromX, $fromY)
-            . ' ' . $this->getColorSetString($color) . " f\n",
+            . $this->draw_path_operations($path, $fromX, $fromY)
+            . ' ' . $this->get_color_set_string($color) . " f\n",
             75,
             "\n "
         );
     }
 
+    /**
+     * @param Path $path
+     * @param Gradient $gradient
+     * @param float $x
+     * @param float $y
+     * @param float $width
+     * @param float $height
+     * @return void
+     */
     public function draw_path_with_gradient(
         Path $path,
         Gradient $gradient,
@@ -151,14 +196,17 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $fromX = 0;
         $fromY = 0;
         $this->eps .= wordwrap(
-            'q n ' . $this->drawPathOperations($path, $fromX, $fromY) . "\n",
+            'q n ' . $this->draw_path_operations($path, $fromX, $fromY) . "\n",
             75,
             "\n "
         );
 
-        $this->createGradientFill($gradient, $x, $y, $width, $height);
+        $this->create_gradient_fill($gradient, $x, $y, $width, $height);
     }
 
+    /**
+     * @return string
+     */
     public function done(): string {
         if (null === $this->eps) {
             throw new RuntimeException('No image has been started');
@@ -171,39 +219,45 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         return $blob;
     }
 
-    private function drawPathOperations(iterable $ops, &$fromX, &$fromY): string {
-        $pathData = [];
+    /**
+     * @param iterable $ops
+     * @param $fromx
+     * @param $fromy
+     * @return string
+     */
+    private function draw_path_operations(iterable $ops, &$fromx, &$fromy): string {
+        $pathdata = [];
 
         foreach ($ops as $op) {
             switch (true) {
                 case $op instanceof Move:
-                    $fromX = $toX = round($op->getX(), self::PRECISION);
-                    $fromY = $toY = round($op->getY(), self::PRECISION);
-                    $pathData[] = sprintf('%s %s m', $toX, $toY);
+                    $fromx = $tox = round($op->getX(), self::PRECISION);
+                    $fromy = $toy = round($op->getY(), self::PRECISION);
+                    $pathdata[] = sprintf('%s %s m', $tox, $toy);
                     break;
 
                 case $op instanceof Line:
-                    $fromX = $toX = round($op->getX(), self::PRECISION);
-                    $fromY = $toY = round($op->getY(), self::PRECISION);
-                    $pathData[] = sprintf('%s %s l', $toX, $toY);
+                    $fromx = $tox = round($op->get_x(), self::PRECISION);
+                    $fromy = $toy = round($op->get_y(), self::PRECISION);
+                    $pathdata[] = sprintf('%s %s l', $tox, $toy);
                     break;
 
                 case $op instanceof EllipticArc:
-                    $pathData[] = $this->drawPathOperations($op->toCurves($fromX, $fromY), $fromX, $fromY);
+                    $pathdata[] = $this->draw_path_operations($op->to_curves($fromx, $fromy), $fromx, $fromy);
                     break;
 
                 case $op instanceof Curve:
-                    $x1 = round($op->getX1(), self::PRECISION);
-                    $y1 = round($op->getY1(), self::PRECISION);
-                    $x2 = round($op->getX2(), self::PRECISION);
-                    $y2 = round($op->getY2(), self::PRECISION);
-                    $fromX = $x3 = round($op->getX3(), self::PRECISION);
-                    $fromY = $y3 = round($op->getY3(), self::PRECISION);
-                    $pathData[] = sprintf('%s %s %s %s %s %s c', $x1, $y1, $x2, $y2, $x3, $y3);
+                    $x1 = round($op->get_x_1(), self::PRECISION);
+                    $y1 = round($op->get_y_1(), self::PRECISION);
+                    $x2 = round($op->get_x_2(), self::PRECISION);
+                    $y2 = round($op->get_y_2(), self::PRECISION);
+                    $fromx = $x3 = round($op->get_x_3(), self::PRECISION);
+                    $fromy = $y3 = round($op->get_y_3(), self::PRECISION);
+                    $pathdata[] = sprintf('%s %s %s %s %s %s c', $x1, $y1, $x2, $y2, $x3, $y3);
                     break;
 
                 case $op instanceof Close:
-                    $pathData[] = 'z';
+                    $pathdata[] = 'z';
                     break;
 
                 default:
@@ -211,43 +265,51 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             }
         }
 
-        return implode(' ', $pathData);
+        return implode(' ', $pathdata);
     }
 
-    private function createGradientFill(Gradient $gradient, float $x, float $y, float $width, float $height): void {
-        $startColor = $gradient->getStartColor();
-        $endColor = $gradient->getEndColor();
+    /**
+     * @param Gradient $gradient
+     * @param float $x
+     * @param float $y
+     * @param float $width
+     * @param float $height
+     * @return void
+     */
+    private function create_gradient_fill(Gradient $gradient, float $x, float $y, float $width, float $height): void {
+        $startcolor = $gradient->get_start_color();
+        $endcolor = $gradient->get_end_color();
 
-        if ($startColor instanceof Alpha) {
-            $startColor = $startColor->getBaseColor();
+        if ($startcolor instanceof Alpha) {
+            $startcolor = $startcolor->getBaseColor();
         }
 
-        $startColorType = get_class($startColor);
+        $startcolortype = get_class($startcolor);
 
-        if (! in_array($startColorType, [Rgb::class, Cmyk::class, Gray::class])) {
-            $startColorType = Cmyk::class;
-            $startColor = $startColor->toCmyk();
+        if (! in_array($startcolortype, [Rgb::class, Cmyk::class, Gray::class])) {
+            $startcolortype = Cmyk::class;
+            $startcolor = $startcolor->toCmyk();
         }
 
-        if (get_class($endColor) !== $startColorType) {
-            switch ($startColorType) {
+        if (get_class($endcolor) !== $startcolortype) {
+            switch ($startcolortype) {
                 case Cmyk::class:
-                    $endColor = $endColor->toCmyk();
+                    $endcolor = $endcolor->toCmyk();
                     break;
 
                 case Rgb::class:
-                    $endColor = $endColor->toRgb();
+                    $endcolor = $endcolor->toRgb();
                     break;
 
                 case Gray::class:
-                    $endColor = $endColor->toGray();
+                    $endcolor = $endcolor->toGray();
                     break;
             }
         }
 
         $this->eps .= "eoclip\n<<\n";
 
-        if ($gradient->getType() === GradientType::RADIAL()) {
+        if ($gradient->get_type() === GradientType::RADIAL()) {
             $this->eps .= " /ShadingType 3\n";
         } else {
             $this->eps .= " /ShadingType 2\n";
@@ -256,7 +318,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $this->eps .= " /Extend [ true true ]\n"
             . " /AntiAlias true\n";
 
-        switch ($startColorType) {
+        switch ($startcolortype) {
             case Cmyk::class:
                 $this->eps .= " /ColorSpace /DeviceCMYK\n";
                 break;
@@ -270,7 +332,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
                 break;
         }
 
-        switch ($gradient->getType()) {
+        switch ($gradient->get_type()) {
             case GradientType::HORIZONTAL():
                 $this->eps .= sprintf(
                     " /Coords [ %s %s %s %s ]\n",
@@ -330,29 +392,37 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             . " <<\n"
             . "  /FunctionType 2\n"
             . "  /Domain [ 0 1 ]\n"
-            . sprintf("  /C0 [ %s ]\n", $this->getColorString($startColor))
-            . sprintf("  /C1 [ %s ]\n", $this->getColorString($endColor))
+            . sprintf("  /C0 [ %s ]\n", $this->get_color_string($startcolor))
+            . sprintf("  /C1 [ %s ]\n", $this->get_color_string($endcolor))
             . "  /N 1\n"
             . " >>\n>>\nshfill\nQ\n";
     }
 
-    private function getColorSetString(ColorInterface $color): string {
+    /**
+     * @param ColorInterface $color
+     * @return string
+     */
+    private function get_color_set_string(ColorInterface $color): string {
         if ($color instanceof Rgb) {
-            return $this->getColorString($color) . ' rgb';
+            return $this->get_color_string($color) . ' rgb';
         }
 
         if ($color instanceof Cmyk) {
-            return $this->getColorString($color) . ' cmyk';
+            return $this->get_color_string($color) . ' cmyk';
         }
 
         if ($color instanceof Gray) {
-            return $this->getColorString($color) . ' gray';
+            return $this->get_color_string($color) . ' gray';
         }
 
-        return $this->getColorSetString($color->toCmyk());
+        return $this->get_color_set_string($color->toCmyk());
     }
 
-    private function getColorString(ColorInterface $color): string {
+    /**
+     * @param ColorInterface $color
+     * @return string
+     */
+    private function get_color_string(ColorInterface $color): string {
         if ($color instanceof Rgb) {
             return sprintf('%s %s %s', $color->getRed() / 255, $color->getGreen() / 255, $color->getBlue() / 255);
         }
@@ -371,6 +441,6 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             return sprintf('%s', $color->getGray() / 100);
         }
 
-        return $this->getColorString($color->toCmyk());
+        return $this->get_color_string($color->toCmyk());
     }
 }

@@ -94,7 +94,7 @@ final class RoundnessModule implements ModuleInterface
                         );
                     }
 
-                    $path = $path->ellipticArc(
+                    $path = $path->elliptic_arc(
                         $this->intensity,
                         $this->intensity,
                         0,
@@ -119,7 +119,7 @@ final class RoundnessModule implements ModuleInterface
                         );
                     }
 
-                    $path = $path->ellipticArc(
+                    $path = $path->elliptic_arc(
                         $this->intensity,
                         $this->intensity,
                         0,

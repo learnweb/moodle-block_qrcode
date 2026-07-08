@@ -18,13 +18,26 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Path;
 
+/**
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class Close implements OperationInterface
 {
+    /**
+     * @var Close|null
+     */
     private static ?Close $instance = null;
 
+    /**
+     * Constructor.
+     */
     private function __construct() {
     }
 
+    /**
+     * @return self
+     */
     public static function instance(): self {
         return self::$instance ?: self::$instance = new self();
     }

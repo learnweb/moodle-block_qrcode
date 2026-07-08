@@ -20,24 +20,46 @@ namespace BaconQrCode\Renderer\RendererStyle;
 
 use BaconQrCode\Renderer\Color\ColorInterface;
 
+/**
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class Gradient
 {
+    /**
+     * Construct.
+     *
+     * @param ColorInterface $startcolor
+     * @param ColorInterface $endcolor
+     * @param GradientType $type
+     */
     public function __construct(
-        private readonly ColorInterface $startColor,
-        private readonly ColorInterface $endColor,
+        private readonly ColorInterface $startcolor,
+        private readonly ColorInterface $endcolor,
         private readonly GradientType $type
     ) {
     }
 
-    public function getStartColor(): ColorInterface {
-        return $this->startColor;
+    /**
+     * Returns
+     * @return ColorInterface
+     */
+    public function get_start_color(): ColorInterface {
+        return $this->startcolor;
     }
 
-    public function getEndColor(): ColorInterface {
-        return $this->endColor;
+    /**
+     * @return ColorInterface
+     */
+    public function get_end_color(): ColorInterface {
+        return $this->endcolor;
     }
 
-    public function getType(): GradientType {
+    /**
+     * @return GradientType
+     */
+    public function get_type(): GradientType {
         return $this->type;
     }
 }

@@ -18,28 +18,45 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Path;
 
+/**
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class Line implements OperationInterface
 {
+    /**
+     * @param float $x
+     * @param float $y
+     */
     public function __construct(private readonly float $x, private readonly float $y) {
     }
 
-    public function getX(): float {
+    /**
+     * @return float
+     */
+    public function get_x(): float {
         return $this->x;
     }
 
-    public function getY(): float {
+    /**
+     * @return float
+     */
+    public function get_y(): float {
         return $this->y;
     }
 
     /**
-     * @return self
+     * @param float $x
+     * @param float $y
+     * @return OperationInterface
      */
     public function translate(float $x, float $y): OperationInterface {
         return new self($this->x + $x, $this->y + $y);
     }
 
     /**
-     * @return self
+     * @param int $degrees
+     * @return OperationInterface
      */
     public function rotate(int $degrees): OperationInterface {
         $radians = deg2rad($degrees);

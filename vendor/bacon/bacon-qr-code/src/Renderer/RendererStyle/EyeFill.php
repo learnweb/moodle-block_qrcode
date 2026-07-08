@@ -21,49 +21,106 @@ namespace BaconQrCode\Renderer\RendererStyle;
 use BaconQrCode\Exception\RuntimeException;
 use BaconQrCode\Renderer\Color\ColorInterface;
 
+/**
+ * Defines the fill style for QR code eyes.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class EyeFill
 {
+    /**
+     * @var EyeFill|null
+     */
     private static ?EyeFill $inherit = null;
 
+    /**
+     * Constructor.
+     *
+     * @param ColorInterface|null $externalcolor
+     * @param ColorInterface|null $internalcolor
+     */
     public function __construct(
-        private readonly ?ColorInterface $externalColor,
-        private readonly ?ColorInterface $internalColor
+        /**
+         * @var ColorInterface|null
+         */
+        private readonly ?ColorInterface $externalcolor,
+        /**
+         * @var ColorInterface|null
+         */
+        private readonly ?ColorInterface $internalcolor
     ) {
     }
 
+    /**
+     * Creates a uniform eye fill.
+     *
+     * @param ColorInterface $color
+     * @return self
+     */
     public static function uniform(ColorInterface $color): self {
         return new self($color, $color);
     }
 
+    /**
+     * Creates an inherited eye fill.
+     *
+     * @return self
+     */
     public static function inherit(): self {
         return self::$inherit ?: self::$inherit = new self(null, null);
     }
 
-    public function inheritsBothColors(): bool {
-        return null === $this->externalColor && null === $this->internalColor;
+    /**
+     * Checks whether both colors are inherited.
+     *
+     * @return bool
+     */
+    public function inherits_both_colors(): bool {
+        return null === $this->externalcolor && null === $this->internalcolor;
     }
 
-    public function inheritsExternalColor(): bool {
-        return null === $this->externalColor;
+    /**
+     * Checks whether the external color is inherited.
+     *
+     * @return bool
+     */
+    public function inherits_external_color(): bool {
+        return null === $this->externalcolor;
     }
 
-    public function inheritsInternalColor(): bool {
-        return null === $this->internalColor;
+    /**
+     * Checks whether the internal color is inherited.
+     *
+     * @return bool
+     */
+    public function inherits_internal_color(): bool {
+        return null === $this->internalcolor;
     }
 
-    public function getExternalColor(): ColorInterface {
-        if (null === $this->externalColor) {
+    /**
+     * Returns the external color.
+     *
+     * @return ColorInterface
+     */
+    public function get_external_color(): ColorInterface {
+        if (null === $this->externalcolor) {
             throw new RuntimeException('External eye color inherits foreground color');
         }
 
-        return $this->externalColor;
+        return $this->externalcolor;
     }
 
-    public function getInternalColor(): ColorInterface {
-        if (null === $this->internalColor) {
+    /**
+     * Returns the internal color.
+     *
+     * @return ColorInterface
+     */
+    public function get_internal_color(): ColorInterface {
+        if (null === $this->internalcolor) {
             throw new RuntimeException('Internal eye color inherits foreground color');
         }
 
-        return $this->internalColor;
+        return $this->internalcolor;
     }
 }

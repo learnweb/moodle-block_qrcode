@@ -51,10 +51,10 @@ final class SimpleCircleEye implements EyeInterface
     public function getInternalPath(): Path {
         return (new Path())
             ->move(1.5, 0)
-            ->ellipticArc(1.5, 1.5, 0., false, true, 0., 1.5)
-            ->ellipticArc(1.5, 1.5, 0., false, true, -1.5, 0.)
-            ->ellipticArc(1.5, 1.5, 0., false, true, 0., -1.5)
-            ->ellipticArc(1.5, 1.5, 0., false, true, 1.5, 0.)
+            ->elliptic_arc(1.5, 1.5, 0., false, true, 0., 1.5)
+            ->elliptic_arc(1.5, 1.5, 0., false, true, -1.5, 0.)
+            ->elliptic_arc(1.5, 1.5, 0., false, true, 0., -1.5)
+            ->elliptic_arc(1.5, 1.5, 0., false, true, 1.5, 0.)
             ->close();
     }
 }

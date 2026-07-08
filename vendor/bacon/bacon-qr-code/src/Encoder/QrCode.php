@@ -57,17 +57,17 @@ final class QrCode
      * @param ByteMatrix $matrix
      */
     public function __construct(
-            /**
-             * @var Mode
-             */
+        /**
+         * @var Mode
+         */
         private readonly Mode $mode,
-            /**
-             * @var ErrorCorrectionLevel
-             */
+        /**
+         * @var ErrorCorrectionLevel
+         */
         private readonly ErrorCorrectionLevel $errorcorrectionlevel,
-            /**
-             * @var Version
-             */
+        /**
+         * @var Version
+         */
         private readonly Version $version,
         int $maskpattern,
         ByteMatrix $matrix

@@ -120,13 +120,13 @@ final class GDLibRenderer implements RendererInterface
     }
 
     private function drawEye(int $xOffset, int $yOffset, float $pointInPx, EyeFill $eyeFill): void {
-        $internalColor = $this->getColor($eyeFill->inheritsInternalColor()
+        $internalColor = $this->getColor($eyeFill->inherits_internal_color()
             ? $this->fill->get_foreground_color()
-            : $eyeFill->getInternalColor());
+            : $eyeFill->get_internal_color());
 
-        $externalColor = $this->getColor($eyeFill->inheritsExternalColor()
+        $externalColor = $this->getColor($eyeFill->inherits_external_color()
             ? $this->fill->get_foreground_color()
-            : $eyeFill->getExternalColor());
+            : $eyeFill->get_external_color());
 
         for ($y = 0; $y < 7; $y += 1) {
             for ($x = 0; $x < 7; $x += 1) {

@@ -83,6 +83,7 @@ final class ByteMatrix
     }
 
     /**
+     * Returns all byte values in the matrix as a flat traversable sequence.
      * @return Traversable<int>
      */
     public function get_bytes(): Traversable {

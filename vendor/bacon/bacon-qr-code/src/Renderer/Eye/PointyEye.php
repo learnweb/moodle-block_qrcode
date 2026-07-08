@@ -41,25 +41,25 @@ final class PointyEye implements EyeInterface
         return (new Path())
             ->move(-3.5, 3.5)
             ->line(-3.5, 0)
-            ->ellipticArc(3.5, 3.5, 0, false, true, 0, -3.5)
+            ->elliptic_arc(3.5, 3.5, 0, false, true, 0, -3.5)
             ->line(3.5, -3.5)
             ->line(3.5, 3.5)
             ->close()
             ->move(2.5, 0)
-            ->ellipticArc(2.5, 2.5, 0, false, true, 0, 2.5)
-            ->ellipticArc(2.5, 2.5, 0, false, true, -2.5, 0)
-            ->ellipticArc(2.5, 2.5, 0, false, true, 0, -2.5)
-            ->ellipticArc(2.5, 2.5, 0, false, true, 2.5, 0)
+            ->elliptic_arc(2.5, 2.5, 0, false, true, 0, 2.5)
+            ->elliptic_arc(2.5, 2.5, 0, false, true, -2.5, 0)
+            ->elliptic_arc(2.5, 2.5, 0, false, true, 0, -2.5)
+            ->elliptic_arc(2.5, 2.5, 0, false, true, 2.5, 0)
             ->close();
     }
 
     public function getInternalPath(): Path {
         return (new Path())
             ->move(1.5, 0)
-            ->ellipticArc(1.5, 1.5, 0., false, true, 0., 1.5)
-            ->ellipticArc(1.5, 1.5, 0., false, true, -1.5, 0.)
-            ->ellipticArc(1.5, 1.5, 0., false, true, 0., -1.5)
-            ->ellipticArc(1.5, 1.5, 0., false, true, 1.5, 0.)
+            ->elliptic_arc(1.5, 1.5, 0., false, true, 0., 1.5)
+            ->elliptic_arc(1.5, 1.5, 0., false, true, -1.5, 0.)
+            ->elliptic_arc(1.5, 1.5, 0., false, true, 0., -1.5)
+            ->elliptic_arc(1.5, 1.5, 0., false, true, 1.5, 0.)
             ->close();
     }
 }

@@ -123,7 +123,7 @@ final class ImageRenderer implements RendererInterface
         int $rotation,
         Path $modulePath
     ): Path {
-        if ($fill->inheritsBothColors()) {
+        if ($fill->inherits_both_colors()) {
             return $modulePath
                 ->append(
                     $externalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
@@ -140,20 +140,20 @@ final class ImageRenderer implements RendererInterface
             $this->imageBackEnd->rotate($rotation);
         }
 
-        if ($fill->inheritsExternalColor()) {
+        if ($fill->inherits_external_color()) {
             $modulePath = $modulePath->append(
                 $externalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
             );
         } else {
-            $this->imageBackEnd->draw_path_with_color($externalPath, $fill->getExternalColor());
+            $this->imageBackEnd->draw_path_with_color($externalPath, $fill->get_external_color());
         }
 
-        if ($fill->inheritsInternalColor()) {
+        if ($fill->inherits_internal_color()) {
             $modulePath = $modulePath->append(
                 $internalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
             );
         } else {
-            $this->imageBackEnd->draw_path_with_color($internalPath, $fill->getInternalColor());
+            $this->imageBackEnd->draw_path_with_color($internalPath, $fill->get_internal_color());
         }
 
         $this->imageBackEnd->pop();

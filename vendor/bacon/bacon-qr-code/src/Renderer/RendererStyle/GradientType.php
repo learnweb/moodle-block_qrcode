@@ -21,11 +21,7 @@ namespace BaconQrCode\Renderer\RendererStyle;
 use DASPRiD\Enum\AbstractEnum;
 
 /**
- * @method static self VERTICAL()
- * @method static self HORIZONTAL()
- * @method static self DIAGONAL()
- * @method static self INVERSE_DIAGONAL()
- * @method static self RADIAL()
+ *  Gradient type enum.
  *
  * @copyright 2024 Justus Dieckmann
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -33,23 +29,23 @@ use DASPRiD\Enum\AbstractEnum;
 final class GradientType extends AbstractEnum
 {
     /**
-     *
+     * Vertical gradient.
      */
     protected const VERTICAL = null;
     /**
-     *
+     * Horizontal gradient.
      */
     protected const HORIZONTAL = null;
     /**
-     *
+     * Diagonal gradient.
      */
     protected const DIAGONAL = null;
     /**
-     *
+     * Inverse diagonal gradient.
      */
     protected const INVERSE_DIAGONAL = null;
     /**
-     *
+     * Radial gradient.
      */
     protected const RADIAL = null;
 }

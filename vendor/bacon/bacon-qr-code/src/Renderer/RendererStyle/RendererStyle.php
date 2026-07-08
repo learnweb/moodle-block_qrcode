@@ -24,6 +24,8 @@ use BaconQrCode\Renderer\Module\ModuleInterface;
 use BaconQrCode\Renderer\Module\SquareModule;
 
 /**
+ * Defines the renderer style for a QR code.
+ *
  * @copyright 2024 Justus Dieckmann
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -43,6 +45,8 @@ final class RendererStyle
     private Fill $fill;
 
     /**
+     * Constructor.
+     *
      * @param int $size
      * @param int $margin
      * @param ModuleInterface|null $module
@@ -50,7 +54,13 @@ final class RendererStyle
      * @param Fill|null $fill
      */
     public function __construct(
+        /**
+         * @var int
+         */
         private int $size,
+        /**
+         * @var int
+         */
         private int $margin = 4,
         ?ModuleInterface $module = null,
         ?EyeInterface $eye = null,
@@ -62,6 +72,8 @@ final class RendererStyle
     }
 
     /**
+     * Returns a copy with the given size.
+     *
      * @param int $size
      * @return $this
      */
@@ -72,6 +84,8 @@ final class RendererStyle
     }
 
     /**
+     * Returns a copy with the given margin.
+     *
      * @param int $margin
      * @return $this
      */
@@ -82,6 +96,8 @@ final class RendererStyle
     }
 
     /**
+     * Returns the size.
+     *
      * @return int
      */
     public function get_size(): int {
@@ -89,6 +105,8 @@ final class RendererStyle
     }
 
     /**
+     * Returns the margin.
+     *
      * @return int
      */
     public function get_margin(): int {
@@ -96,6 +114,8 @@ final class RendererStyle
     }
 
     /**
+     * Returns the module renderer.
+     *
      * @return ModuleInterface
      */
     public function get_module(): ModuleInterface {
@@ -103,6 +123,8 @@ final class RendererStyle
     }
 
     /**
+     * Returns the eye renderer.
+     *
      * @return EyeInterface
      */
     public function get_eye(): EyeInterface {
@@ -110,6 +132,8 @@ final class RendererStyle
     }
 
     /**
+     * Returns the fill style.
+     *
      * @return Fill
      */
     public function get_fill(): Fill {

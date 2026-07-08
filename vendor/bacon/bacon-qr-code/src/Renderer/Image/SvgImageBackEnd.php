@@ -286,33 +286,33 @@ final class SvgImageBackEnd implements ImageBackEndInterface
                 case $op instanceof Line:
                     $pathdata[] = sprintf(
                         'L%s %s',
-                        round($op->getX(), self::PRECISION),
-                        round($op->getY(), self::PRECISION)
+                        round($op->get_x(), self::PRECISION),
+                        round($op->get_y(), self::PRECISION)
                     );
                     break;
 
                 case $op instanceof EllipticArc:
                     $pathdata[] = sprintf(
                         'A%s %s %s %u %u %s %s',
-                        round($op->getXRadius(), self::PRECISION),
-                        round($op->getYRadius(), self::PRECISION),
-                        round($op->getXAxisAngle(), self::PRECISION),
-                        $op->isLargeArc(),
-                        $op->isSweep(),
-                        round($op->getX(), self::PRECISION),
-                        round($op->getY(), self::PRECISION)
+                        round($op->get_x_radius(), self::PRECISION),
+                        round($op->get_y_radius(), self::PRECISION),
+                        round($op->get_x_axis_angle(), self::PRECISION),
+                        $op->is_large_arc(),
+                        $op->is_sweep(),
+                        round($op->get_x(), self::PRECISION),
+                        round($op->get_y(), self::PRECISION)
                     );
                     break;
 
                 case $op instanceof Curve:
                     $pathdata[] = sprintf(
                         'C%s %s %s %s %s %s',
-                        round($op->getX1(), self::PRECISION),
-                        round($op->getY1(), self::PRECISION),
-                        round($op->getX2(), self::PRECISION),
-                        round($op->getY2(), self::PRECISION),
-                        round($op->getX3(), self::PRECISION),
-                        round($op->getY3(), self::PRECISION)
+                        round($op->get_x_1(), self::PRECISION),
+                        round($op->get_y_1(), self::PRECISION),
+                        round($op->get_x_2(), self::PRECISION),
+                        round($op->get_y_2(), self::PRECISION),
+                        round($op->get_x_3(), self::PRECISION),
+                        round($op->get_y_3(), self::PRECISION)
                     );
                     break;
 
@@ -341,10 +341,10 @@ final class SvgImageBackEnd implements ImageBackEndInterface
     private function create_gradient_fill(Gradient $gradient, float $x, float $y, float $width, float $height): string {
         $this->xmlWriter->startElement('defs');
 
-        $startcolor = $gradient->getStartColor();
-        $endcolor = $gradient->getEndColor();
+        $startcolor = $gradient->get_start_color();
+        $endcolor = $gradient->get_end_color();
 
-        if ($gradient->getType() === GradientType::RADIAL()) {
+        if ($gradient->get_type() === GradientType::RADIAL()) {
             $this->xmlWriter->startElement('radialGradient');
         } else {
             $this->xmlWriter->startElement('linearGradient');
@@ -352,7 +352,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
 
         $this->xmlWriter->writeAttribute('gradientUnits', 'userSpaceOnUse');
 
-        switch ($gradient->getType()) {
+        switch ($gradient->get_type()) {
             case GradientType::HORIZONTAL():
                 $this->xmlWriter->writeAttribute('x1', (string) round($x, self::PRECISION));
                 $this->xmlWriter->writeAttribute('y1', (string) round($y, self::PRECISION));
@@ -388,7 +388,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
                 break;
         }
 
-        $tobehashed = $this->get_color_string($startcolor) . $this->get_color_string($endcolor) . $gradient->getType();
+        $tobehashed = $this->get_color_string($startcolor) . $this->get_color_string($endcolor) . $gradient->get_type();
         if ($startcolor instanceof Alpha) {
             $tobehashed .= (string) $startcolor->getAlpha();
         }

@@ -250,29 +250,29 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
                     break;
 
                 case $op instanceof Line:
-                    $this->draw->pathLineToAbsolute($op->getX(), $op->getY());
+                    $this->draw->pathLineToAbsolute($op->get_x(), $op->get_y());
                     break;
 
                 case $op instanceof EllipticArc:
                     $this->draw->pathEllipticArcAbsolute(
-                        $op->getXRadius(),
-                        $op->getYRadius(),
-                        $op->getXAxisAngle(),
-                        $op->isLargeArc(),
-                        $op->isSweep(),
-                        $op->getX(),
-                        $op->getY()
+                        $op->get_x_radius(),
+                        $op->get_y_radius(),
+                        $op->get_x_axis_angle(),
+                        $op->is_large_arc(),
+                        $op->is_sweep(),
+                        $op->get_x(),
+                        $op->get_y()
                     );
                     break;
 
                 case $op instanceof Curve:
                     $this->draw->pathCurveToAbsolute(
-                        $op->getX1(),
-                        $op->getY1(),
-                        $op->getX2(),
-                        $op->getY2(),
-                        $op->getX3(),
-                        $op->getY3()
+                        $op->get_x_1(),
+                        $op->get_y_1(),
+                        $op->get_x_2(),
+                        $op->get_y_2(),
+                        $op->get_x_3(),
+                        $op->get_y_3()
                     );
                     break;
 
@@ -301,11 +301,11 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
     private function create_gradient_fill(Gradient $gradient, float $x, float $y, float $width, float $height): string {
         [$width, $height] = $this->matrices[$this->matrixindex]->apply($width, $height);
 
-        $startcolor = $this->get_color_pixel($gradient->getStartColor())->getColorAsString();
-        $endcolor = $this->get_color_pixel($gradient->getEndColor())->getColorAsString();
+        $startcolor = $this->get_color_pixel($gradient->get_start_color())->getColorAsString();
+        $endcolor = $this->get_color_pixel($gradient->get_end_color())->getColorAsString();
         $gradientimage = new Imagick();
 
-        switch ($gradient->getType()) {
+        switch ($gradient->get_type()) {
             case GradientType::HORIZONTAL():
                 $gradientimage->newPseudoImage((int) $height, (int) $width, sprintf(
                     'gradient:%s-%s',
@@ -331,7 +331,7 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
                     $endcolor
                 ));
 
-                if (GradientType::DIAGONAL() === $gradient->getType()) {
+                if (GradientType::DIAGONAL() === $gradient->get_type()) {
                     $gradientimage->rotateImage('transparent', -45);
                 } else {
                     $gradientimage->rotateImage('transparent', -135);

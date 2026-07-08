@@ -18,44 +18,100 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Path;
 
+/**
+ * @copyright 2025 D. Meißner
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class Curve implements OperationInterface
 {
+    /**
+     * @param float $x1
+     * @param float $y1
+     * @param float $x2
+     * @param float $y2
+     * @param float $x3
+     * @param float $y3
+     */
     public function __construct(
+            /**
+             * @var float
+             */
         private readonly float $x1,
+            /**
+             * @var float
+             */
         private readonly float $y1,
+            /**
+             * @var float
+             */
         private readonly float $x2,
+            /**
+             * @var float
+             */
         private readonly float $y2,
+            /**
+             * @var float
+             */
         private readonly float $x3,
+            /**
+             * @var float
+             */
         private readonly float $y3
     ) {
     }
 
-    public function getX1(): float {
+    /**
+     * Getter for x1.
+     * @return float
+     */
+    public function get_x_1(): float {
         return $this->x1;
     }
 
-    public function getY1(): float {
+    /**
+     * Getter for y1.
+     * @return float
+     */
+    public function get_y_1(): float {
         return $this->y1;
     }
 
-    public function getX2(): float {
+    /**
+     * Getter for x2.
+     * @return float
+     */
+    public function get_x_2(): float {
         return $this->x2;
     }
 
-    public function getY2(): float {
+    /**
+     * Getter for y2.
+     * @return float
+     */
+    public function get_y_2(): float {
         return $this->y2;
     }
 
-    public function getX3(): float {
+    /**
+     * Getter for x3.
+     * @return float
+     */
+    public function get_x_3(): float {
         return $this->x3;
     }
 
-    public function getY3(): float {
+    /**
+     * Getter for y3.
+     * @return float
+     */
+    public function get_y_3(): float {
         return $this->y3;
     }
 
     /**
-     * @return self
+     * @param float $x
+     * @param float $y
+     * @return OperationInterface
      */
     public function translate(float $x, float $y): OperationInterface {
         return new self(
@@ -69,7 +125,8 @@ final class Curve implements OperationInterface
     }
 
     /**
-     * @return self
+     * @param int $degrees
+     * @return OperationInterface
      */
     public function rotate(int $degrees): OperationInterface {
         $radians = deg2rad($degrees);

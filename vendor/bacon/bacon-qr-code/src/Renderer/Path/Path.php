@@ -23,6 +23,9 @@ use Traversable;
 
 /**
  * Internal Representation of a vector path.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class Path implements IteratorAggregate
 {
@@ -33,6 +36,10 @@ final class Path implements IteratorAggregate
 
     /**
      * Moves the drawing operation to a certain position.
+     *
+     * @param float $x
+     * @param float $y
+     * @return $this
      */
     public function move(float $x, float $y): self {
         $path = clone $this;
@@ -42,6 +49,10 @@ final class Path implements IteratorAggregate
 
     /**
      * Draws a line from the current position to another position.
+     *
+     * @param float $x
+     * @param float $y
+     * @return $this
      */
     public function line(float $x, float $y): self {
         $path = clone $this;
@@ -52,22 +63,30 @@ final class Path implements IteratorAggregate
     /**
      * Draws an elliptic arc from the current position to another position.
      */
-    public function ellipticArc(
-        float $xRadius,
-        float $yRadius,
-        float $xAxisRotation,
-        bool $largeArc,
+    public function elliptic_arc(
+        float $xradius,
+        float $yradius,
+        float $xaxisrotation,
+        bool $largearc,
         bool $sweep,
         float $x,
         float $y
     ): self {
         $path = clone $this;
-        $path->operations[] = new EllipticArc($xRadius, $yRadius, $xAxisRotation, $largeArc, $sweep, $x, $y);
+        $path->operations[] = new EllipticArc($xradius, $yradius, $xaxisrotation, $largearc, $sweep, $x, $y);
         return $path;
     }
 
     /**
      * Draws a curve from the current position to another position.
+     *
+     * @param float $x1
+     * @param float $y1
+     * @param float $x2
+     * @param float $y2
+     * @param float $x3
+     * @param float $y3
+     * @return $this
      */
     public function curve(float $x1, float $y1, float $x2, float $y2, float $x3, float $y3): self {
         $path = clone $this;
@@ -77,6 +96,8 @@ final class Path implements IteratorAggregate
 
     /**
      * Closes a sub-path.
+     *
+     * @return $this
      */
     public function close(): self {
         $path = clone $this;
@@ -86,6 +107,9 @@ final class Path implements IteratorAggregate
 
     /**
      * Appends another path to this one.
+     *
+     * @param Path $other
+     * @return $this
      */
     public function append(self $other): self {
         $path = clone $this;
@@ -93,6 +117,11 @@ final class Path implements IteratorAggregate
         return $path;
     }
 
+    /**
+     * @param float $x
+     * @param float $y
+     * @return self
+     */
     public function translate(float $x, float $y): self {
         $path = new self();
 
@@ -103,6 +132,10 @@ final class Path implements IteratorAggregate
         return $path;
     }
 
+    /**
+     * @param int $degrees
+     * @return self
+     */
     public function rotate(int $degrees): self {
         $path = new self();
 
