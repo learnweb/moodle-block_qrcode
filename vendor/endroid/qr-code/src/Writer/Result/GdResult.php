@@ -20,24 +20,56 @@ namespace Endroid\QrCode\Writer\Result;
 
 use Endroid\QrCode\Matrix\MatrixInterface;
 
+/**
+ * Represents the result of writing a QR code using GD.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class GdResult extends AbstractResult
 {
+    /**
+     * Constructs a new GdResult instance with the given matrix and GD image.
+     *
+     * @param MatrixInterface $matrix
+     * @param \GdImage $image
+     */
     public function __construct(
         MatrixInterface $matrix,
+        /**
+         * @var \GdImage
+         */
         protected readonly \GdImage $image,
     ) {
         parent::__construct($matrix);
     }
 
-    public function getImage(): \GdImage {
+    /**
+     * Returns the GD image associated with this result.
+     *
+     * @return \GdImage
+     */
+    public function get_image(): \GdImage {
         return $this->image;
     }
 
-    public function getString(): string {
+    /**
+     * Returns the string representation of the QR code.
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function get_string(): string {
         throw new \Exception('You can only use this method in a concrete implementation');
     }
 
-    public function getMimeType(): string {
+    /**
+     * Returns the data URI representation of the QR code.
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function get_mime_type(): string {
         throw new \Exception('You can only use this method in a concrete implementation');
     }
 }

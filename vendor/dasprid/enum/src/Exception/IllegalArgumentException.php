@@ -20,6 +20,12 @@ namespace DASPRiD\Enum\Exception;
 
 use Exception;
 
+/**
+ * Exception thrown when an illegal argument is provided to an enumeration method.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class IllegalArgumentException extends Exception implements ExceptionInterface
 {
 }

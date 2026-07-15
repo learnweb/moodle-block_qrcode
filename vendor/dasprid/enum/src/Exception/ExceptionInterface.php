@@ -20,6 +20,12 @@ namespace DASPRiD\Enum\Exception;
 
 use Throwable;
 
+/**
+ * Interface for exceptions related to enumerations.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface ExceptionInterface extends Throwable
 {
 }

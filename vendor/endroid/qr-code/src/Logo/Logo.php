@@ -18,29 +18,77 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Logo;
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Class representing a logo for a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class Logo implements LogoInterface
 {
+    /**
+     * Constructor.
+     *
+     * @param string $path
+     * @param int|null $resizetowidth
+     * @param int|null $resizetoheight
+     * @param bool $punchoutbackground
+     */
     public function __construct(
+        /**
+         * @var string
+         */
         private string $path,
-        private ?int $resizeToWidth = null,
-        private ?int $resizeToHeight = null,
-        private bool $punchoutBackground = false,
+        /**
+         * @var int|null
+         */
+        private ?int $resizetowidth = null,
+        /**
+         * @var int|null
+         */
+        private ?int $resizetoheight = null,
+        /**
+         * @var bool
+         */
+        private bool $punchoutbackground = false,
     ) {
     }
 
-    public function getPath(): string {
+    /**
+     * Returns the path to the logo image.
+     *
+     * @return string
+     */
+    public function get_path(): string {
         return $this->path;
     }
 
-    public function getResizeToWidth(): ?int {
-        return $this->resizeToWidth;
+    /**
+     * Returns the width to which the logo should be resized, or null if no resizing is needed.
+     *
+     * @return int|null
+     */
+    public function get_resize_to_width(): ?int {
+        return $this->resizetowidth;
     }
 
-    public function getResizeToHeight(): ?int {
-        return $this->resizeToHeight;
+    /**
+     * Returns the height to which the logo should be resized, or null if no resizing is needed.
+     *
+     * @return int|null
+     */
+    public function get_resize_to_height(): ?int {
+        return $this->resizetoheight;
     }
 
-    public function getPunchoutBackground(): bool {
-        return $this->punchoutBackground;
+    /**
+     * Returns whether the background of the logo should be punched out (made transparent).
+     *
+     * @return bool
+     */
+    public function get_punchout_background(): bool {
+        return $this->punchoutbackground;
     }
 }

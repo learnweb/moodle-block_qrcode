@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Writer;
 
+defined('MOODLE_INTERNAL') || die();
+
 use Endroid\QrCode\Bacon\MatrixFactory;
 use Endroid\QrCode\Label\LabelInterface;
 use Endroid\QrCode\Logo\LogoInterface;
@@ -25,12 +27,34 @@ use Endroid\QrCode\QrCodeInterface;
 use Endroid\QrCode\Writer\Result\ConsoleResult;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 
+/**
+ * Writer for generating QR codes in console format.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class ConsoleWriter implements WriterInterface
 {
-    public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, $options = []): ResultInterface {
-        $matrixFactory = new MatrixFactory();
-        $matrix = $matrixFactory->create($qrCode);
+    /**
+     * Writes a QR code to console format, optionally including a logo and label, and returns the result.
+     *
+     * @param QrCodeInterface $qrcode
+     * @param LogoInterface|null $logo
+     * @param LabelInterface|null $label
+     * @param $options
+     * @return ResultInterface
+     * @throws \DASPRiD\Enum\Exception\IllegalArgumentException
+     * @throws \Endroid\QrCode\Exception\BlockSizeTooSmallException
+     */
+    public function write(
+        QrCodeInterface $qrcode,
+        ?LogoInterface $logo = null,
+        ?LabelInterface $label = null,
+        $options = []
+    ): ResultInterface {
+        $matrixfactory = new MatrixFactory();
+        $matrix = $matrixfactory->create($qrcode);
 
-        return new ConsoleResult($matrix, $qrCode->getForegroundColor(), $qrCode->getBackgroundColor());
+        return new ConsoleResult($matrix, $qrcode->get_foreground_color(), $qrcode->get_background_color());
     }
 }

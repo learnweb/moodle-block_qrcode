@@ -18,6 +18,12 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode;
 
+/**
+ * Enumeration of the different modes for rounding the block size.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 enum RoundBlockSizeMode: string
 {
     case Enlarge = 'enlarge';

@@ -18,6 +18,12 @@ declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Module\EdgeIterator;
 
+/**
+ * Edge representation.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class Edge
 {
     /**
@@ -28,65 +34,110 @@ final class Edge
     /**
      * @var array<int[]>|null
      */
-    private ?array $simplifiedPoints = null;
+    private ?array $simplifiedpoints = null;
 
-    private int $minX = PHP_INT_MAX;
+    /**
+     * @var int
+     */
+    private int $minx = PHP_INT_MAX;
 
-    private int $minY = PHP_INT_MAX;
+    /**
+     * @var int
+     */
+    private int $miny = PHP_INT_MAX;
 
-    private int $maxX = -1;
+    /**
+     * @var int
+     */
+    private int $maxx = -1;
 
-    private int $maxY = -1;
+    /**
+     * @var int
+     */
+    private int $maxy = -1;
 
-    public function __construct(private readonly bool $positive) {
+    /**
+     * Constructor.
+     * @param bool $positive
+     */
+    public function __construct(
+        /**
+         * @var bool
+         */
+        private readonly bool $positive
+    ) {
     }
 
-    public function addPoint(int $x, int $y): void {
+    /**
+     * Adds a point to the edge.
+     *
+     * @param int $x
+     * @param int $y
+     * @return void
+     */
+    public function add_point(int $x, int $y): void {
         $this->points[] = [$x, $y];
-        $this->minX = min($this->minX, $x);
-        $this->minY = min($this->minY, $y);
-        $this->maxX = max($this->maxX, $x);
-        $this->maxY = max($this->maxY, $y);
+        $this->minx = min($this->minx, $x);
+        $this->miny = min($this->miny, $y);
+        $this->maxx = max($this->maxx, $x);
+        $this->maxy = max($this->maxy, $y);
     }
 
-    public function isPositive(): bool {
+    /**
+     * Returns whether the edge is positive.
+     *
+     * @return bool
+     */
+    public function is_positive(): bool {
         return $this->positive;
     }
 
     /**
+     * Returns the points of the edge.
+     *
      * @return array<int[]>
      */
-    public function getPoints(): array {
+    public function get_points(): array {
         return $this->points;
     }
 
-    public function getMaxX(): int {
-        return $this->maxX;
+    /**
+     * Returns the minimum x-coordinate of the edge.
+     *
+     * @return int
+     */
+    public function get_max_x(): int {
+        return $this->maxx;
     }
 
-    public function getSimplifiedPoints(): array {
-        if (null !== $this->simplifiedPoints) {
-            return $this->simplifiedPoints;
+    /**
+     * Returns the minimum y-coordinate of the edge.
+     *
+     * @return array|\int[][]
+     */
+    public function get_simplified_points(): array {
+        if (null !== $this->simplifiedpoints) {
+            return $this->simplifiedpoints;
         }
 
         $points = [];
         $length = count($this->points);
 
         for ($i = 0; $i < $length; ++$i) {
-            $previousPoint = $this->points[(0 === $i ? $length : $i) - 1];
-            $nextPoint = $this->points[($length - 1 === $i ? -1 : $i) + 1];
-            $currentPoint = $this->points[$i];
+            $previouspoint = $this->points[(0 === $i ? $length : $i) - 1];
+            $nextpoint = $this->points[($length - 1 === $i ? -1 : $i) + 1];
+            $currentpoint = $this->points[$i];
 
             if (
-                ($previousPoint[0] === $currentPoint[0] && $currentPoint[0] === $nextPoint[0])
-                || ($previousPoint[1] === $currentPoint[1] && $currentPoint[1] === $nextPoint[1])
+                ($previouspoint[0] === $currentpoint[0] && $currentpoint[0] === $nextpoint[0])
+                || ($previouspoint[1] === $currentpoint[1] && $currentpoint[1] === $nextpoint[1])
             ) {
                 continue;
             }
 
-            $points[] = $currentPoint;
+            $points[] = $currentpoint;
         }
 
-        return $this->simplifiedPoints = $points;
+        return $this->simplifiedpoints = $points;
     }
 }

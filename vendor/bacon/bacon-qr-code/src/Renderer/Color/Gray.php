@@ -20,29 +20,62 @@ namespace BaconQrCode\Renderer\Color;
 
 use BaconQrCode\Exception;
 
+/**
+ * Gray color representation.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class Gray implements ColorInterface
 {
     /**
+     * Constructor.
+     *
      * @param int $gray the gray value between 0 (black) and 100 (white)
      */
-    public function __construct(private readonly int $gray) {
+    public function __construct(
+        /**
+         * @var int
+         */
+        private readonly int $gray
+    ) {
         if ($gray < 0 || $gray > 100) {
             throw new Exception\InvalidArgumentException('Gray must be between 0 and 100');
         }
     }
 
-    public function getGray(): int {
+    /**
+     * Returns the gray value.
+     *
+     * @return int
+     */
+    public function get_gray(): int {
         return $this->gray;
     }
 
+    /**
+     * Converts the gray color to RGB format.
+     *
+     * @return Rgb
+     */
     public function to_rgb(): Rgb {
         return new Rgb((int) ($this->gray * 2.55), (int) ($this->gray * 2.55), (int) ($this->gray * 2.55));
     }
 
+    /**
+     * Converts the gray color to CMYK format.
+     *
+     * @return Cmyk
+     */
     public function to_cmyk(): Cmyk {
         return new Cmyk(0, 0, 0, 100 - $this->gray);
     }
 
+    /**
+     * Converts the gray color to Gray format.
+     *
+     * @return $this
+     */
     public function to_gray(): Gray {
         return $this;
     }

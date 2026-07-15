@@ -23,63 +23,109 @@ use Endroid\QrCode\Logo\LogoInterface;
 use Endroid\QrCode\Matrix\MatrixInterface;
 use Endroid\QrCode\QrCodeInterface;
 
+/**
+ * Represents the result of writing a QR code in debug format.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class DebugResult extends AbstractResult
 {
-    private bool $validateResult = false;
+    /**
+     * @var bool
+     */
+    private bool $validateresult = false;
 
+    /**
+     * Constructor.
+     *
+     * @param MatrixInterface $matrix
+     * @param QrCodeInterface $qrcode
+     * @param LogoInterface|null $logo
+     * @param LabelInterface|null $label
+     * @param array $options
+     */
     public function __construct(
         MatrixInterface $matrix,
-        private readonly QrCodeInterface $qrCode,
+        /**
+         * @var QrCodeInterface
+         */
+        private readonly QrCodeInterface $qrcode,
+        /**
+         * @var LogoInterface|null
+         */
         private readonly ?LogoInterface $logo = null,
+        /**
+         * @var LabelInterface|null
+         */
         private readonly ?LabelInterface $label = null,
-        /** @var array<string, mixed> $options */
+        /**
+         * @var array
+         */
         private readonly array $options = [],
     ) {
         parent::__construct($matrix);
     }
 
-    public function setValidateResult(bool $validateResult): void {
-        $this->validateResult = $validateResult;
+    /**
+     * Sets the validation result for the QR code.
+     *
+     * @param bool $validateresult
+     * @return void
+     */
+    public function set_validate_result(bool $validateresult): void {
+        $this->validateresult = $validateresult;
     }
 
-    public function getString(): string {
-        $debugLines = [];
+    /**
+     * Returns a string representation of the debug information for the QR code,
+     * including data, encoding, error correction level, size, margin, colors, and any logo or label information.
+     *
+     * @return string
+     */
+    public function get_string(): string {
+        $debuglines = [];
 
-        $debugLines[] = 'Data: ' . $this->qrCode->getData();
-        $debugLines[] = 'Encoding: ' . $this->qrCode->getEncoding();
-        $debugLines[] = 'Error Correction Level: ' . get_class($this->qrCode->getErrorCorrectionLevel());
-        $debugLines[] = 'Size: ' . $this->qrCode->getSize();
-        $debugLines[] = 'Margin: ' . $this->qrCode->getMargin();
-        $debugLines[] = 'Round block size mode: ' . get_class($this->qrCode->getRoundBlockSizeMode());
-        $debugLines[] = 'Foreground color: [' . implode(', ', $this->qrCode->getForegroundColor()->toArray()) . ']';
-        $debugLines[] = 'Background color: [' . implode(', ', $this->qrCode->getBackgroundColor()->toArray()) . ']';
+        $debuglines[] = 'Data: ' . $this->qrcode->get_data();
+        $debuglines[] = 'Encoding: ' . $this->qrcode->get_encoding();
+        $debuglines[] = 'Error Correction Level: ' . get_class($this->qrcode->get_error_correction_level());
+        $debuglines[] = 'Size: ' . $this->qrcode->get_size();
+        $debuglines[] = 'Margin: ' . $this->qrcode->get_margin();
+        $debuglines[] = 'Round block size mode: ' . get_class($this->qrcode->get_roundblock_size_mode());
+        $debuglines[] = 'Foreground color: [' . implode(', ', $this->qrcode->get_foreground_color()->to_array()) . ']';
+        $debuglines[] = 'Background color: [' . implode(', ', $this->qrcode->get_background_color()->to_array()) . ']';
 
         foreach ($this->options as $key => $value) {
-            $debugLines[] = 'Writer option: ' . $key . ': ' . $value;
+            $debuglines[] = 'Writer option: ' . $key . ': ' . $value;
         }
 
         if (isset($this->logo)) {
-            $debugLines[] = 'Logo path: ' . $this->logo->getPath();
-            $debugLines[] = 'Logo resize to width: ' . $this->logo->getResizeToWidth();
-            $debugLines[] = 'Logo resize to height: ' . $this->logo->getResizeToHeight();
-            $debugLines[] = 'Logo punchout background: ' . ($this->logo->getPunchoutBackground() ? 'true' : 'false');
+            $debuglines[] = 'Logo path: ' . $this->logo->get_path();
+            $debuglines[] = 'Logo resize to width: ' . $this->logo->get_resize_to_width();
+            $debuglines[] = 'Logo resize to height: ' . $this->logo->get_resize_to_height();
+            $debuglines[] = 'Logo punchout background: ' . ($this->logo->get_punchout_background() ? 'true' : 'false');
         }
 
         if (isset($this->label)) {
-            $debugLines[] = 'Label text: ' . $this->label->getText();
-            $debugLines[] = 'Label font path: ' . $this->label->getFont()->getPath();
-            $debugLines[] = 'Label font size: ' . $this->label->getFont()->getSize();
-            $debugLines[] = 'Label alignment: ' . get_class($this->label->getAlignment());
-            $debugLines[] = 'Label margin: [' . implode(', ', $this->label->getMargin()->toArray()) . ']';
-            $debugLines[] = 'Label text color: [' . implode(', ', $this->label->getTextColor()->toArray()) . ']';
+            $debuglines[] = 'Label text: ' . $this->label->get_text();
+            $debuglines[] = 'Label font path: ' . $this->label->get_font()->get_path();
+            $debuglines[] = 'Label font size: ' . $this->label->get_font()->get_size();
+            $debuglines[] = 'Label alignment: ' . get_class($this->label->get_alignment());
+            $debuglines[] = 'Label margin: [' . implode(', ', $this->label->get_margin()->to_array()) . ']';
+            $debuglines[] = 'Label text color: [' . implode(', ', $this->label->get_text_color()->to_array()) . ']';
         }
 
-        $debugLines[] = 'Validate result: ' . ($this->validateResult ? 'true' : 'false');
+        $debuglines[] = 'Validate result: ' . ($this->validateresult ? 'true' : 'false');
 
-        return implode("\n", $debugLines);
+        return implode("\n", $debuglines);
     }
 
-    public function getMimeType(): string {
+    /**
+     * Returns the MIME type for the debug result, which is 'text/plain'.
+     *
+     * @return string
+     */
+    public function get_mime_type(): string {
         return 'text/plain';
     }
 }

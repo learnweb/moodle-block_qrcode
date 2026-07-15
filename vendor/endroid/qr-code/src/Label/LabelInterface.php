@@ -22,15 +22,46 @@ use Endroid\QrCode\Color\ColorInterface;
 use Endroid\QrCode\Label\Font\FontInterface;
 use Endroid\QrCode\Label\Margin\MarginInterface;
 
+/**
+ * Interface for a label in a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface LabelInterface
 {
-    public function getText(): string;
+    /**
+     * Returns the text of the label.
+     *
+     * @return string
+     */
+    public function get_text(): string;
 
-    public function getFont(): FontInterface;
+    /**
+     * Returns the font of the label.
+     *
+     * @return FontInterface
+     */
+    public function get_font(): FontInterface;
 
-    public function getAlignment(): LabelAlignment;
+    /**
+     * Returns the alignment of the label.
+     *
+     * @return LabelAlignment
+     */
+    public function get_alignment(): LabelAlignment;
 
-    public function getMargin(): MarginInterface;
+    /**
+     * Returns the margin of the label.
+     *
+     * @return MarginInterface
+     */
+    public function get_margin(): MarginInterface;
 
-    public function getTextColor(): ColorInterface;
+    /**
+     * Returns the text color of the label.
+     *
+     * @return ColorInterface
+     */
+    public function get_text_color(): ColorInterface;
 }

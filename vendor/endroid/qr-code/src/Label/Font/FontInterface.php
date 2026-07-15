@@ -18,9 +18,25 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Label\Font;
 
+/**
+ * Interface for a font used in a label of a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface FontInterface
 {
-    public function getPath(): string;
+    /**
+     * Returns the path to the font file.
+     *
+     * @return string
+     */
+    public function get_path(): string;
 
-    public function getSize(): int;
+    /**
+     * Returns the size of the font.
+     *
+     * @return int
+     */
+    public function get_size(): int;
 }

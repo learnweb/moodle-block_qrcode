@@ -20,35 +20,70 @@ namespace Endroid\QrCode\Writer\Result;
 
 use Endroid\QrCode\Matrix\MatrixInterface;
 
+/**
+ * Represents the result of writing a QR code in SVG format.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class SvgResult extends AbstractResult
 {
+    /**
+     * Creates a new instance of SvgResult.
+     *
+     * @param MatrixInterface $matrix
+     * @param \SimpleXMLElement $xml
+     * @param bool $excludexmldeclaration
+     */
     public function __construct(
         MatrixInterface $matrix,
+        /**
+         * @var \SimpleXMLElement
+         */
         private readonly \SimpleXMLElement $xml,
-        private readonly bool $excludeXmlDeclaration = false,
+        /**
+         * @var bool
+         */
+        private readonly bool $excludexmldeclaration = false,
     ) {
         parent::__construct($matrix);
     }
 
-    public function getXml(): \SimpleXMLElement {
+    /**
+     * Returns the SimpleXMLElement representing the SVG.
+     *
+     * @return \SimpleXMLElement
+     */
+    public function getxml(): \SimpleXMLElement {
         return $this->xml;
     }
 
-    public function getString(): string {
+    /**
+     * Returns the string representation of the SVG.
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function get_string(): string {
         $string = $this->xml->asXML();
 
         if (!is_string($string)) {
             throw new \Exception('Could not save SVG XML to string');
         }
 
-        if ($this->excludeXmlDeclaration) {
+        if ($this->excludexmldeclaration) {
             $string = str_replace("<?xml version=\"1.0\"?>\n", '', $string);
         }
 
         return $string;
     }
 
-    public function getMimeType(): string {
+    /**
+     * Returns the MIME type for SVG.
+     *
+     * @return string
+     */
+    public function get_mime_type(): string {
         return 'image/svg+xml';
     }
 }

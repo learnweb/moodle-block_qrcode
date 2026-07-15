@@ -21,21 +21,67 @@ namespace Endroid\QrCode;
 use Endroid\QrCode\Color\ColorInterface;
 use Endroid\QrCode\Encoding\EncodingInterface;
 
+/**
+ * Interface for a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface QrCodeInterface
 {
-    public function getData(): string;
+    /**
+     * Returns the data encoded in the QR code.
+     *
+     * @return string
+     */
+    public function get_data(): string;
 
-    public function getEncoding(): EncodingInterface;
+    /**
+     * Returns the encoding used for the QR code.
+     *
+     * @return EncodingInterface
+     */
+    public function get_encoding(): EncodingInterface;
 
-    public function getErrorCorrectionLevel(): ErrorCorrectionLevel;
+    /**
+     * Returns the error correction level of the QR code.
+     *
+     * @return ErrorCorrectionLevel
+     */
+    public function get_error_correction_level(): ErrorCorrectionLevel;
 
-    public function getSize(): int;
+    /**
+     * Returns the size of the QR code in pixels.
+     *
+     * @return int
+     */
+    public function get_size(): int;
 
-    public function getMargin(): int;
+    /**
+     * Returns the margin of the QR code in pixels.
+     *
+     * @return int
+     */
+    public function get_margin(): int;
 
-    public function getRoundBlockSizeMode(): RoundBlockSizeMode;
+    /**
+     * Returns the round block size mode of the QR code.
+     *
+     * @return RoundBlockSizeMode
+     */
+    public function get_roundblock_size_mode(): RoundBlockSizeMode;
 
-    public function getForegroundColor(): ColorInterface;
+    /**
+     * Returns the foreground color of the QR code.
+     *
+     * @return ColorInterface
+     */
+    public function get_foreground_color(): ColorInterface;
 
-    public function getBackgroundColor(): ColorInterface;
+    /**
+     * Returns the background color of the QR code.
+     *
+     * @return ColorInterface
+     */
+    public function get_background_color(): ColorInterface;
 }

@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Writer;
 
+defined('MOODLE_INTERNAL') || die();
+
 use Endroid\QrCode\Bacon\MatrixFactory;
 use Endroid\QrCode\Label\LabelInterface;
 use Endroid\QrCode\Logo\LogoInterface;
@@ -25,19 +27,49 @@ use Endroid\QrCode\QrCodeInterface;
 use Endroid\QrCode\Writer\Result\DebugResult;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 
+/**
+ * Writer for generating QR codes in debug format.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class DebugWriter implements ValidatingWriterInterface, WriterInterface {
-    public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface {
-        $matrixFactory = new MatrixFactory();
-        $matrix = $matrixFactory->create($qrCode);
+    /**
+     * Writes a QR code to debug format, optionally including a logo and label.
+     *
+     * @param QrCodeInterface $qrcode
+     * @param LogoInterface|null $logo
+     * @param LabelInterface|null $label
+     * @param array $options
+     * @return ResultInterface
+     * @throws \DASPRiD\Enum\Exception\IllegalArgumentException
+     * @throws \Endroid\QrCode\Exception\BlockSizeTooSmallException
+     */
+    public function write(
+        QrCodeInterface $qrcode,
+        ?LogoInterface $logo = null,
+        ?LabelInterface $label = null,
+        array $options = []
+    ): ResultInterface {
+        $matrixfactory = new MatrixFactory();
+        $matrix = $matrixfactory->create($qrcode);
 
-        return new DebugResult($matrix, $qrCode, $logo, $label, $options);
+        return new DebugResult($matrix, $qrcode, $logo, $label, $options);
     }
 
-    public function validateResult(ResultInterface $result, string $expectedData): void {
+    /**
+     * Validates the result of writing a QR code in debug format.
+     *
+     * @param ResultInterface $result
+     * @param string $expecteddata
+     * @return void
+     * @throws \Exception
+     */
+    public function validate_result(ResultInterface $result, string $expecteddata): void {
         if (!$result instanceof DebugResult) {
             throw new \Exception('Unable to write logo: instance of DebugResult expected');
         }
 
-        $result->setValidateResult(true);
+        $result->set_validate_result(true);
     }
 }

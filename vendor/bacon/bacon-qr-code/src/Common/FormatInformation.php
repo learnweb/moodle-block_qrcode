@@ -99,7 +99,7 @@ class FormatInformation
      * @param int $formatinfo encoded format information
      */
     protected function __construct(int $formatinfo) {
-        $this->eclevel = ErrorCorrectionLevel::forbits(($formatinfo >> 3) & 0x3);
+        $this->eclevel = ErrorCorrectionLevel::for_bits(($formatinfo >> 3) & 0x3);
         $this->datamask = $formatinfo & 0x7;
     }
 

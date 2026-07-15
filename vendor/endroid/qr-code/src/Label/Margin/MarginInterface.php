@@ -18,16 +18,46 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Label\Margin;
 
+/**
+ * Interface for a margin around a label in a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface MarginInterface
 {
-    public function getTop(): int;
+    /**
+     * Returns the top margin.
+     *
+     * @return int
+     */
+    public function get_top(): int;
 
-    public function getRight(): int;
+    /**
+     * Returns the right margin.
+     *
+     * @return int
+     */
+    public function get_right(): int;
 
-    public function getBottom(): int;
+    /**
+     * Returns the bottom margin.
+     *
+     * @return int
+     */
+    public function get_bottom(): int;
 
-    public function getLeft(): int;
+    /**
+     * Returns the left margin.
+     *
+     * @return int
+     */
+    public function get_left(): int;
 
-    /** @return array<string, int> */
-    public function toArray(): array;
+    /**
+     * Returns the margin as an array with keys 'top', 'right', 'bottom', and 'left'.
+     *
+     * @return array
+     */
+    public function to_array(): array;
 }

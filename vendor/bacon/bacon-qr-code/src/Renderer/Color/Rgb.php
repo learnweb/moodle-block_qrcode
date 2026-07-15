@@ -20,14 +20,34 @@ namespace BaconQrCode\Renderer\Color;
 
 use BaconQrCode\Exception;
 
+/**
+ * RGB color representation.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class Rgb implements ColorInterface
 {
     /**
+     * Constructor.
      * @param int $red the red amount of the color, 0 to 255
      * @param int $green the green amount of the color, 0 to 255
      * @param int $blue the blue amount of the color, 0 to 255
      */
-    public function __construct(private readonly int $red, private readonly int $green, private readonly int $blue) {
+    public function __construct(
+        /**
+         * @var int
+         */
+        private readonly int $red,
+        /**
+         * @var int
+         */
+        private readonly int $green,
+        /**
+         * @var int
+         */
+        private readonly int $blue
+    ) {
         if ($red < 0 || $red > 255) {
             throw new Exception\InvalidArgumentException('Red must be between 0 and 255');
         }
@@ -41,22 +61,47 @@ final class Rgb implements ColorInterface
         }
     }
 
-    public function getRed(): int {
+    /**
+     * Returns the red amount.
+     *
+     * @return int
+     */
+    public function get_red(): int {
         return $this->red;
     }
 
-    public function getGreen(): int {
+    /**
+     * Returns the green amount.
+     *
+     * @return int
+     */
+    public function get_green(): int {
         return $this->green;
     }
 
-    public function getBlue(): int {
+    /**
+     * Returns the blue amount.
+     *
+     * @return int
+     */
+    public function get_blue(): int {
         return $this->blue;
     }
 
+    /**
+     * Converts this color to RGB.
+     *
+     * @return $this
+     */
     public function to_rgb(): Rgb {
         return $this;
     }
 
+    /**
+     * Converts this color to CMYK.
+     *
+     * @return Cmyk
+     */
     public function to_cmyk(): Cmyk {
         $c = 1 - ($this->red / 255);
         $m = 1 - ($this->green / 255);
@@ -75,6 +120,11 @@ final class Rgb implements ColorInterface
         );
     }
 
+    /**
+     * Converts this color to gray.
+     *
+     * @return Gray
+     */
     public function to_gray(): Gray {
         return new Gray((int) (($this->red * 0.21 + $this->green * 0.71 + $this->blue * 0.07) / 2.55));
     }

@@ -20,28 +20,58 @@ namespace Endroid\QrCode\Writer\Result;
 
 use Endroid\QrCode\Matrix\MatrixInterface;
 
+/**
+ * Represents the result of writing a QR code in PNG format.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class PngResult extends GdResult
 {
+    /**
+     * Constructs a new PngResult instance with the given matrix, GD image, quality, and number of colors.
+     *
+     * @param MatrixInterface $matrix
+     * @param \GdImage $image
+     * @param int $quality
+     * @param int|null $numberofcolors
+     */
     public function __construct(
         MatrixInterface $matrix,
         \GdImage $image,
+        /**
+         * @var int
+         */
         private readonly int $quality = -1,
-        private readonly ?int $numberOfColors = null,
+        /**
+         * @var int|null
+         */
+        private readonly ?int $numberofcolors = null,
     ) {
         parent::__construct($matrix, $image);
     }
 
-    public function getString(): string {
+    /**
+     * Returns the string representation of the QR code in PNG format.
+     *
+     * @return string
+     */
+    public function get_string(): string {
         ob_start();
-        if (null !== $this->numberOfColors) {
-            imagetruecolortopalette($this->image, false, $this->numberOfColors);
+        if (null !== $this->numberofcolors) {
+            imagetruecolortopalette($this->image, false, $this->numberofcolors);
         }
         imagepng($this->image, quality: $this->quality);
 
         return strval(ob_get_clean());
     }
 
-    public function getMimeType(): string {
+    /**
+     * Returns the MIME type for PNG images.
+     *
+     * @return string
+     */
+    public function get_mime_type(): string {
         return 'image/png';
     }
 }

@@ -18,9 +18,28 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Builder;
 
+/**
+ * Interface for a registry of builders.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface BuilderRegistryInterface
 {
+    /**
+     * Sets a builder in the registry.
+     *
+     * @param string $name
+     * @param BuilderInterface $builder
+     * @return void
+     */
     public function set(string $name, BuilderInterface $builder): void;
 
+    /**
+     * Gets a builder from the registry.
+     *
+     * @param string $name
+     * @return BuilderInterface
+     */
     public function get(string $name): BuilderInterface;
 }

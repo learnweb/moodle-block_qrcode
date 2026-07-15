@@ -20,7 +20,19 @@ namespace BaconQrCode\Renderer;
 
 use BaconQrCode\Encoder\QrCode;
 
+/**
+ * Interface for rendering a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface RendererInterface
 {
-    public function render(QrCode $qrCode): string;
+    /**
+     * Renders the QR code.
+     *
+     * @param QrCode $qrcode
+     * @return string
+     */
+    public function render(QrCode $qrcode): string;
 }

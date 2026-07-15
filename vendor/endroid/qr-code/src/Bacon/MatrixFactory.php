@@ -18,28 +18,46 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Bacon;
 
+defined('MOODLE_INTERNAL') || die();
+
 use BaconQrCode\Encoder\Encoder;
 use Endroid\QrCode\Matrix\Matrix;
 use Endroid\QrCode\Matrix\MatrixFactoryInterface;
 use Endroid\QrCode\Matrix\MatrixInterface;
 use Endroid\QrCode\QrCodeInterface;
 
+/**
+ * Factory for creating a matrix of blocks for a QR code using the BaconQrCode library.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class MatrixFactory implements MatrixFactoryInterface
 {
-    public function create(QrCodeInterface $qrCode): MatrixInterface {
-        $baconErrorCorrectionLevel = ErrorCorrectionLevelConverter::convertToBaconErrorCorrectionLevel($qrCode->getErrorCorrectionLevel());
-        $baconMatrix = Encoder::encode($qrCode->getData(), $baconErrorCorrectionLevel, strval($qrCode->getEncoding()))->get_matrix();
+    /**
+     * Creates a matrix of blocks for a QR code using the BaconQrCode library.
+     *
+     * @param QrCodeInterface $qrcode
+     * @return MatrixInterface
+     * @throws \DASPRiD\Enum\Exception\IllegalArgumentException
+     * @throws \Endroid\QrCode\Exception\BlockSizeTooSmallException
+     */
+    public function create(QrCodeInterface $qrcode): MatrixInterface {
+        $baconerrorcorrectionlevel =
+                ErrorCorrectionLevelConverter::convert_to_bacon_error_correction_level($qrcode->get_error_correction_level());
+        $baconmatrix =
+                Encoder::encode($qrcode->get_data(), $baconerrorcorrectionlevel, strval($qrcode->get_encoding()))->get_matrix();
 
-        $blockValues = [];
-        $columnCount = $baconMatrix->get_width();
-        $rowCount = $baconMatrix->get_height();
-        for ($rowIndex = 0; $rowIndex < $rowCount; ++$rowIndex) {
-            $blockValues[$rowIndex] = [];
-            for ($columnIndex = 0; $columnIndex < $columnCount; ++$columnIndex) {
-                $blockValues[$rowIndex][$columnIndex] = $baconMatrix->get($columnIndex, $rowIndex);
+        $blockvalues = [];
+        $columncount = $baconmatrix->get_width();
+        $rowcount = $baconmatrix->get_height();
+        for ($rowindex = 0; $rowindex < $rowcount; ++$rowindex) {
+            $blockvalues[$rowindex] = [];
+            for ($columnindex = 0; $columnindex < $columncount; ++$columnindex) {
+                $blockvalues[$rowindex][$columnindex] = $baconmatrix->get($columnindex, $rowindex);
             }
         }
 
-        return new Matrix($blockValues, $qrCode->getSize(), $qrCode->getMargin(), $qrCode->getRoundBlockSizeMode());
+        return new Matrix($blockvalues, $qrcode->get_size(), $qrcode->get_margin(), $qrcode->get_roundblock_size_mode());
     }
 }

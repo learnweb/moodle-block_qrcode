@@ -24,13 +24,31 @@ use BaconQrCode\Renderer\Path\Path;
 
 /**
  * Renders an eye based on a module renderer.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class ModuleEye implements EyeInterface
 {
-    public function __construct(private readonly ModuleInterface $module) {
+    /**
+     * Constructor.
+     *
+     * @param ModuleInterface $module
+     */
+    public function __construct(
+        /**
+         * @var ModuleInterface
+         */
+        private readonly ModuleInterface $module
+    ) {
     }
 
-    public function getExternalPath(): Path {
+    /**
+     * Returns the external path.
+     *
+     * @return Path
+     */
+    public function get_external_path(): Path {
         $matrix = new ByteMatrix(7, 7);
 
         for ($x = 0; $x < 7; ++$x) {
@@ -46,7 +64,12 @@ final class ModuleEye implements EyeInterface
         return $this->module->create_path($matrix)->translate(-3.5, -3.5);
     }
 
-    public function getInternalPath(): Path {
+    /**
+     * Returns the internal path.
+     *
+     * @return Path
+     */
+    public function get_internal_path(): Path {
         $matrix = new ByteMatrix(3, 3);
 
         for ($x = 0; $x < 3; ++$x) {

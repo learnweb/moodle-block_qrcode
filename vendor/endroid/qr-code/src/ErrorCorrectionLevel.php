@@ -18,6 +18,12 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode;
 
+/**
+ * Enumeration of error correction levels for QR codes.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 enum ErrorCorrectionLevel: string
 {
     case High = 'high';

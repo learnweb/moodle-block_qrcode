@@ -20,6 +20,12 @@ namespace DASPRiD\Enum\Exception;
 
 use Exception;
 
+/**
+ * Exception thrown when unserialization of an enumeration is attempted, which is not supported.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class UnserializeNotSupportedException extends Exception implements ExceptionInterface
 {
 }

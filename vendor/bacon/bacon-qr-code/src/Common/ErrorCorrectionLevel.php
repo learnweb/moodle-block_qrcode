@@ -69,7 +69,7 @@ final class ErrorCorrectionLevel extends AbstractEnum
      * @return self the matching error correction level
      * @throws OutOfBoundsException if the number of bits is invalid
      */
-    public static function forbits(int $bits): self {
+    public static function for_bits(int $bits): self {
         switch ($bits) {
             case 0:
                 return self::M();

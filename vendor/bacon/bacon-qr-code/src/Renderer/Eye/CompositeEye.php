@@ -22,17 +22,45 @@ use BaconQrCode\Renderer\Path\Path;
 
 /**
  * Combines the style of two different eyes.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class CompositeEye implements EyeInterface
 {
-    public function __construct(private readonly EyeInterface $externalEye, private readonly EyeInterface $internalEye) {
+    /**
+     * Constructor.
+     *
+     * @param EyeInterface $externaleye
+     * @param EyeInterface $internaleye
+     */
+    public function __construct(
+        /**
+         * @var EyeInterface
+         */
+        private readonly EyeInterface $externaleye,
+        /**
+         * @var EyeInterface
+         */
+        private readonly EyeInterface $internaleye
+    ) {
     }
 
-    public function getExternalPath(): Path {
-        return $this->externalEye->getExternalPath();
+    /**
+     * Returns the external path.
+     *
+     * @return Path
+     */
+    public function get_external_path(): Path {
+        return $this->externaleye->get_external_path();
     }
 
-    public function getInternalPath(): Path {
-        return $this->internalEye->getInternalPath();
+    /**
+     * Returns the internal path.
+     *
+     * @return Path
+     */
+    public function get_internal_path(): Path {
+        return $this->internaleye->get_internal_path();
     }
 }

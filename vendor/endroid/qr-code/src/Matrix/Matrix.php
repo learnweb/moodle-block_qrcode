@@ -18,81 +18,153 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Matrix;
 
+defined('MOODLE_INTERNAL') || die();
+
 use Endroid\QrCode\Exception\BlockSizeTooSmallException;
 use Endroid\QrCode\RoundBlockSizeMode;
 
+/**
+ * Represents a matrix of blocks for a QR code.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class Matrix implements MatrixInterface
 {
-    private float $blockSize;
-    private int $innerSize;
-    private int $outerSize;
-    private int $marginLeft;
-    private int $marginRight;
+    /**
+     * @var float|int
+     */
+    private float $blocksize;
+    /**
+     * @var int
+     */
+    private int $innersize;
+    /**
+     * @var int|float
+     */
+    private int $outersize;
+    /**
+     * @var int
+     */
+    private int $marginleft;
+    /**
+     * @var int|float
+     */
+    private int $marginright;
 
-    /** @param array<array<int>> $blockValues */
+    /**
+     * Constructs a new Matrix instance with the given block values, size, margin, and round block size mode.
+     *
+     * @param array $blockvalues
+     * @param int $size
+     * @param int $margin
+     * @param RoundBlockSizeMode $roundblocksizemode
+     * @throws BlockSizeTooSmallException
+     */
     public function __construct(
-        private array $blockValues,
+        /**
+         * @var array
+         */
+        private array $blockvalues,
         int $size,
         int $margin,
-        RoundBlockSizeMode $roundBlockSizeMode,
+        RoundBlockSizeMode $roundblocksizemode,
     ) {
-        $blockSize = $size / $this->getBlockCount();
-        $innerSize = $size;
-        $outerSize = $size + 2 * $margin;
+        $blocksize = $size / $this->get_block_count();
+        $innersize = $size;
+        $outersize = $size + 2 * $margin;
 
-        switch ($roundBlockSizeMode) {
+        switch ($roundblocksizemode) {
             case RoundBlockSizeMode::Enlarge:
-                $blockSize = intval(ceil($blockSize));
-                $innerSize = intval($blockSize * $this->getBlockCount());
-                $outerSize = $innerSize + 2 * $margin;
+                $blocksize = intval(ceil($blocksize));
+                $innersize = intval($blocksize * $this->get_block_count());
+                $outersize = $innersize + 2 * $margin;
                 break;
             case RoundBlockSizeMode::Shrink:
-                $blockSize = intval(floor($blockSize));
-                $innerSize = intval($blockSize * $this->getBlockCount());
-                $outerSize = $innerSize + 2 * $margin;
+                $blocksize = intval(floor($blocksize));
+                $innersize = intval($blocksize * $this->get_block_count());
+                $outersize = $innersize + 2 * $margin;
                 break;
             case RoundBlockSizeMode::Margin:
-                $blockSize = intval(floor($blockSize));
-                $innerSize = intval($blockSize * $this->getBlockCount());
+                $blocksize = intval(floor($blocksize));
+                $innersize = intval($blocksize * $this->get_block_count());
                 break;
         }
 
-        if ($blockSize < 1) {
+        if ($blocksize < 1) {
             throw new BlockSizeTooSmallException('Too much data: increase image dimensions or lower error correction level');
         }
 
-        $this->blockSize = $blockSize;
-        $this->innerSize = $innerSize;
-        $this->outerSize = $outerSize;
-        $this->marginLeft = intval(($this->outerSize - $this->innerSize) / 2);
-        $this->marginRight = $this->outerSize - $this->innerSize - $this->marginLeft;
+        $this->blocksize = $blocksize;
+        $this->innersize = $innersize;
+        $this->outersize = $outersize;
+        $this->marginleft = intval(($this->outersize - $this->innersize) / 2);
+        $this->marginright = $this->outersize - $this->innersize - $this->marginleft;
     }
 
-    public function getBlockValue(int $rowIndex, int $columnIndex): int {
-        return $this->blockValues[$rowIndex][$columnIndex];
+    /**
+     * Returns the value of a block at the specified row and column indices.
+     *
+     * @param int $rowindex
+     * @param int $columnindex
+     * @return int
+     */
+    public function get_block_value(int $rowindex, int $columnindex): int {
+        return $this->blockvalues[$rowindex][$columnindex];
     }
 
-    public function getBlockCount(): int {
-        return count($this->blockValues[0]);
+    /**
+     * Returns the number of blocks in the matrix.
+     *
+     * @return int
+     */
+    public function get_block_count(): int {
+        return count($this->blockvalues[0]);
     }
 
-    public function getBlockSize(): float {
-        return $this->blockSize;
+    /**
+     * Returns the size of each block in the matrix.
+     *
+     * @return float
+     */
+    public function get_block_size(): float {
+        return $this->blocksize;
     }
 
-    public function getInnerSize(): int {
-        return $this->innerSize;
+    /**
+     * Returns the inner size of the matrix (excluding margins).
+     *
+     * @return int
+     */
+    public function get_inner_size(): int {
+        return $this->innersize;
     }
 
-    public function getOuterSize(): int {
-        return $this->outerSize;
+    /**
+     * Returns the outer size of the matrix (including margins).
+     *
+     * @return int
+     */
+    public function get_outer_size(): int {
+        return $this->outersize;
     }
 
-    public function getMarginLeft(): int {
-        return $this->marginLeft;
+    /**
+     * Returns the left margin size of the matrix.
+     *
+     * @return int
+     */
+    public function get_margin_left(): int {
+        return $this->marginleft;
     }
 
-    public function getMarginRight(): int {
-        return $this->marginRight;
+    /**
+     * Returns the right margin size of the matrix.
+     *
+     *
+     * @return int
+     */
+    public function get_margin_right(): int {
+        return $this->marginright;
     }
 }

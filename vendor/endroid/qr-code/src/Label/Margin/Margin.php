@@ -18,34 +18,86 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Label\Margin;
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Represents the margin around a label in a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class Margin implements MarginInterface
 {
+    /**
+     * Constructor.
+     *
+     * @param int $top
+     * @param int $right
+     * @param int $bottom
+     * @param int $left
+     */
     public function __construct(
+        /**
+         * @var int
+         */
         private int $top,
+        /**
+         * @var int
+         */
         private int $right,
+        /**
+         * @var int
+         */
         private int $bottom,
+        /**
+         * @var int
+         */
         private int $left,
     ) {
     }
 
-    public function getTop(): int {
+    /**
+     * Returns the top margin.
+     *
+     * @return int
+     */
+    public function get_top(): int {
         return $this->top;
     }
 
-    public function getRight(): int {
+    /**
+     * Returns the right margin.
+     *
+     * @return int
+     */
+    public function get_right(): int {
         return $this->right;
     }
 
-    public function getBottom(): int {
+    /**
+     * Returns the bottom margin.
+     *
+     * @return int
+     */
+    public function get_bottom(): int {
         return $this->bottom;
     }
 
-    public function getLeft(): int {
+    /**
+     * Returns the left margin.
+     *
+     * @return int
+     */
+    public function get_left(): int {
         return $this->left;
     }
 
-    /** @return array<string, int> */
-    public function toArray(): array {
+    /**
+     * Returns the margin values as an associative array.
+     *
+     * @return array|int[]
+     */
+    public function to_array(): array {
         return [
             'top' => $this->top,
             'right' => $this->right,

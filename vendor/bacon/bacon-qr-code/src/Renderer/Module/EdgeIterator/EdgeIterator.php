@@ -22,6 +22,8 @@ use BaconQrCode\Encoder\ByteMatrix;
 use IteratorAggregate;
 use Traversable;
 
+// phpcs:disable moodle.NamingConventions.ValidFunctionName.LowercaseMethod
+
 /**
  * Edge iterator based on potrace.
  *
@@ -117,7 +119,7 @@ final class EdgeIterator implements IteratorAggregate
         $diry = 1;
 
         while (true) {
-            $edge->addPoint($x, $y);
+            $edge->add_point($x, $y);
             $x += $dirx;
             $y += $diry;
 
@@ -153,10 +155,10 @@ final class EdgeIterator implements IteratorAggregate
      * @return void
      */
     private function xor_edge(Edge $path): void {
-        $points = $path->getPoints();
+        $points = $path->get_points();
         $y1 = $points[0][1];
         $length = count($points);
-        $maxx = $path->getMaxX();
+        $maxx = $path->get_max_x();
 
         for ($i = 1; $i < $length; ++$i) {
             $y = $points[$i][1];

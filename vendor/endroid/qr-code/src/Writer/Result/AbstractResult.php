@@ -20,23 +20,53 @@ namespace Endroid\QrCode\Writer\Result;
 
 use Endroid\QrCode\Matrix\MatrixInterface;
 
+/**
+ * Abstract class for a result of writing a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 abstract class AbstractResult implements ResultInterface
 {
+    /**
+     * Constructs a new AbstractResult instance with the given matrix.
+     *
+     * @param MatrixInterface $matrix
+     */
     public function __construct(
+        /**
+         * @var MatrixInterface
+         */
         private readonly MatrixInterface $matrix,
     ) {
     }
 
-    public function getMatrix(): MatrixInterface {
+    /**
+     * Returns the matrix of blocks for the QR code.
+     *
+     * @return MatrixInterface
+     */
+    public function get_matrix(): MatrixInterface {
         return $this->matrix;
     }
 
-    public function getDataUri(): string {
-        return 'data:' . $this->getMimeType() . ';base64,' . base64_encode($this->getString());
+    /**
+     * Returns the data URI representation of the QR code.
+     *
+     * @return string
+     */
+    public function get_data_uri(): string {
+        return 'data:' . $this->get_mime_type() . ';base64,' . base64_encode($this->get_string());
     }
 
-    public function saveToFile(string $path): void {
-        $string = $this->getString();
+    /**
+     * Saves the QR code to a file at the specified path.
+     *
+     * @param string $path
+     * @return void
+     */
+    public function save_to_file(string $path): void {
+        $string = $this->get_string();
         file_put_contents($path, $string);
     }
 }

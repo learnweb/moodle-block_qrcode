@@ -400,16 +400,16 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
         $alpha = 100;
 
         if ($color instanceof Alpha) {
-            $alpha = $color->getAlpha();
-            $color = $color->getBaseColor();
+            $alpha = $color->get_alpha();
+            $color = $color->get_base_color();
         }
 
         if ($color instanceof Rgb) {
             return new ImagickPixel(sprintf(
                 'rgba(%d, %d, %d, %F)',
-                $color->getRed(),
-                $color->getGreen(),
-                $color->getBlue(),
+                $color->get_red(),
+                $color->get_green(),
+                $color->get_blue(),
                 $alpha / 100
             ));
         }
@@ -428,7 +428,7 @@ final class ImagickImageBackEnd implements ImageBackEndInterface
         if ($color instanceof Gray) {
             return new ImagickPixel(sprintf(
                 'graya(%d%%, %F)',
-                $color->getGray(),
+                $color->get_gray(),
                 $alpha / 100
             ));
         }

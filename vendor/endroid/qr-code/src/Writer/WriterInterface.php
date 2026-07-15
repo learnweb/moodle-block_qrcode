@@ -23,8 +23,27 @@ use Endroid\QrCode\Logo\LogoInterface;
 use Endroid\QrCode\QrCodeInterface;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 
+/**
+ * Interface for writing QR codes to various formats.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface WriterInterface
 {
-    /** @param array<string, mixed> $options */
-    public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface;
+    /**
+     * Writes a QR code to a specific format, optionally including a logo and label, and returns the result.
+     *
+     * @param QrCodeInterface $qrcode
+     * @param LogoInterface|null $logo
+     * @param LabelInterface|null $label
+     * @param array $options
+     * @return ResultInterface
+     */
+    public function write(
+        QrCodeInterface $qrcode,
+        ?LogoInterface $logo = null,
+        ?LabelInterface $label = null,
+        array $options = []
+    ): ResultInterface;
 }

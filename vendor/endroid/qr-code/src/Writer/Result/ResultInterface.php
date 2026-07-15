@@ -20,15 +20,47 @@ namespace Endroid\QrCode\Writer\Result;
 
 use Endroid\QrCode\Matrix\MatrixInterface;
 
+/**
+ * Interface for a result of writing a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface ResultInterface
 {
-    public function getMatrix(): MatrixInterface;
+    /**
+     * Returns the matrix of blocks for the QR code.
+     *
+     * @return MatrixInterface
+     */
+    public function get_matrix(): MatrixInterface;
 
-    public function getString(): string;
+    /**
+     * Returns the string representation of the QR code.
+     *
+     * @return string
+     */
+    public function get_string(): string;
 
-    public function getDataUri(): string;
+    /**
+     * Returns the data URI representation of the QR code.
+     *
+     * @return string
+     */
+    public function get_data_uri(): string;
 
-    public function saveToFile(string $path): void;
+    /**
+     * Saves the QR code to a file at the specified path.
+     *
+     * @param string $path
+     * @return void
+     */
+    public function save_to_file(string $path): void;
 
-    public function getMimeType(): string;
+    /**
+     * Returns the MIME type of the QR code.
+     *
+     * @return string
+     */
+    public function get_mime_type(): string;
 }

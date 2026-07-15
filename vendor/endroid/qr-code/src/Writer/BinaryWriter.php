@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Writer;
 
+defined('MOODLE_INTERNAL') || die();
+
 use Endroid\QrCode\Bacon\MatrixFactory;
 use Endroid\QrCode\Label\LabelInterface;
 use Endroid\QrCode\Logo\LogoInterface;
@@ -25,11 +27,33 @@ use Endroid\QrCode\QrCodeInterface;
 use Endroid\QrCode\Writer\Result\BinaryResult;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 
+/**
+ * Writer for generating QR codes in binary format.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class BinaryWriter implements WriterInterface
 {
-    public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface {
-        $matrixFactory = new MatrixFactory();
-        $matrix = $matrixFactory->create($qrCode);
+    /**
+     * Writes a QR code to binary format, optionally including a logo and label, and returns the result.
+     *
+     * @param QrCodeInterface $qrcode
+     * @param LogoInterface|null $logo
+     * @param LabelInterface|null $label
+     * @param array $options
+     * @return ResultInterface
+     * @throws \DASPRiD\Enum\Exception\IllegalArgumentException
+     * @throws \Endroid\QrCode\Exception\BlockSizeTooSmallException
+     */
+    public function write(
+        QrCodeInterface $qrcode,
+        ?LogoInterface $logo = null,
+        ?LabelInterface $label = null,
+        array $options = []
+    ): ResultInterface {
+        $matrixfactory = new MatrixFactory();
+        $matrix = $matrixfactory->create($qrcode);
 
         return new BinaryResult($matrix);
     }

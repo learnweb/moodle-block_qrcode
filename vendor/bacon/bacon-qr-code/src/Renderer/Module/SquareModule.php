@@ -24,23 +24,43 @@ use BaconQrCode\Renderer\Path\Path;
 
 /**
  * Groups modules together to a single path.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class SquareModule implements ModuleInterface
 {
+    /**
+     * @var SquareModule|null
+     */
     private static ?SquareModule $instance = null;
 
+    /**
+     * Constructor.
+     */
     private function __construct() {
     }
 
+    /**
+     * Returns the square module instance.
+     *
+     * @return self
+     */
     public static function instance(): self {
         return self::$instance ?: self::$instance = new self();
     }
 
+    /**
+     * Creates a path from the byte matrix.
+     *
+     * @param ByteMatrix $matrix
+     * @return Path
+     */
     public function create_path(ByteMatrix $matrix): Path {
         $path = new Path();
 
         foreach (new EdgeIterator($matrix) as $edge) {
-            $points = $edge->getSimplifiedPoints();
+            $points = $edge->get_simplified_points();
             $length = count($points);
             $path = $path->move($points[0][0], $points[0][1]);
 

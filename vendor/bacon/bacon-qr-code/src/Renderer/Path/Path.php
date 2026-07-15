@@ -21,6 +21,8 @@ namespace BaconQrCode\Renderer\Path;
 use IteratorAggregate;
 use Traversable;
 
+// phpcs:disable moodle.NamingConventions.ValidFunctionName.LowercaseMethod
+
 /**
  * Internal Representation of a vector path.
  *

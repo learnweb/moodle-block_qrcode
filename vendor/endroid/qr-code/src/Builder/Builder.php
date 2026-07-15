@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Builder;
 
+defined('MOODLE_INTERNAL') || die();
+
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Color\ColorInterface;
 use Endroid\QrCode\Encoding\Encoding;
@@ -38,103 +40,217 @@ use Endroid\QrCode\Writer\Result\ResultInterface;
 use Endroid\QrCode\Writer\ValidatingWriterInterface;
 use Endroid\QrCode\Writer\WriterInterface;
 
+/**
+ * Builder for creating QR codes with optional labels and logos.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class Builder implements BuilderInterface
 {
+    /**
+     * Constructor.
+     *
+     * @param WriterInterface $writer
+     * @param array $writeroptions
+     * @param bool $validateresult
+     * @param string $data
+     * @param EncodingInterface $encoding
+     * @param ErrorCorrectionLevel $errorcorrectionlevel
+     * @param int $size
+     * @param int $margin
+     * @param RoundBlockSizeMode $roundblocksizemode
+     * @param ColorInterface $foregroundcolor
+     * @param ColorInterface $backgroundcolor
+     * @param string $labeltext
+     * @param FontInterface $labelfont
+     * @param LabelAlignment $labelalignment
+     * @param MarginInterface $labelmargin
+     * @param ColorInterface $labeltextcolor
+     * @param string $logopath
+     * @param int|null $logoresizetowidth
+     * @param int|null $logoresizetoheight
+     * @param bool $logopunchoutbackground
+     */
     public function __construct(
+        /**
+         * @var WriterInterface
+         */
         private WriterInterface $writer = new PngWriter(),
         /** @var array<mixed> */
-        private array $writerOptions = [],
-        private bool $validateResult = false,
-        // QrCode options
+        /**
+         * @var array
+         */
+        private array $writeroptions = [],
+        /**
+         * @var bool
+         */
+        private bool $validateresult = false,
+        /**
+         * @var string
+         */
         private string $data = '',
+        /**
+         * @var EncodingInterface|Encoding
+         */
         private EncodingInterface $encoding = new Encoding('UTF-8'),
-        private ErrorCorrectionLevel $errorCorrectionLevel = ErrorCorrectionLevel::Low,
+        /**
+         * @var ErrorCorrectionLevel
+         */
+        private ErrorCorrectionLevel $errorcorrectionlevel = ErrorCorrectionLevel::Low,
+        /**
+         * @var int
+         */
         private int $size = 300,
+        /**
+         * @var int
+         */
         private int $margin = 10,
-        private RoundBlockSizeMode $roundBlockSizeMode = RoundBlockSizeMode::Margin,
-        private ColorInterface $foregroundColor = new Color(0, 0, 0),
-        private ColorInterface $backgroundColor = new Color(255, 255, 255),
-        // Label options
-        private string $labelText = '',
-        private FontInterface $labelFont = new Font(__DIR__ . '/../../assets/open_sans.ttf', 16),
-        private LabelAlignment $labelAlignment = LabelAlignment::Center,
-        private MarginInterface $labelMargin = new Margin(0, 10, 10, 10),
-        private ColorInterface $labelTextColor = new Color(0, 0, 0),
-        // Logo options
-        private string $logoPath = '',
-        private ?int $logoResizeToWidth = null,
-        private ?int $logoResizeToHeight = null,
-        private bool $logoPunchoutBackground = false,
+        /**
+         * @var RoundBlockSizeMode
+         */
+        private RoundBlockSizeMode $roundblocksizemode = RoundBlockSizeMode::Margin,
+        /**
+         * @var ColorInterface|Color
+         */
+        private ColorInterface $foregroundcolor = new Color(0, 0, 0),
+        /**
+         * @var ColorInterface|Color
+         */
+        private ColorInterface $backgroundcolor = new Color(255, 255, 255),
+        // Label options.
+        /**
+         * @var string
+         */
+        private string $labeltext = '',
+        /**
+         * @var FontInterface|Font
+         */
+        private FontInterface $labelfont = new Font(__DIR__ . '/../../assets/open_sans.ttf', 16),
+        /**
+         * @var LabelAlignment
+         */
+        private LabelAlignment $labelalignment = LabelAlignment::Center,
+        /**
+         * @var MarginInterface|Margin
+         */
+        private MarginInterface $labelmargin = new Margin(0, 10, 10, 10),
+        /**
+         * @var ColorInterface|Color
+         */
+        private ColorInterface $labeltextcolor = new Color(0, 0, 0),
+        // Logo options.
+        /**
+         * @var string
+         */
+        private string $logopath = '',
+        /**
+         * @var int|null
+         */
+        private ?int $logoresizetowidth = null,
+        /**
+         * @var int|null
+         */
+        private ?int $logoresizetoheight = null,
+        /**
+         * @var bool
+         */
+        private bool $logopunchoutbackground = false,
     ) {
     }
 
-    /** @param array<mixed>|null $writerOptions */
+    /**
+     * Builds the QR code with the specified options and returns the result.
+     *
+     * @param WriterInterface|null $writer
+     * @param array|null $writeroptions
+     * @param bool|null $validateresult
+     * @param string|null $data
+     * @param EncodingInterface|null $encoding
+     * @param ErrorCorrectionLevel|null $errorcorrectionlevel
+     * @param int|null $size
+     * @param int|null $margin
+     * @param RoundBlockSizeMode|null $roundblocksizemode
+     * @param ColorInterface|null $foregroundcolor
+     * @param ColorInterface|null $backgroundcolor
+     * @param string|null $labeltext
+     * @param FontInterface|null $labelfont
+     * @param LabelAlignment|null $labelalignment
+     * @param MarginInterface|null $labelmargin
+     * @param ColorInterface|null $labeltextcolor
+     * @param string|null $logopath
+     * @param int|null $logoresizetowidth
+     * @param int|null $logoresizetoheight
+     * @param bool|null $logopunchoutbackground
+     * @return ResultInterface
+     * @throws ValidationException
+     */
     public function build(
         ?WriterInterface $writer = null,
-        ?array $writerOptions = null,
-        ?bool $validateResult = null,
-        // QrCode options
+        ?array $writeroptions = null,
+        ?bool $validateresult = null,
+        // QrCode options.
         ?string $data = null,
         ?EncodingInterface $encoding = null,
-        ?ErrorCorrectionLevel $errorCorrectionLevel = null,
+        ?ErrorCorrectionLevel $errorcorrectionlevel = null,
         ?int $size = null,
         ?int $margin = null,
-        ?RoundBlockSizeMode $roundBlockSizeMode = null,
-        ?ColorInterface $foregroundColor = null,
-        ?ColorInterface $backgroundColor = null,
-        // Label options
-        ?string $labelText = null,
-        ?FontInterface $labelFont = null,
-        ?LabelAlignment $labelAlignment = null,
-        ?MarginInterface $labelMargin = null,
-        ?ColorInterface $labelTextColor = null,
-        // Logo options
-        ?string $logoPath = null,
-        ?int $logoResizeToWidth = null,
-        ?int $logoResizeToHeight = null,
-        ?bool $logoPunchoutBackground = null,
+        ?RoundBlockSizeMode $roundblocksizemode = null,
+        ?ColorInterface $foregroundcolor = null,
+        ?ColorInterface $backgroundcolor = null,
+        // Label options.
+        ?string $labeltext = null,
+        ?FontInterface $labelfont = null,
+        ?LabelAlignment $labelalignment = null,
+        ?MarginInterface $labelmargin = null,
+        ?ColorInterface $labeltextcolor = null,
+        // Logo options.
+        ?string $logopath = null,
+        ?int $logoresizetowidth = null,
+        ?int $logoresizetoheight = null,
+        ?bool $logopunchoutbackground = null,
     ): ResultInterface {
-        if ($this->validateResult && !$this->writer instanceof ValidatingWriterInterface) {
-            throw ValidationException::createForUnsupportedWriter(get_class($this->writer));
+        if ($this->validateresult && !$this->writer instanceof ValidatingWriterInterface) {
+            throw ValidationException::create_for_unsupported_writer(get_class($this->writer));
         }
 
         $writer = $writer ?? $this->writer;
-        $writerOptions = $writerOptions ?? $this->writerOptions;
-        $validateResult = $validateResult ?? $this->validateResult;
+        $writeroptions = $writeroptions ?? $this->writeroptions;
+        $validateresult = $validateresult ?? $this->validateresult;
 
-        $createLabel = $this->labelText || $labelText;
-        $createLogo = $this->logoPath || $logoPath;
+        $createlabel = $this->labeltext || $labeltext;
+        $createlogo = $this->logopath || $logopath;
 
-        $qrCode = new QrCode(
+        $qrcode = new QrCode(
             data: $data ?? $this->data,
             encoding: $encoding ?? $this->encoding,
-            errorCorrectionLevel: $errorCorrectionLevel ?? $this->errorCorrectionLevel,
+            errorcorrectionlevel: $errorcorrectionlevel ?? $this->errorcorrectionlevel,
             size: $size ?? $this->size,
             margin: $margin ?? $this->margin,
-            roundBlockSizeMode: $roundBlockSizeMode ?? $this->roundBlockSizeMode,
-            foregroundColor: $foregroundColor ?? $this->foregroundColor,
-            backgroundColor: $backgroundColor ?? $this->backgroundColor
+            roundblocksizemode: $roundblocksizemode ?? $this->roundblocksizemode,
+            foregroundcolor: $foregroundcolor ?? $this->foregroundcolor,
+            backgroundcolor: $backgroundcolor ?? $this->backgroundcolor
         );
 
-        $logo = $createLogo ? new Logo(
-            path: $logoPath ?? $this->logoPath,
-            resizeToWidth: $logoResizeToWidth ?? $this->logoResizeToWidth,
-            resizeToHeight: $logoResizeToHeight ?? $this->logoResizeToHeight,
-            punchoutBackground: $logoPunchoutBackground ?? $this->logoPunchoutBackground
+        $logo = $createlogo ? new Logo(
+            path: $logopath ?? $this->logopath,
+            resizetowidth: $logoresizetowidth ?? $this->logoresizetowidth,
+            resizetoheight: $logoresizetoheight ?? $this->logoresizetoheight,
+            punchoutbackground: $logopunchoutbackground ?? $this->logopunchoutbackground
         ) : null;
 
-        $label = $createLabel ? new Label(
-            text: $labelText ?? $this->labelText,
-            font: $labelFont ?? $this->labelFont,
-            alignment: $labelAlignment ?? $this->labelAlignment,
-            margin: $labelMargin ?? $this->labelMargin,
-            textColor: $labelTextColor ?? $this->labelTextColor
+        $label = $createlabel ? new Label(
+            text: $labeltext ?? $this->labeltext,
+            font: $labelfont ?? $this->labelfont,
+            alignment: $labelalignment ?? $this->labelalignment,
+            margin: $labelmargin ?? $this->labelmargin,
+            textcolor: $labeltextcolor ?? $this->labeltextcolor
         ) : null;
 
-        $result = $writer->write($qrCode, $logo, $label, $writerOptions);
+        $result = $writer->write($qrcode, $logo, $label, $writeroptions);
 
-        if ($validateResult && $writer instanceof ValidatingWriterInterface) {
-            $writer->validateResult($result, $qrCode->getData());
+        if ($validateresult && $writer instanceof ValidatingWriterInterface) {
+            $writer->validate_result($result, $qrcode->get_data());
         }
 
         return $result;

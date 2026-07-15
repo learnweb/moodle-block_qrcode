@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Writer;
 
+defined('MOODLE_INTERNAL') || die();
+
 use Endroid\QrCode\Label\LabelInterface;
 use Endroid\QrCode\Logo\LogoInterface;
 use Endroid\QrCode\QrCodeInterface;
@@ -25,18 +27,42 @@ use Endroid\QrCode\Writer\Result\GdResult;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 use Endroid\QrCode\Writer\Result\WebPResult;
 
+/**
+ * Writer for generating QR codes in WebP format.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class WebPWriter extends AbstractGdWriter
 {
+    /**
+     *
+     */
     public const WRITER_OPTION_QUALITY = 'quality';
 
-    public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface {
+    /**
+     * Writes a QR code to WebP format, optionally including a logo and label.
+     *
+     * @param QrCodeInterface $qrcode
+     * @param LogoInterface|null $logo
+     * @param LabelInterface|null $label
+     * @param array $options
+     * @return ResultInterface
+     * @throws \Exception
+     */
+    public function write(
+        QrCodeInterface $qrcode,
+        ?LogoInterface $logo = null,
+        ?LabelInterface $label = null,
+        array $options = []
+    ): ResultInterface {
         if (!isset($options[self::WRITER_OPTION_QUALITY])) {
             $options[self::WRITER_OPTION_QUALITY] = -1;
         }
 
-        /** @var GdResult $gdResult */
-        $gdResult = parent::write($qrCode, $logo, $label, $options);
+        /** @var GdResult $gdresult */
+        $gdresult = parent::write($qrcode, $logo, $label, $options);
 
-        return new WebPResult($gdResult->getMatrix(), $gdResult->getImage(), $options[self::WRITER_OPTION_QUALITY]);
+        return new WebPResult($gdresult->get_matrix(), $gdresult->get_image(), $options[self::WRITER_OPTION_QUALITY]);
     }
 }

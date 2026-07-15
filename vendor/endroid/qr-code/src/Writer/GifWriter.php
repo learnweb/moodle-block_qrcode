@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Writer;
 
+defined('MOODLE_INTERNAL') || die();
+
 use Endroid\QrCode\Label\LabelInterface;
 use Endroid\QrCode\Logo\LogoInterface;
 use Endroid\QrCode\QrCodeInterface;
@@ -25,12 +27,33 @@ use Endroid\QrCode\Writer\Result\GdResult;
 use Endroid\QrCode\Writer\Result\GifResult;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 
+/**
+ * Writer for generating QR codes in GIF format.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class GifWriter extends AbstractGdWriter
 {
-    public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface {
-        /** @var GdResult $gdResult */
-        $gdResult = parent::write($qrCode, $logo, $label, $options);
+    /**
+     * Writes a QR code to GIF format, optionally including a logo and label.
+     *
+     * @param QrCodeInterface $qrcode
+     * @param LogoInterface|null $logo
+     * @param LabelInterface|null $label
+     * @param array $options
+     * @return ResultInterface
+     * @throws \Exception
+     */
+    public function write(
+        QrCodeInterface $qrcode,
+        ?LogoInterface $logo = null,
+        ?LabelInterface $label = null,
+        array $options = []
+    ): ResultInterface {
+        /** @var GdResult $gdresult */
+        $gdresult = parent::write($qrcode, $logo, $label, $options);
 
-        return new GifResult($gdResult->getMatrix(), $gdResult->getImage());
+        return new GifResult($gdresult->get_matrix(), $gdresult->get_image());
     }
 }

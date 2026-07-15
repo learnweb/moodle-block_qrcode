@@ -18,26 +18,64 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Label\Font;
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Represents a font used for labels in a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class Font implements FontInterface
 {
+    /**
+     * Constructor.
+     *
+     * @param string $path
+     * @param int $size
+     * @throws \Exception
+     */
     public function __construct(
+        /**
+         * @var string
+         */
         private string $path,
+        /**
+         * @var int
+         */
         private int $size = 16,
     ) {
-        $this->assertValidPath($path);
+        $this->assert_valid_path($path);
     }
 
-    private function assertValidPath(string $path): void {
+    /**
+     * Asserts that the given font path is valid (i.e., the file exists).
+     *
+     * @param string $path
+     * @return void
+     * @throws \Exception
+     */
+    private function assert_valid_path(string $path): void {
         if (!file_exists($path)) {
             throw new \Exception(sprintf('Invalid font path "%s"', $path));
         }
     }
 
-    public function getPath(): string {
+    /**
+     * Returns the path to the font file.
+     *
+     * @return string
+     */
+    public function get_path(): string {
         return $this->path;
     }
 
-    public function getSize(): int {
+    /**
+     * Returns the size of the font.
+     *
+     * @return int
+     */
+    public function get_size(): int {
         return $this->size;
     }
 }

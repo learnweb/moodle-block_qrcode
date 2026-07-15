@@ -18,17 +18,45 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Exception;
 
+/**
+ * Exception thrown when validation fails.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class ValidationException extends \Exception
 {
-    public static function createForUnsupportedWriter(string $writerClass): self {
-        return new self(sprintf('Unable to validate the result: "%s" does not support validation', $writerClass));
+    /**
+     * Creates a new ValidationException for an unsupported writer.
+     *
+     * @param string $writerclass
+     * @return self
+     */
+    public static function create_for_unsupported_writer(string $writerclass): self {
+        return new self(
+            sprintf('Unable to validate the result: "%s" does not support validation', $writerclass)
+        );
     }
 
-    public static function createForMissingPackage(string $packageName): self {
-        return new self(sprintf('Please install "%s" or disable image validation', $packageName));
+    /**
+     * Creates a new ValidationException for a missing package.
+     *
+     * @param string $packagename
+     * @return self
+     */
+    public static function create_for_missing_package(string $packagename): self {
+        return new self(sprintf('Please install "%s" or disable image validation', $packagename));
     }
 
-    public static function createForInvalidData(string $expectedData, string $actualData): self {
-        return new self('The validation reader read "' . $actualData . '" instead of "' . $expectedData . '". Adjust your parameters to increase readability or disable validation.');
+    /**
+     * Creates a new ValidationException for invalid data.
+     *
+     * @param string $expecteddata
+     * @param string $actualdata
+     * @return self
+     */
+    public static function create_for_invalid_data(string $expecteddata, string $actualdata): self {
+        return new self('The validation reader read "' . $actualdata . '" instead of "' . $expecteddata .
+                '". Adjust your parameters to increase readability or disable validation.');
     }
 }

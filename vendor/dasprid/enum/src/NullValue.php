@@ -22,6 +22,12 @@ use DASPRiD\Enum\Exception\CloneNotSupportedException;
 use DASPRiD\Enum\Exception\SerializeNotSupportedException;
 use DASPRiD\Enum\Exception\UnserializeNotSupportedException;
 
+/**
+ * Represents a null value for enumerations, used to indicate the absence of a value.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class NullValue
 {
     /**
@@ -29,9 +35,17 @@ final class NullValue
      */
     private static $instance;
 
+    /**
+     * Constructor.
+     */
     private function __construct() {
     }
 
+    /**
+     * Returns the singleton instance of NullValue.
+     *
+     * @return self
+     */
     public static function instance(): self {
         return self::$instance ?: self::$instance = new self();
     }
@@ -41,6 +55,7 @@ final class NullValue
      *
      * @throws CloneNotSupportedException
      */
+    // phpcs:ignore
     final public function __clone() {
         throw new CloneNotSupportedException();
     }
@@ -50,6 +65,7 @@ final class NullValue
      *
      * @throws SerializeNotSupportedException
      */
+    // phpcs:ignore
     final public function __sleep(): array {
         throw new SerializeNotSupportedException();
     }
@@ -59,6 +75,7 @@ final class NullValue
      *
      * @throws SerializeNotSupportedException
      */
+    // phpcs:ignore
     final public function __serialize(): array {
         throw new SerializeNotSupportedException();
     }
@@ -68,6 +85,7 @@ final class NullValue
      *
      * @throws UnserializeNotSupportedException
      */
+    // phpcs:ignore
     final public function __wakeup(): void {
         throw new UnserializeNotSupportedException();
     }
@@ -77,6 +95,7 @@ final class NullValue
      *
      * @throws UnserializeNotSupportedException
      */
+    // phpcs:ignore
     final public function __unserialize($arg): void {
         throw new UnserializeNotSupportedException();
     }

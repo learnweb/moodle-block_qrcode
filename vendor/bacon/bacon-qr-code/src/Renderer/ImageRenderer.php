@@ -26,138 +26,177 @@ use BaconQrCode\Renderer\Path\Path;
 use BaconQrCode\Renderer\RendererStyle\EyeFill;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 
+/**
+ * Image renderer.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class ImageRenderer implements RendererInterface
 {
+    /**
+     * Constructor.
+     *
+     * @param RendererStyle $rendererstyle
+     * @param ImageBackEndInterface $imagebackend
+     */
     public function __construct(
-        private readonly RendererStyle $rendererStyle,
-        private readonly ImageBackEndInterface $imageBackEnd
+        /**
+         * @var RendererStyle
+         */
+        private readonly RendererStyle $rendererstyle,
+        /**
+         * @var ImageBackEndInterface
+         */
+        private readonly ImageBackEndInterface $imagebackend
     ) {
     }
 
     /**
+     * Renders the QR code to an image.
+     *
      * @throws InvalidArgumentException if matrix width doesn't match height
      */
-    public function render(QrCode $qrCode): string {
-        $size = $this->rendererStyle->get_size();
-        $margin = $this->rendererStyle->get_margin();
-        $matrix = $qrCode->get_matrix();
-        $matrixSize = $matrix->get_width();
+    public function render(QrCode $qrcode): string {
+        $size = $this->rendererstyle->get_size();
+        $margin = $this->rendererstyle->get_margin();
+        $matrix = $qrcode->get_matrix();
+        $matrixsize = $matrix->get_width();
 
-        if ($matrixSize !== $matrix->get_height()) {
+        if ($matrixsize !== $matrix->get_height()) {
             throw new InvalidArgumentException('Matrix must have the same width and height');
         }
 
-        $totalSize = $matrixSize + ($margin * 2);
-        $moduleSize = $size / $totalSize;
-        $fill = $this->rendererStyle->get_fill();
+        $totalsize = $matrixsize + ($margin * 2);
+        $modulesize = $size / $totalsize;
+        $fill = $this->rendererstyle->get_fill();
 
-        $this->imageBackEnd->new($size, $fill->get_background_color());
-        $this->imageBackEnd->scale((float) $moduleSize);
-        $this->imageBackEnd->translate((float) $margin, (float) $margin);
+        $this->imagebackend->new($size, $fill->get_background_color());
+        $this->imagebackend->scale((float) $modulesize);
+        $this->imagebackend->translate((float) $margin, (float) $margin);
 
-        $module = $this->rendererStyle->get_module();
-        $moduleMatrix = clone $matrix;
-        MatrixUtil::removepositiondetectionpatterns($moduleMatrix);
-        $modulePath = $this->drawEyes($matrixSize, $module->create_path($moduleMatrix));
+        $module = $this->rendererstyle->get_module();
+        $modulematrix = clone $matrix;
+        MatrixUtil::removepositiondetectionpatterns($modulematrix);
+        $modulepath = $this->draw_eyes($matrixsize, $module->create_path($modulematrix));
 
         if ($fill->has_gradient_fill()) {
-            $this->imageBackEnd->draw_path_with_gradient(
-                $modulePath,
+            $this->imagebackend->draw_path_with_gradient(
+                $modulepath,
                 $fill->get_foreground_gradient(),
                 0,
                 0,
-                $matrixSize,
-                $matrixSize
+                $matrixsize,
+                $matrixsize
             );
         } else {
-            $this->imageBackEnd->draw_path_with_color($modulePath, $fill->get_foreground_color());
+            $this->imagebackend->draw_path_with_color($modulepath, $fill->get_foreground_color());
         }
 
-        return $this->imageBackEnd->done();
+        return $this->imagebackend->done();
     }
 
-    private function drawEyes(int $matrixSize, Path $modulePath): Path {
-        $fill = $this->rendererStyle->get_fill();
+    /**
+     * Draws the eyes of the QR code.
+     *
+     * @param int $matrixsize
+     * @param Path $modulepath
+     * @return Path
+     */
+    private function draw_eyes(int $matrixsize, Path $modulepath): Path {
+        $fill = $this->rendererstyle->get_fill();
 
-        $eye = $this->rendererStyle->get_eye();
-        $externalPath = $eye->getExternalPath();
-        $internalPath = $eye->getInternalPath();
+        $eye = $this->rendererstyle->get_eye();
+        $externalpath = $eye->get_external_path();
+        $internalpath = $eye->get_internal_path();
 
-        $modulePath = $this->drawEye(
-            $externalPath,
-            $internalPath,
+        $modulepath = $this->draw_eye(
+            $externalpath,
+            $internalpath,
             $fill->get_top_left_eyefill(),
             3.5,
             3.5,
             0,
-            $modulePath
+            $modulepath
         );
-        $modulePath = $this->drawEye(
-            $externalPath,
-            $internalPath,
+        $modulepath = $this->draw_eye(
+            $externalpath,
+            $internalpath,
             $fill->get_top_right_eyefill(),
-            $matrixSize - 3.5,
+            $matrixsize - 3.5,
             3.5,
             90,
-            $modulePath
+            $modulepath
         );
-        $modulePath = $this->drawEye(
-            $externalPath,
-            $internalPath,
+        $modulepath = $this->draw_eye(
+            $externalpath,
+            $internalpath,
             $fill->get_bottom_left_eyefill(),
             3.5,
-            $matrixSize - 3.5,
+            $matrixsize - 3.5,
             -90,
-            $modulePath
+            $modulepath
         );
 
-        return $modulePath;
+        return $modulepath;
     }
 
-    private function drawEye(
-        Path $externalPath,
-        Path $internalPath,
+    /**
+     * Draws a single eye of the QR code.
+     *
+     * @param Path $externalpath
+     * @param Path $internalpath
+     * @param EyeFill $fill
+     * @param float $xtranslation
+     * @param float $ytranslation
+     * @param int $rotation
+     * @param Path $modulepath
+     * @return Path
+     */
+    private function draw_eye(
+        Path $externalpath,
+        Path $internalpath,
         EyeFill $fill,
-        float $xTranslation,
-        float $yTranslation,
+        float $xtranslation,
+        float $ytranslation,
         int $rotation,
-        Path $modulePath
+        Path $modulepath
     ): Path {
         if ($fill->inherits_both_colors()) {
-            return $modulePath
+            return $modulepath
                 ->append(
-                    $externalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
+                    $externalpath->rotate($rotation)->translate($xtranslation, $ytranslation)
                 )
                 ->append(
-                    $internalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
+                    $internalpath->rotate($rotation)->translate($xtranslation, $ytranslation)
                 );
         }
 
-        $this->imageBackEnd->push();
-        $this->imageBackEnd->translate($xTranslation, $yTranslation);
+        $this->imagebackend->push();
+        $this->imagebackend->translate($xtranslation, $ytranslation);
 
         if (0 !== $rotation) {
-            $this->imageBackEnd->rotate($rotation);
+            $this->imagebackend->rotate($rotation);
         }
 
         if ($fill->inherits_external_color()) {
-            $modulePath = $modulePath->append(
-                $externalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
+            $modulepath = $modulepath->append(
+                $externalpath->rotate($rotation)->translate($xtranslation, $ytranslation)
             );
         } else {
-            $this->imageBackEnd->draw_path_with_color($externalPath, $fill->get_external_color());
+            $this->imagebackend->draw_path_with_color($externalpath, $fill->get_external_color());
         }
 
         if ($fill->inherits_internal_color()) {
-            $modulePath = $modulePath->append(
-                $internalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
+            $modulepath = $modulepath->append(
+                $internalpath->rotate($rotation)->translate($xtranslation, $ytranslation)
             );
         } else {
-            $this->imageBackEnd->draw_path_with_color($internalPath, $fill->get_internal_color());
+            $this->imagebackend->draw_path_with_color($internalpath, $fill->get_internal_color());
         }
 
-        $this->imageBackEnd->pop();
+        $this->imagebackend->pop();
 
-        return $modulePath;
+        return $modulepath;
     }
 }

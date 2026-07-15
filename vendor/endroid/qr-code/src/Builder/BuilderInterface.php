@@ -28,32 +28,62 @@ use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 use Endroid\QrCode\Writer\WriterInterface;
 
+/**
+ * Interface for a builder that creates QR codes with optional labels and logos.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface BuilderInterface
 {
-    /** @param array<mixed>|null $writerOptions */
+    /**
+     * Builds a QR code with the specified options and returns the result.
+     *
+     * @param WriterInterface|null $writer
+     * @param array|null $writeroptions
+     * @param bool|null $validateresult
+     * @param string|null $data
+     * @param EncodingInterface|null $encoding
+     * @param ErrorCorrectionLevel|null $errorcorrectionlevel
+     * @param int|null $size
+     * @param int|null $margin
+     * @param RoundBlockSizeMode|null $roundblocksizemode
+     * @param ColorInterface|null $foregroundcolor
+     * @param ColorInterface|null $backgroundcolor
+     * @param string|null $labeltext
+     * @param FontInterface|null $labelfont
+     * @param LabelAlignment|null $labelalignment
+     * @param MarginInterface|null $labelmargin
+     * @param ColorInterface|null $labeltextcolor
+     * @param string|null $logopath
+     * @param int|null $logoresizetowidth
+     * @param int|null $logoresizetoheight
+     * @param bool|null $logopunchoutbackground
+     * @return ResultInterface
+     */
     public function build(
         ?WriterInterface $writer = null,
-        ?array $writerOptions = null,
-        ?bool $validateResult = null,
-        // QrCode options
+        ?array $writeroptions = null,
+        ?bool $validateresult = null,
+        // QrCode options.
         ?string $data = null,
         ?EncodingInterface $encoding = null,
-        ?ErrorCorrectionLevel $errorCorrectionLevel = null,
+        ?ErrorCorrectionLevel $errorcorrectionlevel = null,
         ?int $size = null,
         ?int $margin = null,
-        ?RoundBlockSizeMode $roundBlockSizeMode = null,
-        ?ColorInterface $foregroundColor = null,
-        ?ColorInterface $backgroundColor = null,
-        // Label options
-        ?string $labelText = null,
-        ?FontInterface $labelFont = null,
-        ?LabelAlignment $labelAlignment = null,
-        ?MarginInterface $labelMargin = null,
-        ?ColorInterface $labelTextColor = null,
-        // Logo options
-        ?string $logoPath = null,
-        ?int $logoResizeToWidth = null,
-        ?int $logoResizeToHeight = null,
-        ?bool $logoPunchoutBackground = null,
+        ?RoundBlockSizeMode $roundblocksizemode = null,
+        ?ColorInterface $foregroundcolor = null,
+        ?ColorInterface $backgroundcolor = null,
+        // Label options.
+        ?string $labeltext = null,
+        ?FontInterface $labelfont = null,
+        ?LabelAlignment $labelalignment = null,
+        ?MarginInterface $labelmargin = null,
+        ?ColorInterface $labeltextcolor = null,
+        // Logo options.
+        ?string $logopath = null,
+        ?int $logoresizetowidth = null,
+        ?int $logoresizetoheight = null,
+        ?bool $logopunchoutbackground = null,
     ): ResultInterface;
 }

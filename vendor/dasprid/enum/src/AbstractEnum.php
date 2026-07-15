@@ -25,6 +25,12 @@ use DASPRiD\Enum\Exception\SerializeNotSupportedException;
 use DASPRiD\Enum\Exception\UnserializeNotSupportedException;
 use ReflectionClass;
 
+/**
+ * Abstract base class for creating enumerations in PHP.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 abstract class AbstractEnum
 {
     /**
@@ -45,7 +51,7 @@ abstract class AbstractEnum
     /**
      * @var array<string, bool>
      */
-    private static $allValuesLoaded = [];
+    private static $allvaluesloaded = [];
 
     /**
      * @var array<string, array>
@@ -63,12 +69,12 @@ abstract class AbstractEnum
     }
 
     /**
-     * Magic getter which forwards all calls to {@see self::valueOf()}.
+     * Magic getter which forwards all calls to {@see self::value_of()}.
      *
      * @return static
      */
     final public static function __callStatic(string $name, array $arguments): self {
-        return static::valueOf($name);
+        return static::value_of($name);
     }
 
     /**
@@ -80,7 +86,7 @@ abstract class AbstractEnum
      * @return static
      * @throws IllegalArgumentException if the enum has no constant with the specified name
      */
-    final public static function valueOf(string $name): self {
+    final public static function value_of(string $name): self {
         if (isset(self::$values[static::class][$name])) {
             return self::$values[static::class][$name];
         }
@@ -88,16 +94,18 @@ abstract class AbstractEnum
         $constants = self::constants();
 
         if (array_key_exists($name, $constants)) {
-            return self::createValue($name, $constants[$name][0], $constants[$name][1]);
+            return self::create_value($name, $constants[$name][0], $constants[$name][1]);
         }
 
         throw new IllegalArgumentException(sprintf('No enum constant %s::%s', static::class, $name));
     }
 
     /**
+     * Creates a new enum instance with the specified name, ordinal and constructor arguments.
+     *
      * @return static
      */
-    private static function createValue(string $name, int $ordinal, array $arguments): self {
+    private static function create_value(string $name, int $ordinal, array $arguments): self {
         $instance = new static(...$arguments);
         $instance->name = $name;
         $instance->ordinal = $ordinal;
@@ -111,7 +119,7 @@ abstract class AbstractEnum
      * @return static[]
      */
     final public static function values(): array {
-        if (isset(self::$allValuesLoaded[static::class])) {
+        if (isset(self::$allvaluesloaded[static::class])) {
             return self::$values[static::class];
         }
 
@@ -124,34 +132,39 @@ abstract class AbstractEnum
                 continue;
             }
 
-            static::createValue($name, $constant[0], $constant[1]);
+            static::create_value($name, $constant[0], $constant[1]);
         }
 
         uasort(self::$values[static::class], function (self $a, self $b) {
             return $a->ordinal() <=> $b->ordinal();
         });
 
-        self::$allValuesLoaded[static::class] = true;
+        self::$allvaluesloaded[static::class] = true;
         return self::$values[static::class];
     }
 
+    /**
+     * Returns the constants of this enum class.
+     *
+     * @return array
+     */
     private static function constants(): array {
         if (isset(self::$constants[static::class])) {
             return self::$constants[static::class];
         }
 
         self::$constants[static::class] = [];
-        $reflectionClass = new ReflectionClass(static::class);
+        $reflectionclass = new ReflectionClass(static::class);
         $ordinal = -1;
 
-        foreach ($reflectionClass->getReflectionConstants() as $reflectionConstant) {
-            if (! $reflectionConstant->isProtected()) {
+        foreach ($reflectionclass->getReflectionConstants() as $reflectionconstant) {
+            if (! $reflectionconstant->isProtected()) {
                 continue;
             }
 
-            $value = $reflectionConstant->getValue();
+            $value = $reflectionconstant->getValue();
 
-            self::$constants[static::class][$reflectionConstant->name] = [
+            self::$constants[static::class][$reflectionconstant->name] = [
                 ++$ordinal,
                 is_array($value) ? $value : [],
             ];
@@ -193,7 +206,7 @@ abstract class AbstractEnum
      *
      * @throws MismatchException if the passed enum is not of the same type
      */
-    final public function compareTo(self $other): int {
+    final public function compare_to(self $other): int {
         if (! $other instanceof static) {
             throw new MismatchException(sprintf(
                 'The passed enum %s is not of the same type as %s',

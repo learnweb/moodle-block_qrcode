@@ -18,16 +18,32 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Writer\Result;
 
+/**
+ * Represents the result of writing a QR code in GIF format.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class GifResult extends GdResult
 {
-    public function getString(): string {
+    /**
+     * Returns the string representation of the QR code in GIF format.
+     *
+     * @return string
+     */
+    public function get_string(): string {
         ob_start();
         imagegif($this->image);
 
         return strval(ob_get_clean());
     }
 
-    public function getMimeType(): string {
+    /**
+     * Returns the MIME type for GIF images.
+     *
+     * @return string
+     */
+    public function get_mime_type(): string {
         return 'image/gif';
     }
 }

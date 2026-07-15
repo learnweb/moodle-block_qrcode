@@ -22,20 +22,25 @@ use BaconQrCode\Renderer\Path\Path;
 
 /**
  * Interface for describing the look of an eye.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 interface EyeInterface
 {
     /**
-     * Returns the path of the external eye element.
+     *  Returns the path of the external eye element.
+     *  The path origin point (0, 0) must be anchored at the middle of the path.
      *
-     * The path origin point (0, 0) must be anchored at the middle of the path.
+     * @return Path
      */
-    public function getExternalPath(): Path;
+    public function get_external_path(): Path;
 
     /**
-     * Returns the path of the internal eye element.
+     *  Returns the path of the internal eye element.
+     *  The path origin point (0, 0) must be anchored at the middle of the path.
      *
-     * The path origin point (0, 0) must be anchored at the middle of the path.
+     * @return Path
      */
-    public function getInternalPath(): Path;
+    public function get_internal_path(): Path;
 }

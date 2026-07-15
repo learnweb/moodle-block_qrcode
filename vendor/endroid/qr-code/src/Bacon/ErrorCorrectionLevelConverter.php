@@ -18,17 +18,34 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Bacon;
 
+defined('MOODLE_INTERNAL') || die();
+
 use BaconQrCode\Common\ErrorCorrectionLevel as BaconErrorCorrectionLevel;
 use Endroid\QrCode\ErrorCorrectionLevel;
 
+/**
+ * Class for converting error correction levels between Endroid and Bacon QR code libraries.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class ErrorCorrectionLevelConverter
 {
-    public static function convertToBaconErrorCorrectionLevel(ErrorCorrectionLevel $errorCorrectionLevel): BaconErrorCorrectionLevel {
-        return match ($errorCorrectionLevel) {
-            ErrorCorrectionLevel::Low => BaconErrorCorrectionLevel::valueOf('L'),
-            ErrorCorrectionLevel::Medium => BaconErrorCorrectionLevel::valueOf('M'),
-            ErrorCorrectionLevel::Quartile => BaconErrorCorrectionLevel::valueOf('Q'),
-            ErrorCorrectionLevel::High => BaconErrorCorrectionLevel::valueOf('H'),
+    /**
+     * Converts an Endroid error correction level to a Bacon error correction level.
+     *
+     * @param ErrorCorrectionLevel $errorcorrectionlevel
+     * @return BaconErrorCorrectionLevel
+     * @throws \DASPRiD\Enum\Exception\IllegalArgumentException
+     */
+    public static function convert_to_bacon_error_correction_level(
+        ErrorCorrectionLevel $errorcorrectionlevel
+    ): BaconErrorCorrectionLevel {
+        return match ($errorcorrectionlevel) {
+            ErrorCorrectionLevel::Low => BaconErrorCorrectionLevel::value_of('L'),
+            ErrorCorrectionLevel::Medium => BaconErrorCorrectionLevel::value_of('M'),
+            ErrorCorrectionLevel::Quartile => BaconErrorCorrectionLevel::value_of('Q'),
+            ErrorCorrectionLevel::High => BaconErrorCorrectionLevel::value_of('H'),
         };
     }
 }

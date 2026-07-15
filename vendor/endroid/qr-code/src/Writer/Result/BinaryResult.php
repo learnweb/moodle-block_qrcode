@@ -20,27 +20,48 @@ namespace Endroid\QrCode\Writer\Result;
 
 use Endroid\QrCode\Matrix\MatrixInterface;
 
+/**
+ * Represents the result of writing a QR code in binary format.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class BinaryResult extends AbstractResult
 {
+    /**
+     * Creates a new instance of BinaryResult.
+     *
+     * @param MatrixInterface $matrix
+     */
     public function __construct(MatrixInterface $matrix) {
         parent::__construct($matrix);
     }
 
-    public function getString(): string {
-        $matrix = $this->getMatrix();
+    /**
+     * Returns the string representation of the QR code in binary format.
+     *
+     * @return string
+     */
+    public function get_string(): string {
+        $matrix = $this->get_matrix();
 
-        $binaryString = '';
-        for ($rowIndex = 0; $rowIndex < $matrix->getBlockCount(); ++$rowIndex) {
-            for ($columnIndex = 0; $columnIndex < $matrix->getBlockCount(); ++$columnIndex) {
-                $binaryString .= $matrix->getBlockValue($rowIndex, $columnIndex);
+        $binarystring = '';
+        for ($rowindex = 0; $rowindex < $matrix->get_block_count(); ++$rowindex) {
+            for ($columnindex = 0; $columnindex < $matrix->get_block_count(); ++$columnindex) {
+                $binarystring .= $matrix->get_block_value($rowindex, $columnindex);
             }
-            $binaryString .= "\n";
+            $binarystring .= "\n";
         }
 
-        return $binaryString;
+        return $binarystring;
     }
 
-    public function getMimeType(): string {
+    /**
+     * Returns the MIME type for the binary representation of the QR code.
+     *
+     * @return string
+     */
+    public function get_mime_type(): string {
         return 'text/plain';
     }
 }

@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Writer;
 
+defined('MOODLE_INTERNAL') || die();
+
 use Endroid\QrCode\Bacon\MatrixFactory;
 use Endroid\QrCode\Label\LabelInterface;
 use Endroid\QrCode\Logo\LogoInterface;
@@ -25,29 +27,61 @@ use Endroid\QrCode\QrCodeInterface;
 use Endroid\QrCode\Writer\Result\EpsResult;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 
+/**
+ * Writer for generating QR codes in EPS format.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class EpsWriter implements WriterInterface
 {
+    /**
+     * Decimal Precision 10.
+     */
     public const DECIMAL_PRECISION = 10;
 
-    public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface {
-        $matrixFactory = new MatrixFactory();
-        $matrix = $matrixFactory->create($qrCode);
+    /**
+     * Writes a QR code to EPS format, optionally including a logo and label, and returns the result.
+     *
+     * @param QrCodeInterface $qrcode
+     * @param LogoInterface|null $logo
+     * @param LabelInterface|null $label
+     * @param array $options
+     * @return ResultInterface
+     * @throws \DASPRiD\Enum\Exception\IllegalArgumentException
+     * @throws \Endroid\QrCode\Exception\BlockSizeTooSmallException
+     */
+    public function write(
+        QrCodeInterface $qrcode,
+        ?LogoInterface $logo = null,
+        ?LabelInterface $label = null,
+        array $options = []
+    ): ResultInterface {
+        $matrixfactory = new MatrixFactory();
+        $matrix = $matrixfactory->create($qrcode);
 
         $lines = [
             '%!PS-Adobe-3.0 EPSF-3.0',
-            '%%BoundingBox: 0 0 ' . $matrix->getOuterSize() . ' ' . $matrix->getOuterSize(),
+            '%%BoundingBox: 0 0 ' . $matrix->get_outer_size() . ' ' . $matrix->get_outer_size(),
             '/F { rectfill } def',
-            number_format($qrCode->getBackgroundColor()->getRed() / 100, 2, '.', ',') . ' ' . number_format($qrCode->getBackgroundColor()->getGreen() / 100, 2, '.', ',') . ' ' . number_format($qrCode->getBackgroundColor()->getBlue() / 100, 2, '.', ',') . ' setrgbcolor',
-            '0 0 ' . $matrix->getOuterSize() . ' ' . $matrix->getOuterSize() . ' F',
-            number_format($qrCode->getForegroundColor()->getRed() / 100, 2, '.', ',') . ' ' . number_format($qrCode->getForegroundColor()->getGreen() / 100, 2, '.', ',') . ' ' . number_format($qrCode->getForegroundColor()->getBlue() / 100, 2, '.', ',') . ' setrgbcolor',
+                number_format($qrcode->get_background_color()->get_red() / 100, 2, '.', ',') . ' ' .
+                number_format($qrcode->get_background_color()->get_green() / 100, 2, '.', ',') . ' ' .
+                number_format($qrcode->get_background_color()->get_blue() / 100, 2, '.', ',') . ' setrgbcolor',
+            '0 0 ' . $matrix->get_outer_size() . ' ' . $matrix->get_outer_size() . ' F',
+                number_format($qrcode->get_foreground_color()->get_red() / 100, 2, '.', ',') . ' ' .
+                number_format($qrcode->get_foreground_color()->get_green() / 100, 2, '.', ',') . ' ' .
+                number_format($qrcode->get_foreground_color()->get_blue() / 100, 2, '.', ',') . ' setrgbcolor',
         ];
 
-        for ($rowIndex = 0; $rowIndex < $matrix->getBlockCount(); ++$rowIndex) {
-            for ($columnIndex = 0; $columnIndex < $matrix->getBlockCount(); ++$columnIndex) {
-                if (1 === $matrix->getBlockValue($matrix->getBlockCount() - 1 - $rowIndex, $columnIndex)) {
-                    $x = $matrix->getMarginLeft() + $matrix->getBlockSize() * $columnIndex;
-                    $y = $matrix->getMarginLeft() + $matrix->getBlockSize() * $rowIndex;
-                    $lines[] = number_format($x, self::DECIMAL_PRECISION, '.', '') . ' ' . number_format($y, self::DECIMAL_PRECISION, '.', '') . ' ' . number_format($matrix->getBlockSize(), self::DECIMAL_PRECISION, '.', '') . ' ' . number_format($matrix->getBlockSize(), self::DECIMAL_PRECISION, '.', '') . ' F';
+        for ($rowindex = 0; $rowindex < $matrix->get_block_count(); ++$rowindex) {
+            for ($columnindex = 0; $columnindex < $matrix->get_block_count(); ++$columnindex) {
+                if (1 === $matrix->get_block_value($matrix->get_block_count() - 1 - $rowindex, $columnindex)) {
+                    $x = $matrix->get_margin_left() + $matrix->get_block_size() * $columnindex;
+                    $y = $matrix->get_margin_left() + $matrix->get_block_size() * $rowindex;
+                    $lines[] = number_format($x, self::DECIMAL_PRECISION, '.', '') . ' ' .
+                            number_format($y, self::DECIMAL_PRECISION, '.', '') . ' ' .
+                            number_format($matrix->get_block_size(), self::DECIMAL_PRECISION, '.', '') . ' ' .
+                            number_format($matrix->get_block_size(), self::DECIMAL_PRECISION, '.', '') . ' F';
                 }
             }
         }

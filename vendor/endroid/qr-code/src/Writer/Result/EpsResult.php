@@ -20,8 +20,20 @@ namespace Endroid\QrCode\Writer\Result;
 
 use Endroid\QrCode\Matrix\MatrixInterface;
 
+/**
+ * Represents the result of writing a QR code in EPS format.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class EpsResult extends AbstractResult
 {
+    /**
+     * Constructor.
+     *
+     * @param MatrixInterface $matrix
+     * @param array $lines
+     */
     public function __construct(
         MatrixInterface $matrix,
         /** @var array<string> $lines */
@@ -30,11 +42,21 @@ final class EpsResult extends AbstractResult
         parent::__construct($matrix);
     }
 
-    public function getString(): string {
+    /**
+     * Returns the string representation of the QR code in EPS format.
+     *
+     * @return string
+     */
+    public function get_string(): string {
         return implode("\n", $this->lines);
     }
 
-    public function getMimeType(): string {
+    /**
+     * Returns the MIME type for the EPS representation of the QR code.
+     *
+     * @return string
+     */
+    public function get_mime_type(): string {
         return 'image/eps';
     }
 }

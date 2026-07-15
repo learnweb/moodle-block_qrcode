@@ -29,8 +29,17 @@ use BaconQrCode\Renderer\RendererStyle\EyeFill;
 use BaconQrCode\Renderer\RendererStyle\Fill;
 use GdImage;
 
+/**
+ * Renderer for GDLib.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class GDLibRenderer implements RendererInterface
 {
+    /**
+     * @var GdImage|null
+     */
     private ?GdImage $image;
 
     /**
@@ -38,11 +47,35 @@ final class GDLibRenderer implements RendererInterface
      */
     private array $colors;
 
+    /**
+     * Constructor.
+     *
+     * @param int $size
+     * @param int $margin
+     * @param string $imageformat
+     * @param int $compressionquality
+     * @param Fill|null $fill
+     */
     public function __construct(
+        /**
+         * @var int
+         */
         private int $size,
+        /**
+         * @var int
+         */
         private int $margin = 4,
-        private string $imageFormat = 'png',
-        private int $compressionQuality = 9,
+        /**
+         * @var string
+         */
+        private string $imageformat = 'png',
+        /**
+         * @var int
+         */
+        private int $compressionquality = 9,
+        /**
+         * @var Fill|null
+         */
         private ?Fill $fill = null
     ) {
         if (! extension_loaded('gd') || ! function_exists('gd_info')) {
@@ -58,24 +91,31 @@ final class GDLibRenderer implements RendererInterface
     }
 
     /**
+     * Renders the QR code to an image.
+     *
      * @throws InvalidArgumentException if matrix width doesn't match height
      */
-    public function render(QrCode $qrCode): string {
-        $matrix = $qrCode->get_matrix();
-        $matrixSize = $matrix->get_width();
+    public function render(QrCode $qrcode): string {
+        $matrix = $qrcode->get_matrix();
+        $matrixsize = $matrix->get_width();
 
-        if ($matrixSize !== $matrix->get_height()) {
+        if ($matrixsize !== $matrix->get_height()) {
             throw new InvalidArgumentException('Matrix must have the same width and height');
         }
 
         MatrixUtil::removepositiondetectionpatterns($matrix);
-        $this->newImage();
+        $this->new_image();
         $this->draw($matrix);
 
-        return $this->renderImage();
+        return $this->render_image();
     }
 
-    private function newImage(): void {
+    /**
+     * Creates a new image with the specified size and background color.
+     *
+     * @return void
+     */
+    private function new_image(): void {
         $img = imagecreatetruecolor($this->size, $this->size);
         if ($img === false) {
             throw new RuntimeException('Failed to create image of that size');
@@ -85,48 +125,63 @@ final class GDLibRenderer implements RendererInterface
         imagealphablending($this->image, false);
         imagesavealpha($this->image, true);
 
-        $bg = $this->getColor($this->fill->get_background_color());
+        $bg = $this->get_color($this->fill->get_background_color());
         imagefilledrectangle($this->image, 0, 0, $this->size, $this->size, $bg);
         imagealphablending($this->image, true);
     }
 
+    /**
+     * Draws the QR code to the image.
+     *
+     * @param ByteMatrix $matrix
+     * @return void
+     */
     private function draw(ByteMatrix $matrix): void {
-        $matrixSize = $matrix->get_width();
+        $matrixsize = $matrix->get_width();
 
-        $pointsOnSide = $matrix->get_width() + $this->margin * 2;
-        $pointInPx = $this->size / $pointsOnSide;
+        $pointsonside = $matrix->get_width() + $this->margin * 2;
+        $pointinpx = $this->size / $pointsonside;
 
-        $this->drawEye(0, 0, $pointInPx, $this->fill->get_top_left_eyefill());
-        $this->drawEye($matrixSize - 7, 0, $pointInPx, $this->fill->get_top_right_eyefill());
-        $this->drawEye(0, $matrixSize - 7, $pointInPx, $this->fill->get_bottom_left_eyefill());
+        $this->draw_eye(0, 0, $pointinpx, $this->fill->get_top_left_eyefill());
+        $this->draw_eye($matrixsize - 7, 0, $pointinpx, $this->fill->get_top_right_eyefill());
+        $this->draw_eye(0, $matrixsize - 7, $pointinpx, $this->fill->get_bottom_left_eyefill());
 
         $rows = $matrix->get_array()->toArray();
-        $color = $this->getColor($this->fill->get_foreground_color());
-        for ($y = 0; $y < $matrixSize; $y += 1) {
-            for ($x = 0; $x < $matrixSize; $x += 1) {
+        $color = $this->get_color($this->fill->get_foreground_color());
+        for ($y = 0; $y < $matrixsize; $y += 1) {
+            for ($x = 0; $x < $matrixsize; $x += 1) {
                 if (! $rows[$y][$x]) {
                     continue;
                 }
 
-                $points = $this->normalizePoints([
-                    ($this->margin + $x) * $pointInPx, ($this->margin + $y) * $pointInPx,
-                    ($this->margin + $x + 1) * $pointInPx, ($this->margin + $y) * $pointInPx,
-                    ($this->margin + $x + 1) * $pointInPx, ($this->margin + $y + 1) * $pointInPx,
-                    ($this->margin + $x) * $pointInPx, ($this->margin + $y + 1) * $pointInPx,
+                $points = $this->normalize_points([
+                    ($this->margin + $x) * $pointinpx, ($this->margin + $y) * $pointinpx,
+                    ($this->margin + $x + 1) * $pointinpx, ($this->margin + $y) * $pointinpx,
+                    ($this->margin + $x + 1) * $pointinpx, ($this->margin + $y + 1) * $pointinpx,
+                    ($this->margin + $x) * $pointinpx, ($this->margin + $y + 1) * $pointinpx,
                 ]);
                 imagefilledpolygon($this->image, $points, $color);
             }
         }
     }
 
-    private function drawEye(int $xOffset, int $yOffset, float $pointInPx, EyeFill $eyeFill): void {
-        $internalColor = $this->getColor($eyeFill->inherits_internal_color()
+    /**
+     * Draws an eye to the image.
+     *
+     * @param int $xoffset
+     * @param int $yoffset
+     * @param float $pointinpx
+     * @param EyeFill $eyefill
+     * @return void
+     */
+    private function draw_eye(int $xoffset, int $yoffset, float $pointinpx, EyeFill $eyefill): void {
+        $internalcolor = $this->get_color($eyefill->inherits_internal_color()
             ? $this->fill->get_foreground_color()
-            : $eyeFill->get_internal_color());
+            : $eyefill->get_internal_color());
 
-        $externalColor = $this->getColor($eyeFill->inherits_external_color()
+        $externalcolor = $this->get_color($eyefill->inherits_external_color()
             ? $this->fill->get_foreground_color()
-            : $eyeFill->get_external_color());
+            : $eyefill->get_external_color());
 
         for ($y = 0; $y < 7; $y += 1) {
             for ($x = 0; $x < 7; $x += 1) {
@@ -134,17 +189,17 @@ final class GDLibRenderer implements RendererInterface
                     continue;
                 }
 
-                $points = $this->normalizePoints([
-                    ($this->margin + $x + $xOffset) * $pointInPx, ($this->margin + $y + $yOffset) * $pointInPx,
-                    ($this->margin + $x + $xOffset + 1) * $pointInPx, ($this->margin + $y + $yOffset) * $pointInPx,
-                    ($this->margin + $x + $xOffset + 1) * $pointInPx, ($this->margin + $y + $yOffset + 1) * $pointInPx,
-                    ($this->margin + $x + $xOffset) * $pointInPx, ($this->margin + $y + $yOffset + 1) * $pointInPx,
+                $points = $this->normalize_points([
+                    ($this->margin + $x + $xoffset) * $pointinpx, ($this->margin + $y + $yoffset) * $pointinpx,
+                    ($this->margin + $x + $xoffset + 1) * $pointinpx, ($this->margin + $y + $yoffset) * $pointinpx,
+                    ($this->margin + $x + $xoffset + 1) * $pointinpx, ($this->margin + $y + $yoffset + 1) * $pointinpx,
+                    ($this->margin + $x + $xoffset) * $pointinpx, ($this->margin + $y + $yoffset + 1) * $pointinpx,
                 ]);
 
                 if ($y > 1 && $y < 5 && $x > 1 && $x < 5) {
-                    imagefilledpolygon($this->image, $points, $internalColor);
+                    imagefilledpolygon($this->image, $points, $internalcolor);
                 } else {
-                    imagefilledpolygon($this->image, $points, $externalColor);
+                    imagefilledpolygon($this->image, $points, $externalcolor);
                 }
             }
         }
@@ -153,32 +208,40 @@ final class GDLibRenderer implements RendererInterface
     /**
      * Normalize points will trim right and bottom line by 1 pixel.
      * Otherwise pixels of neighbors are overlapping which leads to issue with transparency and small QR codes.
+     *
+     * @param array $points
+     * @return array
      */
-    private function normalizePoints(array $points): array {
-        $maxX = $maxY = 0;
+    private function normalize_points(array $points): array {
+        $maxx = $maxy = 0;
         for ($i = 0; $i < count($points); $i += 2) {
-            // Do manual round as GD just removes decimal part
-            $points[$i] = $newX = round($points[$i]);
-            $points[$i + 1] = $newY = round($points[$i + 1]);
+            // Do manual round as GD just removes decimal part.
+            $points[$i] = $newx = round($points[$i]);
+            $points[$i + 1] = $newy = round($points[$i + 1]);
 
-            $maxX = max($maxX, $newX);
-            $maxY = max($maxY, $newY);
+            $maxx = max($maxx, $newx);
+            $maxy = max($maxy, $newy);
         }
 
         // Do trimming only if there are 4 points (8 coordinates), assumes this is square.
 
         for ($i = 0; $i < count($points); $i += 2) {
-            $points[$i] = min($points[$i], $maxX - 1);
-            $points[$i + 1] = min($points[$i + 1], $maxY - 1);
+            $points[$i] = min($points[$i], $maxx - 1);
+            $points[$i + 1] = min($points[$i + 1], $maxy - 1);
         }
 
         return $points;
     }
 
-    private function renderImage(): string {
+    /**
+     * Renders the image to a string.
+     *
+     * @return string
+     */
+    private function render_image(): string {
         ob_start();
-        $quality = $this->compressionQuality;
-        switch ($this->imageFormat) {
+        $quality = $this->compressionquality;
+        switch ($this->imageformat) {
             case 'png':
                 if ($quality > 9 || $quality < 0) {
                     $quality = 9;
@@ -200,7 +263,7 @@ final class GDLibRenderer implements RendererInterface
             default:
                 ob_end_clean();
                 throw new InvalidArgumentException(
-                    'Supported image formats are jpeg, png and gif, got: ' . $this->imageFormat
+                    'Supported image formats are jpeg, png and gif, got: ' . $this->imageformat
                 );
         }
 
@@ -211,34 +274,40 @@ final class GDLibRenderer implements RendererInterface
         return ob_get_clean();
     }
 
-    private function getColor(ColorInterface $color): int {
+    /**
+     * Returns the color identifier for the given color, allocating it if necessary.
+     *
+     * @param ColorInterface $color
+     * @return int
+     */
+    private function get_color(ColorInterface $color): int {
         $alpha = 100;
 
         if ($color instanceof Alpha) {
-            $alpha = $color->getAlpha();
-            $color = $color->getBaseColor();
+            $alpha = $color->get_alpha();
+            $color = $color->get_base_color();
         }
 
         $rgb = $color->to_rgb();
 
-        $colorKey = sprintf('%02X%02X%02X%02X', $rgb->getRed(), $rgb->getGreen(), $rgb->getBlue(), $alpha);
+        $colorkey = sprintf('%02X%02X%02X%02X', $rgb->get_red(), $rgb->get_green(), $rgb->get_blue(), $alpha);
 
-        if (! isset($this->colors[$colorKey])) {
-            $colorId = imagecolorallocatealpha(
+        if (! isset($this->colors[$colorkey])) {
+            $colorid = imagecolorallocatealpha(
                 $this->image,
-                $rgb->getRed(),
-                $rgb->getGreen(),
-                $rgb->getBlue(),
-                (int)((100 - $alpha) / 100 * 127) // Alpha for GD is in range 0 (opaque) - 127 (transparent)
+                $rgb->get_red(),
+                $rgb->get_green(),
+                $rgb->get_blue(),
+                (int)((100 - $alpha) / 100 * 127) // Alpha for GD is in range 0 (opaque) - 127 (transparent).
             );
 
-            if ($colorId === false) {
-                throw new RuntimeException('Failed to create color: #' . $colorKey);
+            if ($colorid === false) {
+                throw new RuntimeException('Failed to create color: #' . $colorkey);
             }
 
-            $this->colors[$colorKey] = $colorId;
+            $this->colors[$colorkey] = $colorid;
         }
 
-        return $this->colors[$colorKey];
+        return $this->colors[$colorkey];
     }
 }

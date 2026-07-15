@@ -20,7 +20,20 @@ namespace Endroid\QrCode\Writer;
 
 use Endroid\QrCode\Writer\Result\ResultInterface;
 
+/**
+ * Interface for a writer that can validate the result against expected data.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface ValidatingWriterInterface
 {
-    public function validateResult(ResultInterface $result, string $expectedData): void;
+    /**
+     * Validates the result of writing a QR code against the expected data.
+     *
+     * @param ResultInterface $result
+     * @param string $expecteddata
+     * @return void
+     */
+    public function validate_result(ResultInterface $result, string $expecteddata): void;
 }

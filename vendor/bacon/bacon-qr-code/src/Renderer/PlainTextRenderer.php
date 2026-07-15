@@ -21,6 +21,12 @@ namespace BaconQrCode\Renderer;
 use BaconQrCode\Encoder\QrCode;
 use BaconQrCode\Exception\InvalidArgumentException;
 
+/**
+ * Plain text renderer.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class PlainTextRenderer implements RendererInterface
 {
     /**
@@ -43,47 +49,59 @@ final class PlainTextRenderer implements RendererInterface
      */
     private const EMPTY_BLOCK = "\xc2\xa0";
 
-    public function __construct(private readonly int $margin = 2) {
+    /**
+     * Constructor.
+     *
+     * @param int $margin
+     */
+    public function __construct(
+        /**
+         * @var int
+         */
+        private readonly int $margin = 2
+    ) {
     }
 
     /**
+     * Renders the QR code to a plain text representation.
+     *
      * @throws InvalidArgumentException if matrix width doesn't match height
      */
-    public function render(QrCode $qrCode): string {
-        $matrix = $qrCode->get_matrix();
-        $matrixSize = $matrix->get_width();
+    public function render(QrCode $qrcode): string {
+        $matrix = $qrcode->get_matrix();
+        $matrixsize = $matrix->get_width();
 
-        if ($matrixSize !== $matrix->get_height()) {
+        if ($matrixsize !== $matrix->get_height()) {
             throw new InvalidArgumentException('Matrix must have the same width and height');
         }
 
         $rows = $matrix->get_array()->toArray();
 
-        if (0 !== $matrixSize % 2) {
-            $rows[] = array_fill(0, $matrixSize, 0);
+        if (0 !== $matrixsize % 2) {
+            $rows[] = array_fill(0, $matrixsize, 0);
         }
 
-        $horizontalMargin = str_repeat(self::EMPTY_BLOCK, $this->margin);
+        $horizontalmargin = str_repeat(self::EMPTY_BLOCK, $this->margin);
         $result = str_repeat("\n", (int) ceil($this->margin / 2));
 
-        for ($i = 0; $i < $matrixSize; $i += 2) {
-            $result .= $horizontalMargin;
+        for ($i = 0; $i < $matrixsize; $i += 2) {
+            $result .= $horizontalmargin;
 
-            $upperRow = $rows[$i];
-            $lowerRow = $rows[$i + 1];
+            $upperrow = $rows[$i];
+            $lowerrow = $rows[$i + 1];
 
-            for ($j = 0; $j < $matrixSize; ++$j) {
-                $upperBit = $upperRow[$j];
-                $lowerBit = $lowerRow[$j];
+            for ($j = 0; $j < $matrixsize; ++$j) {
+                $upperbit = $upperrow[$j];
+                $lowerbit = $lowerrow[$j];
 
-                if ($upperBit) {
-                    $result .= $lowerBit ? self::FULL_BLOCK : self::UPPER_HALF_BLOCK;
+                if ($upperbit) {
+                    $result .= $lowerbit ? self::FULL_BLOCK : self::UPPER_HALF_BLOCK;
                 } else {
-                    $result .= $lowerBit ? self::LOWER_HALF_BLOCK : self::EMPTY_BLOCK;
+                    $result .= $lowerbit ? self::LOWER_HALF_BLOCK : self::EMPTY_BLOCK;
                 }
             }
 
-            $result .= $horizontalMargin . "\n";
+            $result .= $horizontalmargin . "\n";
         }
 
         $result .= str_repeat("\n", (int) ceil($this->margin / 2));

@@ -18,41 +18,104 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Color;
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Represents a color in a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class Color implements ColorInterface
 {
+    /**
+     * Constructor.
+     *
+     * @param int $red
+     * @param int $green
+     * @param int $blue
+     * @param int $alpha
+     */
     public function __construct(
+        /**
+         * @var int
+         */
         private int $red,
+        /**
+         * @var int
+         */
         private int $green,
+        /**
+         * @var int
+         */
         private int $blue,
+        /**
+         * @var int
+         */
         private int $alpha = 0,
     ) {
     }
 
-    public function getRed(): int {
+    /**
+     * Returns the red component of the color (0-255).
+     *
+     * @return int
+     */
+    public function get_red(): int {
         return $this->red;
     }
 
-    public function getGreen(): int {
+    /**
+     * Returns the green component of the color (0-255).
+     *
+     * @return int
+     */
+    public function get_green(): int {
         return $this->green;
     }
 
-    public function getBlue(): int {
+    /**
+     * Returns the blue component of the color (0-255).
+     *
+     * @return int
+     */
+    public function get_blue(): int {
         return $this->blue;
     }
 
-    public function getAlpha(): int {
+    /**
+     * Returns the alpha component of the color (0-255).
+     *
+     * @return int
+     */
+    public function get_alpha(): int {
         return $this->alpha;
     }
 
-    public function getOpacity(): float {
+    /**
+     * Returns the opacity of the color (0.0-1.0).
+     *
+     * @return float
+     */
+    public function get_opacity(): float {
         return 1 - $this->alpha / 127;
     }
 
-    public function getHex(): string {
+    /**
+     * Returns the hexadecimal representation of the color (e.g., #RRGGBB or #RRGGBBAA).
+     *
+     * @return string
+     */
+    public function get_hex(): string {
         return sprintf('#%02x%02x%02x', $this->red, $this->green, $this->blue);
     }
 
-    public function toArray(): array {
+    /**
+     * Returns the color as an array with keys 'red', 'green', 'blue', and 'alpha'.
+     *
+     * @return array
+     */
+    public function to_array(): array {
         return [
             'red' => $this->red,
             'green' => $this->green,

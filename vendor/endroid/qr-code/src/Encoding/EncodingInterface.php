@@ -18,7 +18,18 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Encoding;
 
+/**
+ * Interface for encoding data into a specific format for QR codes.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface EncodingInterface extends \Stringable
 {
+    /**
+     * Returns the string representation of the encoding.
+     *
+     * @return string
+     */
     public function __toString(): string;
 }

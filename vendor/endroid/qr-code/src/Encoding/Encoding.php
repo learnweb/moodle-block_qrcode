@@ -18,9 +18,26 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Encoding;
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Represents the encoding of data for QR codes, ensuring that the specified encoding is valid.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class Encoding implements EncodingInterface
 {
+    /**
+     * Creates a new instance of Encoding with the provided encoding value, validating it against available encodings.
+     *
+     * @param string $value
+     * @throws \Exception
+     */
     public function __construct(
+        /**
+         * @var string
+         */
         private string $value,
     ) {
         if ('UTF-8' !== $value) {
@@ -34,6 +51,11 @@ final readonly class Encoding implements EncodingInterface
         }
     }
 
+    /**
+     * Returns the string representation of the encoding.
+     *
+     * @return string
+     */
     public function __toString(): string {
         return $this->value;
     }

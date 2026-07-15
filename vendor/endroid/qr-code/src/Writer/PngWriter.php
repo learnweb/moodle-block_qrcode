@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Writer;
 
+defined('MOODLE_INTERNAL') || die();
+
 use Endroid\QrCode\Label\LabelInterface;
 use Endroid\QrCode\Logo\LogoInterface;
 use Endroid\QrCode\QrCodeInterface;
@@ -25,30 +27,56 @@ use Endroid\QrCode\Writer\Result\GdResult;
 use Endroid\QrCode\Writer\Result\PngResult;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 
+/**
+ * Writer for generating QR codes in PNG format.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class PngWriter extends AbstractGdWriter
 {
+    /**
+     * Compression level option.
+     */
     public const WRITER_OPTION_COMPRESSION_LEVEL = 'compression_level';
+    /**
+     * Number of colors option.
+     */
     public const WRITER_OPTION_NUMBER_OF_COLORS = 'number_of_colors';
 
-    public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface {
+    /**
+     * Writes a QR code to PNG format, optionally including a logo and label.
+     *
+     * @param QrCodeInterface $qrcode
+     * @param LogoInterface|null $logo
+     * @param LabelInterface|null $label
+     * @param array $options
+     * @return ResultInterface
+     * @throws \Exception
+     */
+    public function write(
+        QrCodeInterface $qrcode,
+        ?LogoInterface $logo = null,
+        ?LabelInterface $label = null,
+        array $options = []
+    ): ResultInterface {
         if (!isset($options[self::WRITER_OPTION_COMPRESSION_LEVEL])) {
             $options[self::WRITER_OPTION_COMPRESSION_LEVEL] = -1;
         }
 
         if (!array_key_exists(self::WRITER_OPTION_NUMBER_OF_COLORS, $options)) {
             $options[self::WRITER_OPTION_NUMBER_OF_COLORS] = match (true) {
-                $qrCode->getBackgroundColor()->getAlpha() > 0 || $qrCode->getForegroundColor()->getAlpha() > 0 => null,
+                $qrcode->get_background_color()->get_alpha() > 0 || $qrcode->get_foreground_color()->get_alpha() > 0 => null,
                 $logo instanceof LogoInterface => null,
                 default => 16,
             };
         }
 
-        /** @var GdResult $gdResult */
-        $gdResult = parent::write($qrCode, $logo, $label, $options);
+        $gdresult = parent::write($qrcode, $logo, $label, $options);
 
         return new PngResult(
-            $gdResult->getMatrix(),
-            $gdResult->getImage(),
+            $gdresult->get_matrix(),
+            $gdresult->get_image(),
             $options[self::WRITER_OPTION_COMPRESSION_LEVEL],
             $options[self::WRITER_OPTION_NUMBER_OF_COLORS]
         );

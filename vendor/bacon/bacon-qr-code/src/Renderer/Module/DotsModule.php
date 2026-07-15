@@ -24,24 +24,52 @@ use BaconQrCode\Renderer\Path\Path;
 
 /**
  * Renders individual modules as dots.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class DotsModule implements ModuleInterface
 {
+    /**
+     * Large dot size.
+     */
     public const LARGE = 1;
+    /**
+     * Medium dot size.
+     */
     public const MEDIUM = .8;
+    /**
+     * Small dot size.
+     */
     public const SMALL = .6;
 
-    public function __construct(private readonly float $size) {
+    /**
+     * Constructor.
+     *
+     * @param float $size
+     */
+    public function __construct(
+        /**
+         * @var float
+         */
+        private readonly float $size
+    ) {
         if ($size <= 0 || $size > 1) {
             throw new InvalidArgumentException('Size must between 0 (exclusive) and 1 (inclusive)');
         }
     }
 
+    /**
+     * Creates a path from the byte matrix.
+     *
+     * @param ByteMatrix $matrix
+     * @return Path
+     */
     public function create_path(ByteMatrix $matrix): Path {
         $width = $matrix->get_width();
         $height = $matrix->get_height();
         $path = new Path();
-        $halfSize = $this->size / 2;
+        $halfsize = $this->size / 2;
         $margin = (1 - $this->size) / 2;
 
         for ($y = 0; $y < $height; ++$y) {
@@ -50,15 +78,15 @@ final class DotsModule implements ModuleInterface
                     continue;
                 }
 
-                $pathX = $x + $margin;
-                $pathY = $y + $margin;
+                $pathx = $x + $margin;
+                $pathy = $y + $margin;
 
                 $path = $path
-                    ->move($pathX + $this->size, $pathY + $halfSize)
-                    ->elliptic_arc($halfSize, $halfSize, 0, false, true, $pathX + $halfSize, $pathY + $this->size)
-                    ->elliptic_arc($halfSize, $halfSize, 0, false, true, $pathX, $pathY + $halfSize)
-                    ->elliptic_arc($halfSize, $halfSize, 0, false, true, $pathX + $halfSize, $pathY)
-                    ->elliptic_arc($halfSize, $halfSize, 0, false, true, $pathX + $this->size, $pathY + $halfSize)
+                    ->move($pathx + $this->size, $pathy + $halfsize)
+                    ->elliptic_arc($halfsize, $halfsize, 0, false, true, $pathx + $halfsize, $pathy + $this->size)
+                    ->elliptic_arc($halfsize, $halfsize, 0, false, true, $pathx, $pathy + $halfsize)
+                    ->elliptic_arc($halfsize, $halfsize, 0, false, true, $pathx + $halfsize, $pathy)
+                    ->elliptic_arc($halfsize, $halfsize, 0, false, true, $pathx + $this->size, $pathy + $halfsize)
                     ->close();
             }
         }

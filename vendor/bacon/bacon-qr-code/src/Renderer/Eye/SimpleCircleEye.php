@@ -22,19 +22,38 @@ use BaconQrCode\Renderer\Path\Path;
 
 /**
  * Renders the inner eye as a circle.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class SimpleCircleEye implements EyeInterface
 {
+    /**
+     * @var SimpleCircleEye|null
+     */
     private static ?SimpleCircleEye $instance = null;
 
+    /**
+     * Constructor.
+     */
     private function __construct() {
     }
 
+    /**
+     * Returns the simple circle eye instance.
+     *
+     * @return self
+     */
     public static function instance(): self {
         return self::$instance ?: self::$instance = new self();
     }
 
-    public function getExternalPath(): Path {
+    /**
+     * Returns the external path.
+     *
+     * @return Path
+     */
+    public function get_external_path(): Path {
         return (new Path())
             ->move(-3.5, -3.5)
             ->line(3.5, -3.5)
@@ -48,7 +67,12 @@ final class SimpleCircleEye implements EyeInterface
             ->close();
     }
 
-    public function getInternalPath(): Path {
+    /**
+     * Returns the internal path.
+     *
+     * @return Path
+     */
+    public function get_internal_path(): Path {
         return (new Path())
             ->move(1.5, 0)
             ->elliptic_arc(1.5, 1.5, 0., false, true, 0., 1.5)

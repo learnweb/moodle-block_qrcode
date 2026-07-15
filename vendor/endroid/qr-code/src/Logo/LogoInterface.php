@@ -18,13 +18,39 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Logo;
 
+/**
+ * Interface for a logo to be used in a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface LogoInterface
 {
-    public function getPath(): string;
+    /**
+     * Returns the path to the logo image.
+     *
+     * @return string
+     */
+    public function get_path(): string;
 
-    public function getResizeToWidth(): ?int;
+    /**
+     * Returns the width to which the logo should be resized, or null if no resizing is needed.
+     *
+     * @return int|null
+     */
+    public function get_resize_to_width(): ?int;
 
-    public function getResizeToHeight(): ?int;
+    /**
+     * Returns the height to which the logo should be resized, or null if no resizing is needed.
+     *
+     * @return int|null
+     */
+    public function get_resize_to_height(): ?int;
 
-    public function getPunchoutBackground(): bool;
+    /**
+     * Returns whether the background of the logo should be punched out (made transparent) when placed in the QR code.
+     *
+     * @return bool
+     */
+    public function get_punchout_background(): bool;
 }

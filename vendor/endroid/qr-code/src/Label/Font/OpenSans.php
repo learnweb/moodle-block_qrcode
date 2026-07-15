@@ -18,18 +18,44 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Label\Font;
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Represents the Open Sans font used in a label of a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class OpenSans implements FontInterface
 {
+    /**
+     * Constructor.
+     *
+     * @param int $size
+     */
     public function __construct(
+        /**
+         * @var int
+         */
         private int $size = 16,
     ) {
     }
 
-    public function getPath(): string {
+    /**
+     * Returns the path to the Open Sans font file.
+     *
+     * @return string
+     */
+    public function get_path(): string {
         return __DIR__ . '/../../../assets/open_sans.ttf';
     }
 
-    public function getSize(): int {
+    /**
+     * Returns the size of the Open Sans font.
+     *
+     * @return int
+     */
+    public function get_size(): int {
         return $this->size;
     }
 }

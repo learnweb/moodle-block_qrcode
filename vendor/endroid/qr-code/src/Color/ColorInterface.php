@@ -18,20 +18,60 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Color;
 
+/**
+ * Interface for a color in a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface ColorInterface
 {
-    public function getRed(): int;
+    /**
+     * Returns the red component of the color (0-255).
+     *
+     * @return int
+     */
+    public function get_red(): int;
 
-    public function getGreen(): int;
+    /**
+     * Returns the green component of the color (0-255).
+     *
+     * @return int
+     */
+    public function get_green(): int;
 
-    public function getBlue(): int;
+    /**
+     * Returns the blue component of the color (0-255).
+     *
+     * @return int
+     */
+    public function get_blue(): int;
 
-    public function getAlpha(): int;
+    /**
+     * Returns the alpha component of the color (0-255).
+     *
+     * @return int
+     */
+    public function get_alpha(): int;
 
-    public function getOpacity(): float;
+    /**
+     * Returns the opacity of the color (0.0-1.0).
+     *
+     * @return float
+     */
+    public function get_opacity(): float;
 
-    public function getHex(): string;
+    /**
+     * Returns the hexadecimal representation of the color (e.g., #RRGGBB or #RRGGBBAA).
+     *
+     * @return string
+     */
+    public function get_hex(): string;
 
-    /** @return array<string, int> */
-    public function toArray(): array;
+    /**
+     * Returns the color as an array with keys 'red', 'green', 'blue', and 'alpha'.
+     *
+     * @return array
+     */
+    public function to_array(): array;
 }

@@ -20,17 +20,39 @@ namespace Endroid\QrCode\Writer\Result;
 
 use Endroid\QrCode\Matrix\MatrixInterface;
 
+/**
+ * Represents the result of writing a QR code in WebP format.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class WebPResult extends GdResult
 {
+    /**
+     * Constructor.
+     *
+     * @param MatrixInterface $matrix
+     * @param \GdImage $image
+     * @param int $quality
+     */
     public function __construct(
         MatrixInterface $matrix,
         \GdImage $image,
+        /**
+         * @var int
+         */
         private readonly int $quality = -1,
     ) {
         parent::__construct($matrix, $image);
     }
 
-    public function getString(): string {
+    /**
+     * Returns the string representation of the QR code in WebP format.
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function get_string(): string {
         if (!function_exists('imagewebp')) {
             throw new \Exception('WebP support is not available in your GD installation');
         }
@@ -41,7 +63,12 @@ final class WebPResult extends GdResult
         return strval(ob_get_clean());
     }
 
-    public function getMimeType(): string {
+    /**
+     * Returns the MIME type for WebP images.
+     *
+     * @return string
+     */
+    public function get_mime_type(): string {
         return 'image/webp';
     }
 }

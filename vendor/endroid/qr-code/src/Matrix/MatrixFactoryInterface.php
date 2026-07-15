@@ -20,7 +20,19 @@ namespace Endroid\QrCode\Matrix;
 
 use Endroid\QrCode\QrCodeInterface;
 
+/**
+ * Interface for creating a matrix from a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface MatrixFactoryInterface
 {
-    public function create(QrCodeInterface $qrCode): MatrixInterface;
+    /**
+     * Creates a matrix from a QR code.
+     *
+     * @param QrCodeInterface $qrcode
+     * @return MatrixInterface
+     */
+    public function create(QrCodeInterface $qrcode): MatrixInterface;
 }

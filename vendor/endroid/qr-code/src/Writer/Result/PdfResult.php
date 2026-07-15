@@ -20,24 +20,54 @@ namespace Endroid\QrCode\Writer\Result;
 
 use Endroid\QrCode\Matrix\MatrixInterface;
 
+/**
+ * Represents the result of writing a QR code in PDF format.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class PdfResult extends AbstractResult
 {
+    /**
+     * Constructor.
+     *
+     * @param MatrixInterface $matrix
+     * @param \FPDF $fpdf
+     */
     public function __construct(
         MatrixInterface $matrix,
+        /**
+         * @var \FPDF
+         */
         private readonly \FPDF $fpdf,
     ) {
         parent::__construct($matrix);
     }
 
-    public function getPdf(): \FPDF {
+    /**
+     * Returns the FPDF instance representing the PDF.
+     *
+     * @return \FPDF
+     */
+    public function get_pdf(): \FPDF {
         return $this->fpdf;
     }
 
-    public function getString(): string {
+    /**
+     * Returns the string representation of the QR code in PDF format.
+     *
+     * @return string
+     */
+    public function get_string(): string {
         return $this->fpdf->Output('S');
     }
 
-    public function getMimeType(): string {
+    /**
+     * Returns the MIME type for the PDF representation of the QR code.
+     *
+     * @return string
+     */
+    public function get_mime_type(): string {
         return 'application/pdf';
     }
 }

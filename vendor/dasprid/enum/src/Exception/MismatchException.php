@@ -20,6 +20,12 @@ namespace DASPRiD\Enum\Exception;
 
 use Exception;
 
+/**
+ * Exception thrown when there is a mismatch between expected and actual enumeration values.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class MismatchException extends Exception implements ExceptionInterface
 {
 }

@@ -103,7 +103,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $alpha = 1;
 
         if ($backgroundcolor instanceof Alpha) {
-            $alpha = $backgroundcolor->getAlpha() / 100;
+            $alpha = $backgroundcolor->get_alpha() / 100;
         }
 
         if (0 === $alpha) {
@@ -227,7 +227,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $alpha = 1;
 
         if ($color instanceof Alpha) {
-            $alpha = $color->getAlpha() / 100;
+            $alpha = $color->get_alpha() / 100;
         }
 
         $this->start_path_element($path);
@@ -423,7 +423,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
 
         $tobehashed = $this->get_color_string($startcolor) . $this->get_color_string($endcolor) . $gradient->get_type();
         if ($startcolor instanceof Alpha) {
-            $tobehashed .= (string) $startcolor->getAlpha();
+            $tobehashed .= (string) $startcolor->get_alpha();
         }
         $id = sprintf('g%d-%s', ++$this->gradientcount, hash('xxh64', $tobehashed));
         $this->xmlwriter->writeAttribute('id', $id);
@@ -433,7 +433,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlwriter->writeAttribute('stop-color', $this->get_color_string($startcolor));
 
         if ($startcolor instanceof Alpha) {
-            $this->xmlwriter->writeAttribute('stop-opacity', (string) $startcolor->getAlpha());
+            $this->xmlwriter->writeAttribute('stop-opacity', (string) $startcolor->get_alpha());
         }
 
         $this->xmlwriter->endElement();
@@ -443,7 +443,7 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlwriter->writeAttribute('stop-color', $this->get_color_string($endcolor));
 
         if ($endcolor instanceof Alpha) {
-            $this->xmlwriter->writeAttribute('stop-opacity', (string) $endcolor->getAlpha());
+            $this->xmlwriter->writeAttribute('stop-opacity', (string) $endcolor->get_alpha());
         }
 
         $this->xmlwriter->endElement();
@@ -465,9 +465,9 @@ final class SvgImageBackEnd implements ImageBackEndInterface
 
         return sprintf(
             '#%02x%02x%02x',
-            $color->getRed(),
-            $color->getGreen(),
-            $color->getBlue()
+            $color->get_red(),
+            $color->get_green(),
+            $color->get_blue()
         );
     }
 }

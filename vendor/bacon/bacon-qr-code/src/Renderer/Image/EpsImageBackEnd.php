@@ -83,7 +83,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
             . "1 -1 s\n"
             . sprintf("0 -%d t\n", $size);
 
-        if ($backgroundcolor instanceof Alpha && 0 === $backgroundcolor->getAlpha()) {
+        if ($backgroundcolor instanceof Alpha && 0 === $backgroundcolor->get_alpha()) {
             return;
         }
 
@@ -308,7 +308,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         $endcolor = $gradient->get_end_color();
 
         if ($startcolor instanceof Alpha) {
-            $startcolor = $startcolor->getBaseColor();
+            $startcolor = $startcolor->get_base_color();
         }
 
         $startcolortype = get_class($startcolor);
@@ -455,7 +455,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
      */
     private function get_color_string(ColorInterface $color): string {
         if ($color instanceof Rgb) {
-            return sprintf('%s %s %s', $color->getRed() / 255, $color->getGreen() / 255, $color->getBlue() / 255);
+            return sprintf('%s %s %s', $color->get_red() / 255, $color->get_green() / 255, $color->get_blue() / 255);
         }
 
         if ($color instanceof Cmyk) {
@@ -469,7 +469,7 @@ final class EpsImageBackEnd implements ImageBackEndInterface
         }
 
         if ($color instanceof Gray) {
-            return sprintf('%s', $color->getGray() / 100);
+            return sprintf('%s', $color->get_gray() / 100);
         }
 
         return $this->get_color_string($color->to_cmyk());

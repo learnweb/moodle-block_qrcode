@@ -18,18 +18,45 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\ImageData;
 
+defined('MOODLE_INTERNAL') || die();
+
 use Endroid\QrCode\Label\LabelInterface;
 
+/**
+ * Represents the image data of a label to be used in a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class LabelImageData
 {
+    /**
+     * Creates a new instance of LabelImageData with the provided width and height.
+     *
+     * @param int $width
+     * @param int $height
+     */
     private function __construct(
+        /**
+         * @var int
+         */
         private int $width,
+        /**
+         * @var int
+         */
         private int $height,
     ) {
     }
 
-    public static function createForLabel(LabelInterface $label): self {
-        if (str_contains($label->getText(), "\n")) {
+    /**
+     * Creates a new instance of LabelImageData for the given label.
+     *
+     * @param LabelInterface $label
+     * @return self
+     * @throws \Exception
+     */
+    public static function create_for_label(LabelInterface $label): self {
+        if (str_contains($label->get_text(), "\n")) {
             throw new \Exception('Label does not support line breaks');
         }
 
@@ -37,23 +64,33 @@ final readonly class LabelImageData
             throw new \Exception('Function "imagettfbbox" does not exist: check your FreeType installation');
         }
 
-        $labelBox = imagettfbbox($label->getFont()->getSize(), 0, $label->getFont()->getPath(), $label->getText());
+        $labelbox = imagettfbbox($label->get_font()->get_size(), 0, $label->get_font()->get_path(), $label->get_text());
 
-        if (!is_array($labelBox)) {
+        if (!is_array($labelbox)) {
             throw new \Exception('Unable to generate label image box: check your FreeType installation');
         }
 
         return new self(
-            intval($labelBox[2] - $labelBox[0]),
-            intval($labelBox[0] - $labelBox[7])
+            intval($labelbox[2] - $labelbox[0]),
+            intval($labelbox[0] - $labelbox[7])
         );
     }
 
-    public function getWidth(): int {
+    /**
+     * Returns the width of the label image data.
+     *
+     * @return int
+     */
+    public function get_width(): int {
         return $this->width;
     }
 
-    public function getHeight(): int {
+    /**
+     * Returns the height of the label image data.
+     *
+     * @return int
+     */
+    public function get_height(): int {
         return $this->height;
     }
 }

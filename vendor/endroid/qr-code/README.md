@@ -105,7 +105,7 @@ $label = new Label(
 $result = $writer->write($qrCode, $logo, $label);
 
 // Validate the result
-$writer->validateResult($result, 'Life is too short to be generating QR codes');
+$writer->validate_result($result, 'Life is too short to be generating QR codes');
 ```
 
 ## Usage: working with results

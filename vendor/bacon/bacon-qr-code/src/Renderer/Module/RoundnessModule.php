@@ -25,14 +25,36 @@ use BaconQrCode\Renderer\Path\Path;
 
 /**
  * Rounds the corners of module groups.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class RoundnessModule implements ModuleInterface
 {
+    /**
+     * Strong roundness.
+     */
     public const STRONG = 1;
+    /**
+     * Medium roundness.
+     */
     public const MEDIUM = .5;
+    /**
+     * Soft roundness.
+     */
     public const SOFT = .25;
 
-    public function __construct(private float $intensity) {
+    /**
+     * Constructor.
+     *
+     * @param float $intensity
+     */
+    public function __construct(
+        /**
+         * @var float
+         */
+        private float $intensity
+    ) {
         if ($intensity <= 0 || $intensity > 1) {
             throw new InvalidArgumentException('Intensity must between 0 (exclusive) and 1 (inclusive)');
         }
@@ -40,57 +62,63 @@ final class RoundnessModule implements ModuleInterface
         $this->intensity = $intensity / 2;
     }
 
+    /**
+     * Creates a path from the byte matrix.
+     *
+     * @param ByteMatrix $matrix
+     * @return Path
+     */
     public function create_path(ByteMatrix $matrix): Path {
         $path = new Path();
 
         foreach (new EdgeIterator($matrix) as $edge) {
-            $points = $edge->getSimplifiedPoints();
+            $points = $edge->get_simplified_points();
             $length = count($points);
 
-            $currentPoint = $points[0];
-            $nextPoint = $points[1];
-            $horizontal = ($currentPoint[1] === $nextPoint[1]);
+            $currentpoint = $points[0];
+            $nextpoint = $points[1];
+            $horizontal = ($currentpoint[1] === $nextpoint[1]);
 
             if ($horizontal) {
-                $right = $nextPoint[0] > $currentPoint[0];
+                $right = $nextpoint[0] > $currentpoint[0];
                 $path = $path->move(
-                    $currentPoint[0] + ($right ? $this->intensity : -$this->intensity),
-                    $currentPoint[1]
+                    $currentpoint[0] + ($right ? $this->intensity : -$this->intensity),
+                    $currentpoint[1]
                 );
             } else {
-                $up = $nextPoint[0] < $currentPoint[0];
+                $up = $nextpoint[0] < $currentpoint[0];
                 $path = $path->move(
-                    $currentPoint[0],
-                    $currentPoint[1] + ($up ? -$this->intensity : $this->intensity)
+                    $currentpoint[0],
+                    $currentpoint[1] + ($up ? -$this->intensity : $this->intensity)
                 );
             }
 
             for ($i = 1; $i <= $length; ++$i) {
                 if ($i === $length) {
-                    $previousPoint = $points[$length - 1];
-                    $currentPoint = $points[0];
-                    $nextPoint = $points[1];
+                    $previouspoint = $points[$length - 1];
+                    $currentpoint = $points[0];
+                    $nextpoint = $points[1];
                 } else {
-                    $previousPoint = $points[(0 === $i ? $length : $i) - 1];
-                    $currentPoint = $points[$i];
-                    $nextPoint = $points[($length - 1 === $i ? -1 : $i) + 1];
+                    $previouspoint = $points[(0 === $i ? $length : $i) - 1];
+                    $currentpoint = $points[$i];
+                    $nextpoint = $points[($length - 1 === $i ? -1 : $i) + 1];
                 }
 
-                $horizontal = ($previousPoint[1] === $currentPoint[1]);
+                $horizontal = ($previouspoint[1] === $currentpoint[1]);
 
                 if ($horizontal) {
-                    $right = $previousPoint[0] < $currentPoint[0];
-                    $up = $nextPoint[1] < $currentPoint[1];
+                    $right = $previouspoint[0] < $currentpoint[0];
+                    $up = $nextpoint[1] < $currentpoint[1];
                     $sweep = ($up xor $right);
 
                     if (
                         $this->intensity < 0.5
-                        || ($right && $previousPoint[0] !== $currentPoint[0] - 1)
-                        || (! $right && $previousPoint[0] - 1 !== $currentPoint[0])
+                        || ($right && $previouspoint[0] !== $currentpoint[0] - 1)
+                        || (! $right && $previouspoint[0] - 1 !== $currentpoint[0])
                     ) {
                         $path = $path->line(
-                            $currentPoint[0] + ($right ? -$this->intensity : $this->intensity),
-                            $currentPoint[1]
+                            $currentpoint[0] + ($right ? -$this->intensity : $this->intensity),
+                            $currentpoint[1]
                         );
                     }
 
@@ -100,22 +128,22 @@ final class RoundnessModule implements ModuleInterface
                         0,
                         false,
                         $sweep,
-                        $currentPoint[0],
-                        $currentPoint[1] + ($up ? -$this->intensity : $this->intensity)
+                        $currentpoint[0],
+                        $currentpoint[1] + ($up ? -$this->intensity : $this->intensity)
                     );
                 } else {
-                    $up = $previousPoint[1] > $currentPoint[1];
-                    $right = $nextPoint[0] > $currentPoint[0];
+                    $up = $previouspoint[1] > $currentpoint[1];
+                    $right = $nextpoint[0] > $currentpoint[0];
                     $sweep = ! ($up xor $right);
 
                     if (
                         $this->intensity < 0.5
-                        || ($up && $previousPoint[1] !== $currentPoint[1] + 1)
-                        || (! $up && $previousPoint[0] + 1 !== $currentPoint[0])
+                        || ($up && $previouspoint[1] !== $currentpoint[1] + 1)
+                        || (! $up && $previouspoint[0] + 1 !== $currentpoint[0])
                     ) {
                         $path = $path->line(
-                            $currentPoint[0],
-                            $currentPoint[1] + ($up ? $this->intensity : -$this->intensity)
+                            $currentpoint[0],
+                            $currentpoint[1] + ($up ? $this->intensity : -$this->intensity)
                         );
                     }
 
@@ -125,8 +153,8 @@ final class RoundnessModule implements ModuleInterface
                         0,
                         false,
                         $sweep,
-                        $currentPoint[0] + ($right ? $this->intensity : -$this->intensity),
-                        $currentPoint[1]
+                        $currentpoint[0] + ($right ? $this->intensity : -$this->intensity),
+                        $currentpoint[1]
                     );
                 }
             }

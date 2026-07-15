@@ -204,7 +204,7 @@ class output_image {
         $qrcode = new QrCode(
             data: $this->course_link_url()->out(false),
             size: $this->size,
-            errorCorrectionLevel: ErrorCorrectionLevel::High,
+            errorcorrectionlevel: ErrorCorrectionLevel::High,
         );
 
         // Png format.
@@ -238,7 +238,7 @@ class output_image {
             }
         }
         $result = $writer->write($qrcode, $logo);
-        $result->saveToFile($this->file);
+        $result->save_to_file($this->file);
     }
 
     /**

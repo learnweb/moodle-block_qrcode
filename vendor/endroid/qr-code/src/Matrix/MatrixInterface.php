@@ -18,19 +18,62 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Matrix;
 
+/**
+ * Interface for a matrix of blocks for a QR code.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 interface MatrixInterface
 {
-    public function getBlockValue(int $rowIndex, int $columnIndex): int;
+    /**
+     * Returns the value of the block at the specified row and column indices.
+     *
+     * @param int $rowindex
+     * @param int $columnindex
+     * @return int
+     */
+    public function get_block_value(int $rowindex, int $columnindex): int;
 
-    public function getBlockCount(): int;
+    /**
+     * Returns the number of blocks in the matrix.
+     *
+     * @return int
+     */
+    public function get_block_count(): int;
 
-    public function getBlockSize(): float;
+    /**
+     * Returns the size of each block in the matrix.
+     *
+     * @return float
+     */
+    public function get_block_size(): float;
 
-    public function getInnerSize(): int;
+    /**
+     * Returns the inner size of the matrix, which is the number of blocks in the matrix without the margins.
+     *
+     * @return int
+     */
+    public function get_inner_size(): int;
 
-    public function getOuterSize(): int;
+    /**
+     * Returns the outer size of the matrix, which is the number of blocks in the matrix including the margins.
+     *
+     * @return int
+     */
+    public function get_outer_size(): int;
 
-    public function getMarginLeft(): int;
+    /**
+     * Returns the left margin of the matrix, which is the number of blocks to the left of the inner matrix.
+     *
+     * @return int
+     */
+    public function get_margin_left(): int;
 
-    public function getMarginRight(): int;
+    /**
+     * Returns the right margin of the matrix, which is the number of blocks to the right of the inner matrix.
+     *
+     * @return int
+     */
+    public function get_margin_right(): int;
 }

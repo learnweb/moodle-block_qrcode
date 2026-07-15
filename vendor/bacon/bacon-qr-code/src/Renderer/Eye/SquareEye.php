@@ -22,19 +22,38 @@ use BaconQrCode\Renderer\Path\Path;
 
 /**
  * Renders the eyes in their default square shape.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class SquareEye implements EyeInterface
 {
+    /**
+     * @var SquareEye|null
+     */
     private static ?SquareEye $instance = null;
 
+    /**
+     * Constructor.
+     */
     private function __construct() {
     }
 
+    /**
+     * Returns the square eye instance.
+     *
+     * @return self
+     */
     public static function instance(): self {
         return self::$instance ?: self::$instance = new self();
     }
 
-    public function getExternalPath(): Path {
+    /**
+     * Returns the external path.
+     *
+     * @return Path
+     */
+    public function get_external_path(): Path {
         return (new Path())
             ->move(-3.5, -3.5)
             ->line(3.5, -3.5)
@@ -48,7 +67,12 @@ final class SquareEye implements EyeInterface
             ->close();
     }
 
-    public function getInternalPath(): Path {
+    /**
+     * Returns the internal path.
+     *
+     * @return Path
+     */
+    public function get_internal_path(): Path {
         return (new Path())
             ->move(-1.5, -1.5)
             ->line(1.5, -1.5)

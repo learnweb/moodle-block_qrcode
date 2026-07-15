@@ -18,54 +18,138 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode;
 
+defined('MOODLE_INTERNAL') || die();
+
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Color\ColorInterface;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\Encoding\EncodingInterface;
 
+/**
+ * Represents a QR code with its associated properties and settings.
+ *
+ * @copyright 2024 Justus Dieckmann
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final readonly class QrCode implements QrCodeInterface
 {
+    /**
+     * Construct.
+     *
+     * @param string $data
+     * @param EncodingInterface $encoding
+     * @param ErrorCorrectionLevel $errorcorrectionlevel
+     * @param int $size
+     * @param int $margin
+     * @param RoundBlockSizeMode $roundblocksizemode
+     * @param ColorInterface $foregroundcolor
+     * @param ColorInterface $backgroundcolor
+     */
     public function __construct(
+        /**
+         * @var string
+         */
         private string $data,
+        /**
+         * @var EncodingInterface|Encoding
+         */
         private EncodingInterface $encoding = new Encoding('UTF-8'),
-        private ErrorCorrectionLevel $errorCorrectionLevel = ErrorCorrectionLevel::Low,
+        /**
+         * @var ErrorCorrectionLevel
+         */
+        private ErrorCorrectionLevel $errorcorrectionlevel = ErrorCorrectionLevel::Low,
+        /**
+         * @var int
+         */
         private int $size = 300,
+        /**
+         * @var int
+         */
         private int $margin = 10,
-        private RoundBlockSizeMode $roundBlockSizeMode = RoundBlockSizeMode::Margin,
-        private ColorInterface $foregroundColor = new Color(0, 0, 0),
-        private ColorInterface $backgroundColor = new Color(255, 255, 255),
+        /**
+         * @var RoundBlockSizeMode
+         */
+        private RoundBlockSizeMode $roundblocksizemode = RoundBlockSizeMode::Margin,
+        /**
+         * @var ColorInterface|Color
+         */
+        private ColorInterface $foregroundcolor = new Color(0, 0, 0),
+        /**
+         * @var ColorInterface|Color
+         */
+        private ColorInterface $backgroundcolor = new Color(255, 255, 255),
     ) {
     }
 
-    public function getData(): string {
+    /**
+     * Returns the data encoded in the QR code.
+     *
+     * @return string
+     */
+    public function get_data(): string {
         return $this->data;
     }
 
-    public function getEncoding(): EncodingInterface {
+    /**
+     * Returns the encoding used for the QR code.
+     *
+     * @return EncodingInterface
+     */
+    public function get_encoding(): EncodingInterface {
         return $this->encoding;
     }
 
-    public function getErrorCorrectionLevel(): ErrorCorrectionLevel {
-        return $this->errorCorrectionLevel;
+    /**
+     * Returns the error correction level of the QR code.
+     *
+     * @return ErrorCorrectionLevel
+     */
+    public function get_error_correction_level(): ErrorCorrectionLevel {
+        return $this->errorcorrectionlevel;
     }
 
-    public function getSize(): int {
+    /**
+     * Returns the size of the QR code in pixels.
+     *
+     * @return int
+     */
+    public function get_size(): int {
         return $this->size;
     }
 
-    public function getMargin(): int {
+    /**
+     * Returns the margin of the QR code in pixels.
+     *
+     * @return int
+     */
+    public function get_margin(): int {
         return $this->margin;
     }
 
-    public function getRoundBlockSizeMode(): RoundBlockSizeMode {
-        return $this->roundBlockSizeMode;
+    /**
+     * Returns the round block size mode of the QR code.
+     *
+     * @return RoundBlockSizeMode
+     */
+    public function get_roundblock_size_mode(): RoundBlockSizeMode {
+        return $this->roundblocksizemode;
     }
 
-    public function getForegroundColor(): ColorInterface {
-        return $this->foregroundColor;
+    /**
+     * Returns the foreground color of the QR code.
+     *
+     * @return ColorInterface
+     */
+    public function get_foreground_color(): ColorInterface {
+        return $this->foregroundcolor;
     }
 
-    public function getBackgroundColor(): ColorInterface {
-        return $this->backgroundColor;
+    /**
+     * Returns the background color of the QR code.
+     *
+     * @return ColorInterface
+     */
+    public function get_background_color(): ColorInterface {
+        return $this->backgroundcolor;
     }
 }

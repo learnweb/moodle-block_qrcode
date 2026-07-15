@@ -18,6 +18,12 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Exception;
 
+/**
+ * Exception thrown when the block size is too small.
+ *
+ * @copyright 2025 Daniel Meißner
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 final class BlockSizeTooSmallException extends \Exception
 {
 }
