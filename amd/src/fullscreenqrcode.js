@@ -1,4 +1,4 @@
-define(['jquery', 'core/modal_factory'], function($, ModalFactory) {
+define(['jquery', 'core/modal'], function($, ModalFactory) {
 
     var show_qr = function(qrcode) {
         ModalFactory.create({
